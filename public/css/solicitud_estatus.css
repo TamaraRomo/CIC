@@ -1,0 +1,58 @@
+body {
+    font-family: 'Roboto', sans-serif; /* Cambiado a Roboto */
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #AFB2F4; /* Cambiado el color */
+    border-radius: 5px; /* Cambiado el valor */
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0D1642; /* Añadido */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white; /* Cambiado el color */
+    border: 1px solid #311C6C; /* Cambiado el color */
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Cambiado el color */
+}
+
+th {
+    background-color: #4CAF50; /* Cambiado el color */
+    color: white; /* Cambiado el color */
+}
+
+tr:nth-child(even) {
+    background-color: #AFB2F4; /* Cambiado el color */
+}
+
+.statistics-btn {
+    display: block;
+    margin: 0 auto 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Cambiado el color */
+    color: white;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.statistics-btn:hover {
+    background-color: #3e8e41; /* Cambiado el color */
+}

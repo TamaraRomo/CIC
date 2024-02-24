@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inicio de Sesión</title>
+<link rel="stylesheet" href="resources/css/style_login.css">
+</head>
+<body>
+
+<div class="contenedor">
+    <a href="ruta_de_la_pagina_web_que_deseas"></a>
+    <div class="encabezado">
+        <a href="https://www.uacam.mx/">
+            <img src="resources/images/baner_uacam.jpg" alt="Banner" width="100%">
+        </a>
+    </div>
+    <h2>CIC Assistance</h2>
+    <h3>Iniciar Sesión</h3>
+    <form action="auth" method="post">
+        <input type="text" id="username" name="username" placeholder="Nombre de Usuario" required>
+        <input type="password" id="password" name="password" placeholder="Contraseña" required>
+        <input type="submit" value="Iniciar Sesión">
+    </form>
+    <div class="panel-privacidad">
+        <p>Panel de advertencia de privacidad de usuario.</p>
+    </div>
+    <div class="enlaces-sociales">
+        <a href="https://www.facebook.com/UACamOficial/"><img src="resources/images/face_logo.png" alt="Facebook"></a>
+        <a href="https://twitter.com/UacamOficial"><img src="resources/images/twitter_logo.jpg" alt="Twitter"></a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+<!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+<% if(typeof alert != "undefined"){ %>
+<script>
+    Swal.fire({
+    title: '<%= alertTitle %>',
+    text: '<%= alertMessage %>',
+    icon: '<%= alertIcon %>',
+    showConfirmButton: <%= showConfirmButton %>,
+    timer: <%= timer %>
+}).then(() =>{
+    window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+})
+</script>
+<% } %>
+
+</body>
+</html>

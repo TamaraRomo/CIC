@@ -1,0 +1,110 @@
+*{
+    font-family: "Roboto", sans-serif;
+}
+/*Header logos y titulo*/
+.encabezado{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 1em;
+}
+.encabezado h1{
+    font-weight: lighter;
+    vertical-align: baseline;
+}
+#ingenieria{
+    margin-top: 25px;
+}
+/*Formulario de solicitud*/
+.solicitud{
+    border: 1px solid #311C6C;
+    border-radius: 5px;
+    margin: auto;
+    padding: 0 0 0 4em;
+    background-color: #babdf0;
+    width: 85%;
+
+}
+#fechaSolicitud{
+    text-align: right;
+    margin-right: 2em;
+    margin-bottom: 0;
+}
+.solicitud h2{
+    margin-top: 0;
+    margin-bottom: 1.5em;
+    color: #0D1642;
+}
+/*Todas las label deben resaltar (label que no son opciones, si no titulos)*/
+.labelMayor{
+    font-weight: bold;
+    color: #0D1642;
+    margin-bottom: .5em;
+    display: block;
+}
+/*Abarca los primos label e input de texto*/
+.contenedorInicial{
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 0;
+    margin-bottom: 1.5em;
+    flex-wrap: wrap;
+}
+.contenedorInicial div{
+    margin-right: 6em;
+}
+.contenedorInicial input{
+    border: 1px solid #91AEE7;
+    border-radius: 3px;
+    height: 1.5em;
+    
+}
+.contenedorInicial ::placeholder, #descripcion::placeholder{
+    color: rgba(0, 0, 0, .40);
+    padding: 4px;
+    font-weight: bold;
+}
+/*Abarca todo el apartado de "Equipos"*/
+fieldset {
+    border: none;
+}
+fieldset input[type="checkbox"] {
+    margin-right: 1em; 
+    border-color: #91AEE7;
+}
+fieldset label{
+    width: 6em;
+}
+.contenedor-checkbox {
+    display: flex;
+    flex-wrap: wrap; 
+}
+.checkbox-item{
+    width: 10em;
+}
+/*Estilos al apartado "Descripcion"*/
+#descripcion{
+    width: 95%;
+    display: block;
+    border: none;
+    margin-bottom: 1em;
+}
+.enviarSoli{
+    text-align: right;
+}
+/*Estilos botón enviar*/
+#enviar{
+    height: 2em;
+    background-color: #0D1642;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 3px;
+    margin-bottom: 1em;
+    width: 10%;
+    margin-right: 4em;
+}
+#enviar:hover{
+    color: #0D1642;
+    background-color: white;
+}

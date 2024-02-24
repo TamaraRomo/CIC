@@ -1,0 +1,9 @@
+document.getElementById("fechaDictamen").textContent = obtenerFechaActual();
+                // Función para obtener la fecha actual en formato DD/MM/YYYY
+                function obtenerFechaActual() {
+                    const fecha = new Date();
+                    const dia = String(fecha.getDate()).padStart(2, '0');
+                    const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses comienzan desde 0
+                    const año = fecha.getFullYear();
+                    return `${dia}/${mes}/${año}`;
+                }

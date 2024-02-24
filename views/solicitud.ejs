@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resources/css/style_solicitud.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Solicitud Soporte Tecnico</title>
+</head>
+<body>
+    <div class="encabezado">
+        <img src="resources/images/logoUAC.jpg" alt="Escudo UACAM" width="100px">
+        <h1>Centro de Ingeniería Computacional</h1>
+        <img src="resources/images/logoIngenieria.jpg" alt="Escudo Facultad de Ingenieria" width="80px" id="ingenieria">
+    </div>
+    <% if (typeof login !== 'undefined' && login) { %>
+        <div>
+            <p class="sesion" id="sesion">Usuario: <%= name %></p>
+            <a href="logout">Logout</a>
+        </div>
+    <% } %>
+    <div class="solicitud">
+        <p id="fechaSolicitud"></p>
+        <h2>Solicitud de Servicio Técnico</h2>
+
+        <form action="solicitud" method="post">
+            <div class="contenedorInicial">
+                <div>
+                    <label for="telefono" class="labelMayor">Teléfono</label>
+                    <input type="number" name="telefono" id="telefono" placeholder="Escribe tu telefono">
+                </div>
+                <div>
+                    <label for="edificio" class="labelMayor">Edificio y nivel</label>
+                    <select name="edificio" id="edificio">
+                        <option value="A">Edificio A</option>
+                        <option value="B">Edificio B</option>
+                        <option value="C">Edficio C</option>
+                        <option value="D">Edificio D</option>
+                        <option value="Coordinacion">Edificio Coordinacion</option>
+                        <option value="CIC">Edificio CIC</option>
+                        <option value="IDI">Edificio I+D+I</option>
+                    </select>
+                    
+                </div>
+                <div>
+                    <label for="area" class="labelMayor">Ubicación física</label>
+                    <input type="text" name="area" id="area" placeholder="Escribe tu área">
+                </div>
+            </div>
+            <fieldset>
+                <legend class="labelMayor">Equipos</legend>
+                <div class="contenedor-checkbox">
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Monitor">
+                        <label for="monitor">Monitor</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Nodo">
+                        <label for="nodo">Nodo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="UPS">
+                        <label for="ups">UPS</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Laptop">
+                        <label for="laptop">Laptop</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Proyector">
+                        <label for="proyector">Proyector</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Access Point">
+                        <label for="access">Acess Point</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="PC">
+                        <label for="pc">PC</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Gabinete">
+                        <label for="gabinete">Gabinete</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Teclado">
+                        <label for="teclado">Teclado</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Mouse">
+                        <label for="mouse">Mouse</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Teléfono">
+                        <label for="telefono">Teléfono</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="equipos" value="Impresora">
+                        <label for="impresora">Impresora</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="equipos" id="otro" value="">
+                        <label for="otro">Otro</label>
+                    </div>
+                    <div id="otroInputContainer">
+                        <label for="otroInput">Especifique:</label>
+                        <input type="text" name="otroInput" id="otroInput" disabled>
+                    </div>
+                </div>
+            </fieldset>
+
+            <label for="descripcion" class="labelMayor">Descripción del problema</label>
+            <textarea name="descripcion" id="descripcion" cols="30" rows="8" placeholder="Escribe todos los detalles de tu problema"></textarea>
+            
+            <div class="enviarSoli">
+                <button type="submit" id="enviar" value="Submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("fechaSolicitud").textContent = obtenerFechaActual();
+        // Función para obtener la fecha actual en formato DD/MM/YYYY
+        function obtenerFechaActual() {
+            const fecha = new Date();
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses comienzan desde 0
+            const año = fecha.getFullYear();
+            return `${dia}/${mes}/${año}`;
+        }
+
+     // Agregar para campo para especificar otro equipo
+    var otroCheckbox = document.getElementById("otro");
+    var otroInput = document.getElementById("otroInput");
+    otroCheckbox.addEventListener("change", function () {
+        otroInput.disabled = !otroCheckbox.checked;
+        // Restaurar el valor original del checkbox 'otro' cuando no está marcado
+        if (!otroCheckbox.checked) {
+            otroCheckbox.value = "";
+            otroInput.value = "";
+        }
+    });
+    otroInput.addEventListener("input", function () {
+        otroCheckbox.value = "Otro " + otroInput.value;
+    });
+    
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+    <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+    <% if(typeof alert != "undefined"){ %>
+    <script>
+        Swal.fire({
+            title: '<%= alertTitle %>',
+            text: '<%= alertMessage %>',
+            icon: '<%= alertIcon %>',
+            showConfirmButton: <%= showConfirmButton %>,
+            timer: <%= timer %>
+        }).then(() =>{
+            window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+        })
+    </script>
+    <% } %>
+</body>
+</html>

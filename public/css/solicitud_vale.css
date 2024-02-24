@@ -1,0 +1,84 @@
+/* Estilos generales */
+body {
+    font-family: 'Roboto', sans-serif; /* Cambiado a Roboto */
+    margin: 0;
+    padding: 0;
+}
+
+/* Encabezado */
+#contenedorPDF{
+    border: 1px solid #311C6C;
+    border-radius: 5px;
+    margin: auto;
+    padding: 0 0 0 4em;
+    background-color: #babdf0;
+    width: 85%;
+}
+.labelFolio{
+    font-weight: bold;
+    color: #0D1642;
+    margin-bottom: .5em;
+    margin-top: .5em;
+    display: block;
+}
+#folios{
+    margin-bottom: .6em;
+}
+.labelMayor{
+    font-weight: bold;
+    color: #0D1642;
+    margin-bottom: .5em;
+    display: block;
+}
+
+fieldset {
+    border: none;
+}
+fieldset input[type="checkbox"] {
+    margin-right: 1em; 
+    border-color: #91AEE7;
+}
+fieldset label{
+    width: 6em;
+}
+.contenedor-checkbox {
+    display: flex;
+    flex-wrap: wrap; 
+}
+.checkbox-item{
+    width: 10em;
+}
+/* Estilos para campos de texto y área de texto */
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    border: 1px solid #91AEE7; /* Se mantiene */
+    border-radius: 3px; /* Se mantiene */
+}
+
+/* Estilos para la nueva parte con checkboxes */
+.contenedor-estatus {
+    margin: auto auto 1em auto;
+}
+#revision{
+    width: 30%;
+}
+.boton-generar-pdf {
+    display: block;
+    margin: 20px auto; /* Modificado para centrar horizontalmente */
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50; /* Cambiado a verde */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center; /* Añadido para centrar el texto */
+}
+
+.boton-generar-pdf:hover {
+    background-color: #45a049;
+}

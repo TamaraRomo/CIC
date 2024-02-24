@@ -1,0 +1,79 @@
+.indexHistorial {
+    font-family: 'Roboto', sans-serif; /* Cambiado a Roboto */
+    padding: 0;
+    margin: 0;
+}
+
+.historialContenedor {
+    padding: 1%;
+    margin: 3% 20%;
+    background-color: #AFB2F4; /* Cambiado el color */
+    border-radius: 5px; /* Cambiado el valor */
+}
+
+.historialTitulo {
+    text-align: center;
+    padding-bottom: 2%;
+    font-weight: bold; /* Añadido */
+    color: #0D1642; /* Añadido */
+}
+
+.historialTabla {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #311C6C; /* Cambiado el color */
+    background-color: white; /* Cambiado el color */
+}
+
+.tablaContenedor {
+    padding: 3% 0; /* Modificado el valor */
+}
+
+.tablaEncabezados {
+    text-align: center;
+    font-weight: bold; /* Añadido */
+    color: #0D1642; /* Añadido */
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #4CAF50; /* Cambiado el color */
+    color: white; /* Cambiado el color */
+}
+
+.tablaFila:hover {
+    background-color: #0011ff;
+}
+
+tr.selected {
+    background-color: #0011ff;
+}
+
+.botonBuscar, .botonEditar, .botonEliminar {
+    background-color: #4CAF50; /* Cambiado el color */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.botonBuscar:hover, .botonEditar:hover, .botonEliminar:hover {
+    background-color: #45a049; /* Cambiado el color */
+}
+
+.inputBuscar {
+    padding: 10px 5px;
+    border: 1px solid #91AEE7; /* Cambiado el color */
+    border-radius: 3px; /* Cambiado el valor */
+}

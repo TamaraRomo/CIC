@@ -1,0 +1,136 @@
+*{
+    font-family: 'Roboto';
+}
+/*Encabezado*/
+.encabezado{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 1em;
+}
+
+.encabezado h1{
+    font-weight: lighter;
+    vertical-align: baseline;
+}
+/*Formulario Creación de Dictámenes*/
+.creacionDictamen{
+    border: 1px solid #311C6C;
+    border-radius: 5px;
+    margin: auto;
+    padding: 0 0 0 1em;
+    background-color: #babdf0;
+    width: 85%;
+}
+
+.historialSolicitudes {
+    border: 1px solid #311C6C;
+    border-radius: 5px;
+    margin: auto;
+    padding: 0 2em; /* Modificado el padding */
+    background-color: #babdf0;
+    width: 85%;
+    text-align: center; /* Alineación del texto centrada */
+    box-sizing: border-box; /* Incluir padding en el ancho total */
+}
+
+#fechaSolicitud{
+    text-align: right;
+    margin-right: 2em;
+    margin-bottom: 0;
+}
+.creacionDictamen h2{
+    margin-top: 0;
+    margin-bottom: 1.5em;
+    color: #0D1642;
+}
+
+/* Labels */
+.labelMayor {
+    font-weight: bold;
+    color: #0D1642;
+    margin-bottom: 1.5em;
+}
+
+/* Contenedores principales */
+.contenedorDictamen,
+.contenedorSecundario,
+.contenedorFiltro{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1.5em;
+}
+
+.contenedorDictamen div,
+.contenedorFiltro div,
+.contenedorSecundario div {
+    flex: 1 1 calc(33.33% - 2em);
+    margin-right: 2em;
+}
+
+
+.contenedorDictamen input,
+.contenedorDictamen select,
+.contenedorSecundario textarea,
+.contenedorFiltro input,
+.contenedorFiltro select {
+    width: 100%;
+    font-weight: bold;
+    height: auto; 
+    border: 1px solid #91AEE7;
+    border-radius: 3px;
+    padding: 4px;
+}
+
+/* Botón generar */
+.btnGenerar {
+    display: flex;
+    justify-content: center; 
+    margin-top: 1.5em;
+}
+
+#btnGenerar,
+#btnFiltrar {
+    height: 2em;
+    background-color: #0D1642;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 3px;
+    margin-bottom: 1em;
+    width: auto;
+}
+
+#btnGenerar:hover,
+#btnFiltrar:hover {
+    color: #0D1642;
+    background-color: white;
+}
+
+/*Tabla historial*/
+.contenedorTabla {
+    display: flex;
+    justify-content: center; 
+    margin-bottom: 1.5em;
+    width: 100%;
+}
+
+#tablaHistorial{
+    border: 1px solid #311C6C;
+    border-collapse: collapse;
+    border-radius: 5px;
+    background-color: white;
+    width: 100%;
+    text-align: center;
+    table-layout: fixed;
+}
+
+#tablaHistorial th{
+    background-color:  #91AEE7;
+    color: #0D1642;
+}
+
+#tablaHistorial th, #tablaHistorial td {
+    border: 1px solid #4d3788;
+    padding: 8px; /* Ajustar el relleno de celda */
+}

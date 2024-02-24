@@ -1,0 +1,112 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.logo-contenedor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f0f0f0;
+    padding: 5px; /* Ajusta según sea necesario */
+}
+
+.logo-contenedor img {
+    height: auto; /* Mantiene la proporción de la imagen */
+    max-width: 80px; /* Ajusta el ancho máximo de la imagen según sea necesario */
+}
+
+.titulo-sitio {
+    margin: 0;
+    font-size: 18px; /* Ajusta el tamaño del texto según sea necesario */
+}
+
+
+.menu {
+    display: flex;
+    justify-content: center;
+    background-color: #333;
+    padding: 1px 0;
+}
+
+.opcion-menu {
+    color: #fff;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.opcion-menu:hover {
+    background-color: #555;
+}
+
+.contenido {
+    padding: 10px; /* Reducir el relleno del contenido */
+    margin-bottom: 50px; /* Reducir el margen inferior del contenido */
+}
+
+.contenido-individual {
+    display: none;
+}
+
+.pie-pagina {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1px 0; /* Reducir el relleno del pie de página */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    margin-top: 1px;
+}
+
+.mostrarSesion {
+    position: relative;
+    display: inline-block; 
+    width: 98%;
+}
+
+#sesion {
+    cursor: pointer;
+    margin: 0;
+    text-align: right;
+}
+
+#logoutMenu {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 0;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: right;
+}
+
+.mostrarSesion:hover #logoutMenu {
+    display: block;
+}
+
+#logoutMenu a {
+    display: block;
+    padding: 5px;
+    text-decoration: none;
+    color: #333;
+}
+
+/* Reglas específicas para dispositivos móviles utilizando media queries */
+@media only screen and (max-width: 600px) {
+    /* Estilos para dispositivos móviles */
+    .menu {
+        flex-wrap: wrap; /* Permite que los elementos se envuelvan en dispositivos móviles */
+        padding: 5px; /* Ajusta el relleno del menú en dispositivos móviles */
+    }
+
+    .opcion-menu {
+        margin: 5px; /* Ajusta el margen de los elementos del menú en dispositivos móviles */
+    }
+}

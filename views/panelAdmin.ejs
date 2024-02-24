@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <!-- Estilos CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="resources/css/style_menu_administrador.css">
+</head>
+<body>
+<div class="logo-contenedor">
+    <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+    <h1 class="titulo-sitio">CIC Assistance</h1>
+    <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+</div>
+
+<!-- Sección de sesión -->
+<% if (typeof login !== 'undefined' && login) { %>
+<div class="mostrarSesion">
+    <p class="sesion" id="sesion">Usuario: <%= name %></p>
+    <div id="logoutMenu">
+        <a href="logout">Logout</a>
+    </div>
+</div>
+<% } %>
+
+<!-- Menú de opciones -->
+<nav class="menu">
+    <div class="opcion-menu" onclick="mostrarContenido('solicitud-de-reportes')">Solicitud de Reportes</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Vales')">Vales</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Dictamen')">Dictamen</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Historial')">Historial Solicitudes</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Historial2')">Historial General</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Estatus')">Estatus</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Registro')">Registro</div>
+</nav>
+
+
+<main class="contenido">
+	
+    <div id="solicitud-de-reportes" class="contenido-individual">
+        <!-- Contenido de la solicitud de reportes -->
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="resources/css/style_solicitud.css">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+            <title>Solicitud Soporte Tecnico</title>
+        </head>
+        <body>
+            <div class="solicitud">
+                <p id="fechaSolicitud"></p>
+                <h2>Solicitud de Servicio Técnico</h2>
+        
+                <form action="solicitudAdmin" method="post">
+                    <div class="contenedorInicial">
+                        <div>
+                            <label for="telefono" class="labelMayor">Teléfono</label>
+                            <input type="number" name="telefono" id="telefono" placeholder="Escribe tu telefono">
+                        </div>
+                        <div>
+                            <label for="edificio" class="labelMayor">Edificio y nivel</label>
+                            <select name="edificio" id="edificio">
+                                <option value="A">Edificio A</option>
+                                <option value="B">Edificio B</option>
+                                <option value="C">Edficio C</option>
+                                <option value="D">Edificio D</option>
+                                <option value="Coordinacion">Edificio Coordinacion</option>
+                                <option value="CIC">Edificio CIC</option>
+                                <option value="IDI">Edificio I+D+I</option>
+                            </select>
+                            
+                        </div>
+                        <div>
+                            <label for="area" class="labelMayor">Ubicación física</label>
+                            <input type="number" name="area" id="area" placeholder="Escribe tu área">
+                        </div>
+                        <div>
+                            <label for="usuarios" class="labelMayor">Usuario</label>
+                            <select name="usuarios" id="usuarios">
+                                <% usuarios.forEach(usuario => { %>
+                                <option value="<%= usuario.Nombre %>"><%= usuario.Nombre %></option>
+                                <% }); %>
+                            </select>
+                            
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend class="labelMayor">Equipos</legend>
+                        <div class="contenedor-checkbox">
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Monitor">
+                                <label for="monitor">Monitor</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Nodo">
+                                <label for="nodo">Nodo</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="UPS">
+                                <label for="ups">UPS</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Laptop">
+                                <label for="laptop">Laptop</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Proyector">
+                                <label for="proyector">Proyector</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Access Point">
+                                <label for="access">Acess Point</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="PC">
+                                <label for="pc">PC</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Gabinete">
+                                <label for="gabinete">Gabinete</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Teclado">
+                                <label for="teclado">Teclado</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Mouse">
+                                <label for="mouse">Mouse</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Teléfono">
+                                <label for="telefono">Teléfono</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="equipos" value="Impresora">
+                                <label for="impresora">Impresora</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="equipos" id="otro" value="">
+                                <label for="otro">Otro</label>
+                            </div>
+                            <div id="otroInputContainer">
+                                <label for="otroInput">Especifique:</label>
+                                <input type="text" name="otroInput" id="otroInput" disabled>
+                            </div>
+                        </div>
+                    </fieldset>
+        
+                    <label for="descripcion" class="labelMayor">Descripción del problema</label>
+                    <textarea name="descripcion" id="descripcion" cols="30" rows="8" placeholder="Escribe todos los detalles de tu problema"></textarea>
+                    
+                    <div class="enviarSoli">
+                        <button type="submit" id="enviar" value="Submit">Enviar</button>
+                    </div>
+                </form>
+            </div>
+            <script src="resources/scripts/solicitudSoporte.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+            <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+            <% if(typeof alert != "undefined"){ %>
+            <script>
+                Swal.fire({
+                    title: '<%= alertTitle %>',
+                    text: '<%= alertMessage %>',
+                    icon: '<%= alertIcon %>',
+                    showConfirmButton: <%= showConfirmButton %>,
+                    timer: <%= timer %>
+                }).then(() =>{
+                    window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+                })
+            </script>
+            <% } %>
+        </body>
+    </div>
+	
+<!-- VALES----------------------------------------------------------------------------------------------------- -->	
+    <div id="Vales" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="resources/css/solicitud_vale.css">
+     </head>
+    <body>
+        <!-- Contenedor principal -->
+        <div class="contenedor-principal" id="contenedorPDF">
+            <h2>Creacion de Vales Servicio Técnico</h2>
+            <!-- Contenedor azul con información del vale de entrada -->
+            <form action="vales" method="post">
+                <label for="folios" class="labelFolio">Folio de la solicitud</label>
+                <select name="folios" id="folios">
+                    <% folioSolicitudes.forEach(folio => { %>
+                    <option value="<%= folio.FolioSolicitud %>"><%= folio.FolioSolicitud %></option>
+                    <% }); %>
+                </select>
+                
+                <fieldset>
+                    <legend class="labelMayor">Equipos</legend>
+                    <div class="contenedor-checkbox">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Monitor">
+                            <label for="monitor">Monitor</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Nodo">
+                            <label for="nodo">Nodo</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="UPS">
+                            <label for="ups">UPS</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Laptop">
+                            <label for="laptop">Laptop</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Proyector">
+                            <label for="proyector">Proyector</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Access Point">
+                            <label for="access">Acess Point</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="PC">
+                            <label for="pc">PC</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Gabinete">
+                            <label for="gabinete">Gabinete</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Teclado">
+                            <label for="teclado">Teclado</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Mouse">
+                            <label for="mouse">Mouse</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Teléfono">
+                            <label for="telefono">Teléfono</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="equipos" value="Impresora">
+                            <label for="impresora">Impresora</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="equipos" id="otro" value="">
+                            <label for="otro">Otro</label>
+                        </div>
+                        <div id="otroInputContainer">
+                            <label for="otroInput">Especifique:</label>
+                            <input type="text" name="otroInput" id="otroInput" disabled>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend class="labelMayor">Datos del equipo:</legend>
+                    <label for="serie">No. Serie:</label>
+                    <input type="text" name="serie" id="serie" required>
+                    <label for="marca">Marca:</label>
+                    <input type="text" name="marca" id="marca" required>
+                    <label for="modelo">Modelo:</label>
+                    <input type="text" name="modelo" id="modelo" required>
+                    <label for="caracteristicas">Características:</label>
+                    <textarea name="caracteristicas" id="caracteristicas" rows="4" cols="50" required></textarea>
+                </fieldset>
+                <div class="contenedor-estatus">
+                    <label for="estatus">Estatus:</label>
+                    <select name="estatus" id="estatus" required>
+                    <option value="Funciona">Funciona</option>
+                    <option value="No funciona">No funciona</option>
+                    <option value="Esperar">Esperar piezas</option>
+                    </select>
+                </div>
+                <div class="contenedor-nuevo">
+                    <div class="contenedor-texto">
+                        <label for="revision">Revisó:</label>
+                        <input type="text" name="revision" id="revision" required>
+                    </div>
+                </div>
+            </div> <!-- Fin del contenedor azul -->
+            <button class="boton-generar-pdf" id="generarPDF">Generar PDF</button>
+            </form>
+        </div> <!-- Fin del contenedor princiupal-->            
+        <script src="resources/scripts/vale.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+        <% if(typeof alert != "undefined"){ %>
+        <script>
+            Swal.fire({
+                title: '<%= alertTitle %>',
+                text: '<%= alertMessage %>',
+                icon: '<%= alertIcon %>',
+                showConfirmButton: <%= showConfirmButton %>,
+                timer: <%= timer %>
+            }).then(() =>{
+                window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+            })
+        </script>
+        <% } %>
+    </body>
+    </div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+<!-- DICTAMENES------------------------------------------------------------------------------------------------ -->
+    <div id="Dictamen" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Creación de Dictamen</title>
+        <link rel="stylesheet" href="resources/css/solicitud_dictamen.css">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+    <body class="bodyDictamen">
+        <div class="creacionDictamen">
+            <p id="fechaDictamen"></p>
+            <h2>Creación de Dictámenes</h2>
+
+            <form action="/guardar-datos" method="post">
+                <div class="contenedorDictamen">
+                    <div>
+                       <label for="folioSolicitud" class="labelMayor">Folio:</label>
+                       <input type="text" name="folioSolicitud" id="folioSolicitud" class="labelMayor"  placeholder="Escribe el folio de la solicitud de soporte técnico">
+                       <button type="button" id="btnBuscarFolio">Buscar</button>
+                    </div>
+                    <div>
+                        <label for="marcaEquipo" class="labelMayor">Marca:</label>
+                        <input type="text" name="marcaEquipo" id="marcaEquipo" class="labelMayor" placeholder="Escribe la marca del equipo"> 
+                    </div>
+                    <div>
+                        <label for="modeloEquipo" class="labelMayor">Modelo:</label>
+                        <input type="text" name="modeloEquipo" id="modeloEquipo" class="labelMayor" placeholder="Escribe el modelo del equipo"> 
+                    </div>
+                    <div>
+                        <label for="noSerieEquipo" class="labelMayor">N° de serie:</label>
+                        <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="labelMayor" placeholder="Escribe el número de serie del equipo"> 
+                    </div>
+                    <div>
+                        <label for="estadoDictamen" class="labelMayor">Estado:</label>
+                        <select name="estadoDictamen" id="estadoDictamen">
+                            <option value="blanco">&nbsp;</option>
+                            <option value="vigente">Vigente</option>
+                            <option value="obsoleto">Obsoleto</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tipoDictamen" class="labelMayor">Dictamen:</label>
+                        <select name="tipoDictamen" id="tipoDictamen">
+                            <option value="blanco">&nbsp;</option>
+                            <option value="Funciona">Funcional</option>
+                            <option value="No Funciona">Obsoleto</option>
+                            <option value="'Baja">Tramitar Baja</option>
+                        </select>
+                    </div>   
+                
+                </div>
+                <div class="contenedorSecundario">
+                    <div>
+                        <label for="caractDictamen" class="labelMayor">Características:</label>
+                        <textarea name="caractDictamen" id="caractDictamen" cols="30" rows="5"></textarea>
+                    </div>
+                    <div>
+                        <label for="observacionesDictamen" class="labelMayor">Observaciones:</label>
+                        <textarea name="observacionesDictamen" id="observacionesDictamen" cols="30" rows="5"></textarea>
+                    </div>
+                    <div>
+                        <label for="descripcionDictamen" class="labelMayor">Descripción técnica de partes necesarias:</label>
+                        <textarea name="descripcionDictamen" id="descripcionDictamen" cols="30" rows="5"></textarea>
+                    </div>
+                    <div class="btnGuardarDatos">
+                        <button type="submit" id="btnGuardarDatos" value="submit">Guardar Datos</button>
+                    </div>
+                    <div class="btnGenerarPDF">
+                        <a href="/generar-pdf" target="_blank">Generar PDF</a>
+                    </div>
+                </div>    
+            </form>
+        </div>
+    <script src="resources/scripts/dictamenes_fecha.js"></script>
+    </body>
+    </div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+<!-- SOLICITUD DE HISTORIAL DE SOLICITUDES -->
+<div id="Historial" class="contenido-individual">
+    <html lang="es">
+    <head>
+        <!-- Metadatos -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Historial de Solicitudes</title>
+        <!-- Estilos -->
+        <link rel="stylesheet" href="estilos/solicitud_historial.css">
+        <!-- Fuentes -->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+<body class="bodyHistorial">
+    <!-- Contenedor principal para el historial de solicitudes -->
+    <div class="historialSolicitudes">
+        <!-- Título de la sección -->
+        <h2>Historial de solicitudes</h2>
+        
+        <!-- Formulario para filtrar el historial -->
+        <form action="#" method="post">
+            <!-- Contenedor para los campos de filtro -->
+            <div class="contenedorFiltro">
+                <!-- Campo de búsqueda -->
+                <div>
+                    <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
+                </div>
+                <!-- Campo de selección de estado -->
+                <div>
+                    <select name="estado" id="estado">
+                        <option value="blanco">Filtro</option>
+                        <option value="str">Solicitud de Soporte</option>
+                        <option value="vale">Vale</option>
+                        <option value="dictamen">Dictamen</option>
+                    </select>
+                </div>
+                <!-- Botón para aplicar el filtro -->
+                <div class="btnFiltrar">
+                    <button  type="submit" id="btnFiltrar">Filtrar</button>
+                </div>
+            </div>
+            
+            <!-- Contenedor para la tabla del historial -->
+            <div class="contenedorTabla">
+                <table id="tablaHistorial">
+                    <tr>
+                        <th>Folio</th>
+                        <th>Estado</th>
+                        <th>Vale</th>
+                        <th>Dictamen</th>
+                    </tr>
+                    <!-- Filas de datos del historial -->
+                    <tr>
+                        <td>STR24-1</td>
+                        <td>Completado</td>
+                        <td>Disponible</td>
+                        <td>Disponible</td>
+                    </tr>
+                    <tr>
+                        <td>STR24-1</td>
+                        <td>Completado</td>
+                        <td>Disponible</td>
+                        <td>Disponible</td>
+                    </tr>
+                    <!-- Filas vacías para llenar con datos -->
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+        
+            <!-- Párrafo vacío para llenar con información -->
+            <p></p>
+        </div>
+    </body>
+    </html>
+
+</div>
+
+	
+    <div id="Registro" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Registro usuarios</title>
+        <link rel="stylesheet" href="resources/css/style_login.css">
+        </head>
+        <body>
+        
+        <div class="contenedor">
+            <a href="ruta_de_la_pagina_web_que_deseas"></a>
+            <h2>CIC Assistance</h2>
+            <h3>Registrar Usuario</h3>
+            <form action="register" method="post" onsubmit="return validar();">
+                <input type="text" id="username" name="username" placeholder="Nombre de Usuario" required>
+                <input type="password" id="password" name="password" placeholder="Contraseña" required>
+                <input type="password" id="password2" name="password2" placeholder="Escriba nuevamente la contraseña" required>
+                <input type="text" id="name" name="name" placeholder="Nombre Completo" required>
+                <div class="selects_registro">
+                <label for="rol">Rol:</label>
+                <select name="rol" id="rol" required>
+                <option value="admin">Administrador</option>
+                <option value="usuario">Usuario</option>
+                </select>
+                <label for="genero">Genero:</label>
+                <select name="genero" id="genero" required>
+                <option value="F">Femenino</option>
+                <option value="M">Masculino</option>
+                </select>
+                </div>
+                <input type="submit" value="Registrar" onclick="validar()">
+            </form>
+        </div>
+        <script src="resources/scripts/validacion.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+        <% if(typeof alert != "undefined"){ %>
+        <script>
+            Swal.fire({
+                title: '<%= alertTitle %>',
+                text: '<%= alertMessage %>',
+                icon: '<%= alertIcon %>',
+                showConfirmButton: <%= showConfirmButton %>,
+                timer: <%= timer %>
+            }).then(() =>{
+                window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+            })
+        </script>
+        <% } %>
+        
+        </body>
+    </div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+	
+    <div id="Historial2" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="resources/css/solicitud_historial2.css">
+        <title>Historial</title>
+    </head>
+    <body class="indexHistorial">
+        
+        <div class="historialContenedor">
+            <h2 class="historialTitulo">Historial</h2>
+            <div>
+                <input class="inputBuscar" type="text" placeholder="Buscar...">
+                <button class="botonBuscar">Buscar</button>
+                <button class="botonEditar">Editar</button>
+                <button class="botonEliminar" onclick="confirmarEliminacion()">Eliminar</button>
+            </div>
+
+            <div class="tablaContenedor">
+                <table class="historialTabla">
+                    <thead class="tablaEncabezados">
+                        <tr>
+                            <th>ID</th>
+                            <th>Solicitudes</th>
+                            <th>Vales</th>
+                            <th>Dictamen</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tablaInformacion">
+                        <tr class="tablaFila" onclick="resaltarFila(this)">
+                            <td>1</td>
+                            <td>Solicitud01</td>
+                            <td>vale01</td>
+                            <td>Dictamen01</td>
+                        </tr>
+                        <tr class="tablaFila" onclick="resaltarFila(this)">
+                            <td>2</td>
+                            <td>Solicitud02</td>
+                            <td>Vale02</td>
+                            <td>Dictamen02</td>
+                        </tr>
+                        <tr class="tablaFila" onclick="resaltarFila(this)">
+                            <td>3</td>
+                            <td>Solicitud03</td>
+                            <td>Vale03</td>
+                            <td>Dictamen03</td>
+                        </tr>
+                        <tr class="tablaFila" onclick="resaltarFila(this)">
+                            <td>4</td>
+                            <td>Solicitud04</td>
+                            <td>Vale04</td>
+                            <td>Dictamen04</td>
+                        </tr>
+                        <tr class="tablaFila" onclick="resaltarFila(this)">
+                            <td>5</td>
+                            <td>Solicitud05</td>
+                            <td>Vale05</td>
+                            <td>Dictamen05</td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+        <script src="resources/scripts/solicitud_historial2.js"></script>
+    </body>
+    </div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+
+    <div id="Estatus" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resources/css/solicitud_estatus.css">
+    <title>Statistics Example</title>
+    </head>
+    <body>
+    <div class="container">
+        <h1>CENTRO DE INGENIERIA COMPUTACIONAL</h1>
+        <h2>SOLICITUDES PENDIENTES</h2>
+        <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Folio</th>
+                <th>Nombre</th>
+                <th>Estatus</th>
+                <th>Observacion</th>
+                <th>Fecha Hora</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>2022-06-01</td>
+                <td>14:30</td>
+                <td>12345</td>
+                <td>Juan Perez</td>
+                <td>Pendiente</td>
+                <td>-</td>
+                <td>2022-06-01 14:30</td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+    <button onclick="addRow()">Add Row</button>
+    <script src="resources/scripts/estatus.js"></script>
+
+    </div>
+    <button class="statistics-btn">Estadisticas</button>
+    </body>
+    </div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+
+</main>
+
+<footer class="pie-pagina">
+    <p>&copy; 2024 CIC Assistance. Todos los derechos reservados.</p>
+</footer>
+
+<script src="resources/scripts/paneles.js"></script>
+
+</body>
+</html>
