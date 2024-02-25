@@ -319,14 +319,15 @@
         <div class="creacionDictamen">
             <p id="fechaDictamen"></p>
             <h2>Creación de Dictámenes</h2>
-
+            <div>
+                    <label for="folioSolicitud" class="labelMayor">Folio:</label>
+                    <input type="text" name="folioSolicitud" id="folioSolicitudDictamen" class="labelMayor"  placeholder="Escribe el folio de la solicitud de soporte técnico">
+                    <button type="button" id="btnBuscarFolio" onclick="buscarFolio()">Buscar</button> 
+            </div>
             <form action="/guardar-datos" method="post">
                 <div class="contenedorDictamen">
-                    <div>
-                       <label for="folioSolicitud" class="labelMayor">Folio:</label>
-                       <input type="text" name="folioSolicitud" id="folioSolicitud" class="labelMayor"  placeholder="Escribe el folio de la solicitud de soporte técnico">
-                       <button type="button" id="btnBuscarFolio">Buscar</button>
-                    </div>
+                    <label for="valeId" class="labelMayor">Vale:</label>
+                    <input type="text" id="identificadorVale" name="valeId" class="labelMayor">
                     <div>
                         <label for="marcaEquipo" class="labelMayor">Marca:</label>
                         <input type="text" name="marcaEquipo" id="marcaEquipo" class="labelMayor" placeholder="Escribe la marca del equipo"> 
@@ -374,13 +375,26 @@
                     <div class="btnGuardarDatos">
                         <button type="submit" id="btnGuardarDatos" value="submit">Guardar Datos</button>
                     </div>
-                    <div class="btnGenerarPDF">
-                        <a href="/generar-pdf" target="_blank">Generar PDF</a>
-                    </div>
                 </div>    
             </form>
         </div>
     <script src="resources/scripts/dictamenes_fecha.js"></script>
+    <script src="resources/scripts/relleno_dictamen.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+        <% if(typeof alert != "undefined"){ %>
+        <script>
+            Swal.fire({
+                title: '<%= alertTitle %>',
+                text: '<%= alertMessage %>',
+                icon: '<%= alertIcon %>',
+                showConfirmButton: <%= showConfirmButton %>,
+                timer: <%= timer %>
+            }).then(() =>{
+                window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+            })
+        </script>
+        <% } %>
     </body>
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
@@ -415,9 +429,10 @@
                 <div>
                     <select name="estado" id="estado">
                         <option value="blanco">Filtro</option>
-                        <option value="str">Solicitud de Soporte</option>
-                        <option value="vale">Vale</option>
-                        <option value="dictamen">Dictamen</option>
+                        <option value="folio">Folio</option>
+                        <option value="fecha">Fecha</option>
+                        <option value="usuario">Usuario</option>
+                        <option value="estado">Estado</option>
                     </select>
                 </div>
                 <!-- Botón para aplicar el filtro -->
@@ -431,36 +446,27 @@
                 <table id="tablaHistorial">
                     <tr>
                         <th>Folio</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Usuario</th>
+                        <th>Equipo</th>
                         <th>Estado</th>
                         <th>Vale</th>
                         <th>Dictamen</th>
                     </tr>
-                    <!-- Filas de datos del historial -->
-                    <tr>
-                        <td>STR24-1</td>
-                        <td>Completado</td>
-                        <td>Disponible</td>
-                        <td>Disponible</td>
-                    </tr>
-                    <tr>
-                        <td>STR24-1</td>
-                        <td>Completado</td>
-                        <td>Disponible</td>
-                        <td>Disponible</td>
-                    </tr>
-                    <!-- Filas vacías para llenar con datos -->
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    <% historial.forEach(solicitud => { %>
+                        <!-- Fila de la tabla para cada solicitud en el historial -->
+                        <tr>
+                            <td><%= solicitud.FolioSolicitud %></td>
+                            <td><%= solicitud.Fecha %></td>
+                            <td><%= solicitud.Hora %></td>
+                            <td><%= solicitud.NombreUsuario %></td>
+                            <td><%= solicitud.Equipo%></td>
+                            <td><%= solicitud.Estado%></td>
+                            <td><%= solicitud.Vale %></td>
+                            <td><%= solicitud.Dictamen %></td>
+                        </tr>
+                    <% }); %>
                 </table>
             </div>
         </form>

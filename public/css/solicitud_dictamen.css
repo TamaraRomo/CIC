@@ -83,14 +83,21 @@
 }
 
 /* Botón generar */
-.btnGenerar {
+.btnGuardarDatos,
+.btnGenerarPDF {
     display: flex;
     justify-content: center; 
     margin-top: 1.5em;
 }
 
-#btnGenerar,
-#btnFiltrar {
+#btnBuscarFolio{
+    margin-top: -20px;
+}
+
+#btnGuardarDatos,
+#btnGenerarPDF,
+#btnFiltrar,
+#btnBuscarFolio {
     height: 2em;
     background-color: #0D1642;
     color: white;
@@ -101,8 +108,10 @@
     width: auto;
 }
 
-#btnGenerar:hover,
-#btnFiltrar:hover {
+#btnGenerarPDF:hover,
+#btnGuardarDatos:hover,
+#btnFiltrar:hover,
+#btnBuscarFolio:hover {
     color: #0D1642;
     background-color: white;
 }

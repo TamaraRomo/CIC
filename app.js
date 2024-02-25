@@ -40,7 +40,7 @@ app.get('/register', (req, res) => {
     res.render('register');
 });
 
-app.get('/panelUsuario', (req, res) => {
+app.get('/panelUsuario',checkRole('Usuario'), (req, res) => {
 
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
@@ -54,24 +54,26 @@ app.get('/panelUsuario', (req, res) => {
             ruta: 'login'
         });
     }
-    const usuario = req.session.name;
+    const usuario = req.session.idUsuario;
     console.log(usuario);
-    connection.query('SELECT * FROM solicitudes WHERE IdUsuario = ?', [usuario],(error,result)=>{
+    const query = `
+    SELECT s.FolioSolicitud AS FolioSolicitud, s.Fecha AS Fecha, s.Equipo AS Equipo, s.Estado AS Estado, CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Vale, CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud WHERE s.IdUsuario = ?
+    `;
+
+    connection.query(query, [usuario], (error, result) => {
         if (error) {
             console.error(error);
         } else {
             res.render('panelUsuario', {
                 login: req.session.loggedin,
                 name: req.session.name,
-                solicitudes: result,
-                
-            })
-            console.log(result)
+                historial: result
+            });
         }
     });
 });
 
-app.get('/panelAdmin', async (req, res) => {
+app.get('/panelAdmin',checkRole('Admin'), async (req, res) => {
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
         return res.render('login', {
@@ -86,12 +88,17 @@ app.get('/panelAdmin', async (req, res) => {
     }
     const folios = await query('SELECT FolioSolicitud FROM solicitudes');
     const usuarios = await query('SELECT Nombre from usuarios');
+    const historialSoli = await query(`SELECT s.FolioSolicitud AS FolioSolicitud, s.Fecha AS Fecha, s.Hora AS Hora, u.Nombre AS NombreUsuario, s.Equipo AS Equipo, s.Estado AS Estado, CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' WHEN d.FolioSolicitud IS NOT NULL THEN 'No disponible' ELSE 'No Disponible' END AS Vale, CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario; `);
+    
         res.render('panelAdmin', {
             login: req.session.loggedin,
             name: req.session.name,
             folioSolicitudes: folios,
-            usuarios: usuarios
+            usuarios: usuarios,
+            historial: historialSoli
+            
         });
+        console.log(historialSoli);
 });
 function query(sql) {
     return new Promise((resolve, reject) => {
@@ -104,6 +111,40 @@ function query(sql) {
         });
     });
 }
+
+function checkRole(role) {
+    return (req, res, next) => {
+        if (req.session.loggedin && req.session.rol === role) {
+            return next();
+        }
+        res.redirect('/login');
+    };
+}
+
+// Asumiendo que tienes una ruta como esta en tu servidor
+app.get('/obtener-informacion-folio/:folioSolicitud', (req, res) => {
+    const folioSolicitud = req.params.folioSolicitud;
+    req.session.folioSolicitudDictamen = folioSolicitud;
+    const query = 'SELECT idVale,NoSerieEquipo,MarcaEquipo,ModeloEquipo FROM vales WHERE FolioSolicitud = ?';
+
+    connection.query(query, [folioSolicitud], (error, results) => {
+        if (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error al obtener la información del folio' });
+        } else {
+            if (results.length > 0) {
+                // Si se encontraron resultados, devuelve la información como JSON al cliente
+                console.log(results);
+                req.session.idValeDictamen = results[0].idVale;
+                res.json(results[0]); // Suponiendo que solo necesitas el primer resultado
+            } else {
+                // Si no se encontraron resultados, puedes devolver un objeto vacío o un mensaje
+                res.json({ message: 'No se encontró información para el folio proporcionado' });
+            }
+        }
+    });
+});
+
 
 //10 Hacer registro
 app.post('/register', async(req, res) => {
@@ -133,14 +174,15 @@ app.post('/register', async(req, res) => {
 
 //10 Hacer solicitud de soporte
 app.post('/solicitud', async(req, res) => {
-    const usuario = req.session.name;
+    const usuario = req.session.idUsuario; //
     const fecha = obtenerFechaActual();
+    const hora = obtenerHoraActual();
     const telefono = req.body.telefono;
     const edificio = req.body.edificio;
     const ubicacion = req.body.area;
     const equipo = req.body.equipos;
     const descripcion = req.body.descripcion;
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,FechaHora:fecha,Telefono:telefono, Edificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, Edificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -163,17 +205,27 @@ app.post('/solicitud', async(req, res) => {
         const dia = String(fecha.getDate()).padStart(2, '0');
         return `${año}-${mes}-${dia}`;
     }
+    function obtenerHoraActual() {
+        const fecha = new Date();
+        const horas = String(fecha.getHours()).padStart(2, '0');
+        const minutos = String(fecha.getMinutes()).padStart(2, '0');
+        const segundos = String(fecha.getSeconds()).padStart(2, '0');
+
+        return `${horas}:${minutos}:${segundos}`;
+
+    }
 });
 
 app.post('/solicitudAdmin', async(req, res) => {
     const usuario = req.body.usuarios;
     const fecha = obtenerFechaActual();
+    const hora = obtenerHoraActual();
     const telefono = req.body.telefono;
     const edificio = req.body.edificio;
     const ubicacion = req.body.area;
     const equipo = req.body.equipos;
     const descripcion = req.body.descripcion;
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,FechaHora:fecha,Telefono:telefono, Edificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, Edificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -195,6 +247,15 @@ app.post('/solicitudAdmin', async(req, res) => {
         const mes = String(fecha.getMonth() + 1).padStart(2, '0');
         const dia = String(fecha.getDate()).padStart(2, '0');
         return `${año}-${mes}-${dia}`;
+    }
+    function obtenerHoraActual() {
+        const fecha = new Date();
+        const horas = String(fecha.getHours()).padStart(2, '0');
+        const minutos = String(fecha.getMinutes()).padStart(2, '0');
+        const segundos = String(fecha.getSeconds()).padStart(2, '0');
+
+        return `${horas}:${minutos}:${segundos}`;
+
     }
 });
 
@@ -219,6 +280,7 @@ app.post('/auth', async (req,res)=> {
                 });
             }else{
                 req.session.loggedin = true;
+                req.session.idUsuario = results[0].IdUsuario;
                 req.session.name = results[0].Nombre;
                 req.session.rol = results[0].Rol;
                 if (results[0].Rol === 'Admin') {
@@ -295,7 +357,9 @@ app.post('/vales', async(req, res) => {
 app.post('/guardar-datos', async (req, res)=>{
     const usuario = req.session.name;
     const fecha = obtenerFechaHoraActual();
-    const folioSolicitud = req.body.folioSolicitud;
+    const folioSolicitudDictamen = req.session.folioSolicitudDictamen;
+    const vale = req.body.valeId;
+    console.log(folioSolicitudDictamen); 
     const marcaEquipo = req.body.marcaEquipo;
     const modeloEquipo = req.body.modeloEquipo;
     const noSerieEquipo = req.body.noSerieEquipo;
@@ -305,12 +369,19 @@ app.post('/guardar-datos', async (req, res)=>{
     const observacionesDictamen = req.body.observacionesDictamen;
     const descripcionDictamen = req.body.descripcionDictamen;
 
-    connection.query('INSERT INTO dictamenes SET ?',{Encargado:usuario,FechaDictamen: fecha,FolioSolicitud:folioSolicitud, MarcaEquipo:marcaEquipo, ModeloEquipo:modeloEquipo, NoSerieEquipo:noSerieEquipo, EstadoDictamen:estadoDictamen, DictamenFinal:tipoDictamen, caracDictamen:caractDictamen, Observaciones:observacionesDictamen, Descripcion:descripcionDictamen}, (error, results)=>{
+    connection.query('INSERT INTO dictamenes SET ?',{Encargado:usuario,FechaDictamen: fecha,FolioSolicitud:folioSolicitudDictamen,idVale: vale ,MarcaEquipo:marcaEquipo, ModeloEquipo:modeloEquipo, NoSerieEquipo:noSerieEquipo, EstadoDictamen:estadoDictamen, DictamenFinal:tipoDictamen, caracDictamen:caractDictamen, Observaciones:observacionesDictamen, Descripcion:descripcionDictamen}, (error, results)=>{
         if(error){
             console.log(error);
         }else{
-            console.log('DATOS GUARDADOS');
-            res.redirect('panelAdmin');
+            res.render('solicitud',{ //pasar parametros para el mensaje AlertSweet
+                alert: true,
+                alertTitle: "Solicitud",
+                alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
+                alertIcon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                ruta: 'panelAdmin'
+            })
         }
     })
 

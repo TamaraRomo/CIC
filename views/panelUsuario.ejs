@@ -189,16 +189,21 @@
                         <table id="tablaHistorial">
                             <tr>
                                 <th>Folio</th>
+                                <th>Equipo</th>
+                                <th>Fecha</th>
                                 <th>Estado</th>
                                 <th>Vale</th>
                                 <th>Dictamen</th>
                             </tr>
-                            <% solicitudes.forEach(solicitud => { %>
+                            <% historial.forEach(solicitud => { %>
+                                <!-- Fila de la tabla para cada solicitud en el historial -->
                                 <tr>
                                     <td><%= solicitud.FolioSolicitud %></td>
+                                    <td><%= solicitud.Equipo %></td>
+                                    <td><%= solicitud.Fecha %></td>
                                     <td><%= solicitud.Estado %></td>
-                                    <td>Disponible</td>
-                                    <td>Disponible</td>
+                                    <td><%= solicitud.Vale %></td>
+                                    <td><%= solicitud.Dictamen %></td>
                                 </tr>
                             <% }); %>
                         </table>
