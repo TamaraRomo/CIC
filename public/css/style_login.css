@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto';
     background-color: #f2f2f2;
     margin: 0;
     padding: 0;
@@ -30,13 +30,11 @@ body {
     cursor: pointer;
 }
 
-h2, h3 {
+.titulosLogin {
     text-align: center;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="submit"] {
+.camposLogin, #inicioSesion {
     width: calc(100% - 40px);
     padding: 10px;
     margin: 20px;
@@ -45,7 +43,7 @@ input[type="submit"] {
     box-sizing: border-box;
 }
 
-input[type="submit"] {
+#inicioSesion {
     width: 33.33%;
     background-color: #4CAF50;
     color: white;
@@ -54,7 +52,7 @@ input[type="submit"] {
     display: block;
 }
 
-input[type="submit"]:hover {
+#inicioSesion:hover {
     background-color: #45a049;
 }
 .selects_registro{

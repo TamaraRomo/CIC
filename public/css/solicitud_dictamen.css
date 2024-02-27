@@ -1,18 +1,7 @@
 *{
     font-family: 'Roboto';
 }
-/*Encabezado*/
-.encabezado{
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin-bottom: 1em;
-}
 
-.encabezado h1{
-    font-weight: lighter;
-    vertical-align: baseline;
-}
 /*Formulario Creación de Dictámenes*/
 .creacionDictamen{
     border: 1px solid #311C6C;
@@ -23,7 +12,17 @@
     background-color: #babdf0;
     width: 85%;
 }
-
+.creacionDictamen h2,#tituloHistorialSoli{
+    margin-top: 0;
+    margin-bottom: 1em;
+    color: #0D1642;
+    font-family: 'Roboto';
+    font-weight: bold;
+    text-align: center;
+}
+#tituloHistorialSoli{
+    margin-top: 1em;
+}
 .historialSolicitudes {
     border: 1px solid #311C6C;
     border-radius: 5px;
@@ -40,19 +39,17 @@
     margin-right: 2em;
     margin-bottom: 0;
 }
-.creacionDictamen h2{
-    margin-top: 0;
-    margin-bottom: 1.5em;
-    color: #0D1642;
-}
 
 /* Labels */
 .labelMayor {
     font-weight: bold;
     color: #0D1642;
-    margin-bottom: 1.5em;
+    margin-bottom: 1em;
+    margin-top: .4em;
 }
-
+#folioSolicitudDictamen{
+    width: 100%;
+}
 /* Contenedores principales */
 .contenedorDictamen,
 .contenedorSecundario,
@@ -69,10 +66,6 @@
     margin-right: 2em;
 }
 
-
-.contenedorDictamen input,
-.contenedorDictamen select,
-.contenedorSecundario textarea,
 .contenedorFiltro input,
 .contenedorFiltro select {
     width: 100%;
@@ -89,17 +82,10 @@
     display: flex;
     justify-content: center; 
     margin-top: 1.5em;
+    margin-bottom: .3em;
 }
 
-#btnBuscarFolio{
-    margin-top: -20px;
-}
-
-#btnGuardarDatos,
-#btnGenerarPDF,
-#btnFiltrar,
-#btnBuscarFolio,
-#btnBuscarFolioVale {
+#btnFiltrar {
     height: 2em;
     background-color: #0D1642;
     color: white;
@@ -110,14 +96,14 @@
     width: auto;
 }
 
-#btnGenerarPDF:hover,
-#btnGuardarDatos:hover,
-#btnFiltrar:hover,
-#btnBuscarFolio:hover {
+#btnFiltrar:hover {
     color: #0D1642;
     background-color: white;
 }
-
+#pdfDictamen{
+    display: flex;
+    justify-content: center;
+}
 /*Tabla historial*/
 .contenedorTabla {
     display: flex;

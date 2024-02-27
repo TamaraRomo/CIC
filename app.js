@@ -39,11 +39,14 @@ console.log(__dirname);
 app.get('/login', (req, res) => {
     res.render('login');
 });
-app.get('/register', (req, res) => {
+app.get('/registerP', (req, res) => {
     res.render('register');
 });
 app.get('/generarDictamen', (req, res) => {
     res.render('generarDictamen');
+});
+app.get('/alerta', (req, res) => {
+    res.render('alerta');
 });
 app.get('/panelUsuario',checkRole('Usuario'), (req, res) => {
 
@@ -189,18 +192,31 @@ app.get('/generatePDF', (req, res) => {
 
 
 //10 Hacer registro
-app.post('/register', async(req, res) => {
+app.post('/registerP', async(req, res) => {
     const user = req.body.username;
     const name = req.body.name;
     const pass = req.body.password;
     const rol = req.body.rol;
     const genero = req.body.genero;
+    const correo  = req.body.correo;
     let passwordHaash = await bcryptjs.hash(pass, 8);
-    connection.query('INSERT INTO usuarios SET ?', {NombreUsuario:user, Nombre:name, Contrasena:passwordHaash, Rol:rol, Genero: genero}, async(error, results)=> {
-        if(error){
+    
+    connection.query('INSERT INTO usuarios SET ?', { NombreUsuario: user, Nombre: name, Contrasena: passwordHaash, Rol: rol, Genero: genero, Correo: correo }, (error, results) => {
+        if (error) {
             console.log(error);
-        }else{
-            res.render('register',{ //pasar parametros para el mensaje AlertSweet
+            if (error.code === 'ER_DUP_ENTRY') {
+                res.render('solicitud', {
+                    alert: true,
+                    alertTitle: "Error",
+                    alertMessage: "¡Debe elegir otro nombre de usuario!",
+                    alertIcon: "error",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    ruta: 'panelAdmin'
+                });
+            }
+        } else {
+            res.render('solicitud', {
                 alert: true,
                 alertTitle: "Registro",
                 alertMessage: "¡Registro Exitoso!",
@@ -208,11 +224,10 @@ app.post('/register', async(req, res) => {
                 showConfirmButton: false,
                 timer: 1500,
                 ruta: 'panelAdmin'
-            })
+            });
         }
-    })
-});
-
+    });
+})
 
 //10 Hacer solicitud de soporte
 app.post('/solicitud', async(req, res) => {
@@ -228,7 +243,7 @@ app.post('/solicitud', async(req, res) => {
         if(error){
             console.log(error);
         }else{
-            res.render('solicitud',{ //pasar parametros para el mensaje AlertSweet
+            res.render('panelUsuario',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Solicitud",
                 alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
@@ -271,7 +286,7 @@ app.post('/solicitudAdmin', async(req, res) => {
         if(error){
             console.log(error);
         }else{
-            res.render('solicitud',{ //pasar parametros para el mensaje AlertSweet
+            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Solicitud",
                 alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
@@ -376,7 +391,7 @@ app.post('/vales', async(req, res) => {
         if(error){
             console.log(error);
         }else{
-            res.render('solicitud',{ //pasar parametros para el mensaje AlertSweet
+            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Vale",
                 alertMessage: "¡Vale de Soporte Técnico Creado!",
@@ -418,14 +433,14 @@ app.post('/guardar-datos', async (req, res)=>{
         if(error){
             console.log(error);
         }else{
-            res.render('solicitud',{ //pasar parametros para el mensaje AlertSweet
+            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Solicitud",
                 alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
                 alertIcon: "success",
                 showConfirmButton: false,
                 timer: 1500,
-                ruta: 'panelAdmin'
+                ruta: 'generarDictamen'
             })
         }
     })

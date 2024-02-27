@@ -12,11 +12,11 @@ body {
     border-radius: 5px; /* Cambiado el valor */
 }
 
-h1, h2 {
+/*h1, h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #0D1642; /* Añadido */
-}
+    color: #0D1642; 
+}*/
 
 table {
     width: 100%;

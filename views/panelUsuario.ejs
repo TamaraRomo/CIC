@@ -33,7 +33,8 @@
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="resources/css/style_solicitud.css">
+            <link rel="stylesheet" href="resources/css/style_solicitudv2.css">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
             <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
             <title>Solicitud Soporte Tecnico</title>
         </head>
@@ -46,100 +47,107 @@
                     <div class="contenedorInicial">
                         <div>
                             <label for="telefono" class="labelMayor">Teléfono</label>
-                            <input type="number" name="telefono" id="telefono" placeholder="Escribe tu telefono">
+                            <input class="form-control form-control-sm" type="number" placeholder="Escribe tu telefono" aria-label=".form-control-sm example" name="telefono" id="telefono" required>    
                         </div>
                         <div>
                             <label for="edificio" class="labelMayor">Edificio y nivel</label>
-                            <select name="edificio" id="edificio">
+                            <select name="edificio" id="edificio" class="form-select form-select-sm" required>
                                 <option value="A">Edificio A</option>
                                 <option value="B">Edificio B</option>
                                 <option value="C">Edficio C</option>
                                 <option value="D">Edificio D</option>
+                                <option value="E">Edificio E</option>
+                                <option value="F">Edificio F</option>
+                                <option value="G">Edficio G</option>
+                                <option value="H">Edificio H</option>
+                                <option value="I">Edificio I</option>
+                                <option value="J">Edficio J</option>
+                                <option value="K">Edificio K</option>
                                 <option value="Coordinacion">Edificio Coordinacion</option>
                                 <option value="CIC">Edificio CIC</option>
                                 <option value="IDI">Edificio I+D+I</option>
                             </select>
-                            
                         </div>
                         <div>
                             <label for="area" class="labelMayor">Ubicación física</label>
-                            <input type="text" name="area" id="area" placeholder="Escribe tu área">
+                            <input class="form-control form-control-sm" type="text" placeholder="Escribe tu área" aria-label=".form-control-sm example" name="area" id="area" required>   
                         </div>
                     </div>
                     <fieldset>
                         <legend class="labelMayor">Equipos</legend>
                         <div class="contenedor-checkbox">
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Monitor" onchange="handleCheckboxChange(this)">
-                                <label for="monitor">Monitor</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="monitor" value="Monitor" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="monitor">Monitor</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Nodo" onchange="handleCheckboxChange(this)">
-                                <label for="nodo">Nodo</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="nodo" value="Nodo" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="nodo">Nodo</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="UPS" onchange="handleCheckboxChange(this)">
-                                <label for="ups">UPS</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="ups" value="UPS" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="ups">UPS</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Laptop" onchange="handleCheckboxChange(this)">
-                                <label for="laptop">Laptop</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="lap" value="Laptop" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="laptop">Laptop</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Proyector" onchange="handleCheckboxChange(this)">
-                                <label for="proyector">Proyector</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="proyector" value="Proyector" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="proyector">Proyector</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Access Point" onchange="handleCheckboxChange(this)">
-                                <label for="access">Acess Point</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="point" value="Access Point" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="access">Acess Point</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="PC" onchange="handleCheckboxChange(this)">
-                                <label for="pc">PC</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="pc" value="PC" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="pc">PC</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Gabinete" onchange="handleCheckboxChange(this)">
-                                <label for="gabinete">Gabinete</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="gabinete" value="Gabinete" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="gabinete">Gabinete</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Teclado" onchange="handleCheckboxChange(this)">
-                                <label for="teclado">Teclado</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="teclado" value="Teclado" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="teclado">Teclado</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Mouse" onchange="handleCheckboxChange(this)">
-                                <label for="mouse">Mouse</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="mouse" value="Mouse" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="mouse">Mouse</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Teléfono" onchange="handleCheckboxChange(this)">
-                                <label for="telefono">Teléfono</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="telefono" value="Teléfono" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="telefono">Teléfono</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Impresora" onchange="handleCheckboxChange(this)">
-                                <label for="impresora">Impresora</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="impresora" value="Impresora" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="impresora">Impresora</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="otro" value="" onchange="handleCheckboxChange(this)">
-                                <label for="otro">Otro</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="otro" value="" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="otro">Otro</label>
                             </div>
-                            <div id="otroInputContainer">
+                            <div id="otroInputContainer" >
                                 <label for="otroInput">Especifique:</label>
-                                <input type="text" name="otroInput" id="otroInput" disabled>
+                                <input class="form-control form-control-sm" type="text"  name="otroInput" id="otroInput" disabled>
                             </div>
                             <input type="hidden" name="equiposSeleccionados" id="equiposSeleccionados" value="">
-
                         </div>
                     </fieldset>
         
                     <label for="descripcion" class="labelMayor">Descripción del problema</label>
-                    <textarea name="descripcion" id="descripcion" cols="30" rows="8" placeholder="Escribe todos los detalles de tu problema"></textarea>
+                    <textarea class="form-control" name="descripcion" id="descripcion" rows="8" placeholder="Escribe todos los detalles de tu problema" required></textarea>
+
                     
                     <div class="enviarSoli">
-                        <button type="submit" id="enviar" value="Submit">Enviar</button>
+                        <button type="submit" class="btn btn-outline-dark" id="enviar" value="Submit">Enviar</button>
                     </div>
                 </form>
             </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
             <script src="resources/scripts/solicitudSoporte.js"></script>
-            <script src="resources/scripts/seleccionMultiple.js"></script>
+            <script src="resources/scripts/seleccionMultipleUsuario.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
             <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
             <% if(typeof alert != "undefined"){ %>
@@ -215,6 +223,7 @@
                 </form>
                 <p></p>
             </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         </body>
     </div>  
 

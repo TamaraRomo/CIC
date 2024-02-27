@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inicio de Sesión</title>
-<link rel="stylesheet" href="resources/css/style_login.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <link rel="stylesheet" href="resources/css/style_login.css">
 </head>
 <body>
 
@@ -15,12 +15,12 @@
             <img src="resources/images/baner_uacam.jpg" alt="Banner" width="100%">
         </a>
     </div>
-    <h2>CIC Assistance</h2>
-    <h3>Iniciar Sesión</h3>
+    <h2 class="titulosLogin">CIC Assistance</h2>
+    <h3 class="titulosLogin">Iniciar Sesión</h3>
     <form action="auth" method="post">
-        <input type="text" id="username" name="username" placeholder="Nombre de Usuario" required>
-        <input type="password" id="password" name="password" placeholder="Contraseña" required>
-        <input type="submit" value="Iniciar Sesión">
+        <input type="text" id="username" name="username" placeholder="Nombre de Usuario" class="camposLogin" required>
+        <input type="password" id="password" name="password" placeholder="Contraseña" class="camposLogin" required>
+        <button type="submit" value="Submit" id="inicioSesion">Iniciar Sesión</button>
     </form>
     <div class="panel-privacidad">
         <p>Panel de advertencia de privacidad de usuario.</p>

@@ -4,7 +4,14 @@ body {
     margin: 0;
     padding: 0;
 }
-
+#contenedorPDF h2{
+    margin-top: 1em;
+    margin-bottom: .5em;
+    color: #0D1642;
+    font-family: 'Roboto';
+    font-weight: bold;
+    text-align: center;
+}
 /* Encabezado */
 #contenedorPDF{
     border: 1px solid #311C6C;
@@ -17,68 +24,76 @@ body {
 .labelFolio{
     font-weight: bold;
     color: #0D1642;
-    margin-bottom: .5em;
+    margin-bottom: .4em;
     margin-top: .5em;
     display: block;
 }
 #folios{
-    margin-bottom: .6em;
+    margin-bottom: .4em;
+    width: 10%;
 }
 .labelMayor{
     font-weight: bold;
     color: #0D1642;
-    margin-bottom: .5em;
+    margin-bottom: .4em;
     display: block;
 }
-
 fieldset {
     border: none;
-}
-fieldset input[type="checkbox"] {
-    margin-right: 1em; 
-    border-color: #91AEE7;
-}
-fieldset label{
-    width: 6em;
 }
 .contenedor-checkbox {
     display: flex;
     flex-wrap: wrap; 
 }
-.checkbox-item{
-    width: 10em;
+#serie,#marca,#modelo{
+    width: 30%;
 }
-/* Estilos para campos de texto y área de texto */
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 5px;
-    box-sizing: border-box;
-    margin-top: 5px;
-    border: 1px solid #91AEE7; /* Se mantiene */
-    border-radius: 3px; /* Se mantiene */
+/* Estilos para área de texto */
+#caracteristicas {
+    width: 95%;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 /* Estilos para la nueva parte con checkboxes */
 .contenedor-estatus {
     margin: auto auto 1em auto;
+    display: flex;
 }
-#revision{
-    width: 30%;
+.contenedor-estatus div{
+    width: 50%;
+    display: flex;
 }
-.boton-generar-pdf {
-    display: block;
-    margin: 20px auto; /* Modificado para centrar horizontalmente */
+#lblEstatus,#lblRevision{
+    width: 20%;
+    margin-right: 1em;
+}
+#revision,#estatus{
+    width: 65%;
+    margin-right: 2em;
+}
+.enviarVale{
+    text-align: center;
+    margin-bottom: 1em;
+}
+#generarPDF {
+    margin: auto;
     padding: 10px 20px;
-    font-size: 18px;
-    background-color: #4CAF50; /* Cambiado a verde */
-    color: white;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
     text-align: center; /* Añadido para centrar el texto */
 }
 
-.boton-generar-pdf:hover {
-    background-color: #45a049;
+
+@media only screen and (max-width: 600px) {
+    #contenedorPDF{
+        padding: 10%;
+        align-items: center;
+    }
+    #serie,#marca,#modelo,#caracteristicas,#estatus,#revision{
+        width: 80%;
+    }
+    .contenedor-estatus {
+        flex-wrap: wrap;
+    }
+
 }

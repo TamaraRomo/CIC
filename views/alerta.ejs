@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="resources/css/style_menu_usuario.css">
+</head>
+<body>
+    <div class="logo-contenedor">
+        <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+        <h1 class="titulo-sitio">CIC Assistance</h1>
+        <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+    </div>
+    <nav class="menu">
+        <div class="opcion-menu" onclick="mostrarContenido('solicitud-de-reportes')">Solicitud de Reportes</div>
+        <div class="opcion-menu" onclick="mostrarContenido('Vales')">Vales</div>
+        <div class="opcion-menu" onclick="mostrarContenido('Dictamen')">Dictamen</div>
+        <div class="opcion-menu" onclick="mostrarContenido('Historial')">Historial Solicitudes</div>
+        <div class="opcion-menu" onclick="mostrarContenido('Historial2')">Historial General</div>
+        <div class="opcion-menu" onclick="mostrarContenido('Estatus')">Estatus</div>
+        <div class="opcion-menu" onclick="mostrarContenido('Registro')">Registro</div>
+    </nav>
+    
+    
+    <main class="contenido">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+        <% if(typeof alert != "undefined"){ %>
+        <script>
+            Swal.fire({
+                title: '<%= alertTitle %>',
+                text: '<%= alertMessage %>',
+                icon: '<%= alertIcon %>',
+                showConfirmButton: <%= showConfirmButton %>,
+                timer: <%= timer %>
+            }).then(() =>{
+                window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+            })
+        </script>
+        <% } %>
+    </main>
+
+    <footer class="pie-pagina">
+        <p>&copy; 2024 CIC Assistance. Todos los derechos reservados.</p>
+    </footer>
+    
+    <script src="resources/scripts/paneles.js"></script>
+    
+    </body>
+    </html>

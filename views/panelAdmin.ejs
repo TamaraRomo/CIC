@@ -45,6 +45,7 @@
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="resources/css/style_solicitud.css">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
             <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
             <title>Solicitud Soporte Tecnico</title>
         </head>
@@ -57,28 +58,34 @@
                     <div class="contenedorInicial">
                         <div>
                             <label for="telefono" class="labelMayor">Teléfono</label>
-                            <input type="number" name="telefono" id="telefono" placeholder="Escribe tu telefono">
+                            <input class="form-control form-control-sm" type="number" placeholder="Escribe tu telefono" aria-label=".form-control-sm example" name="telefono" id="telefono" required>    
                         </div>
                         <div>
                             <label for="edificio" class="labelMayor">Edificio y nivel</label>
-                            <select name="edificio" id="edificio">
+                            <select name="edificio" id="edificio" class="form-select form-select-sm" required>
                                 <option value="A">Edificio A</option>
                                 <option value="B">Edificio B</option>
                                 <option value="C">Edficio C</option>
                                 <option value="D">Edificio D</option>
+                                <option value="E">Edificio E</option>
+                                <option value="F">Edificio F</option>
+                                <option value="G">Edficio G</option>
+                                <option value="H">Edificio H</option>
+                                <option value="I">Edificio I</option>
+                                <option value="J">Edficio J</option>
+                                <option value="K">Edificio K</option>
                                 <option value="Coordinacion">Edificio Coordinacion</option>
                                 <option value="CIC">Edificio CIC</option>
                                 <option value="IDI">Edificio I+D+I</option>
-                            </select>
-                            
+                            </select>                         
                         </div>
                         <div>
                             <label for="area" class="labelMayor">Ubicación física</label>
-                            <input type="text" name="area" id="area" placeholder="Escribe tu área">
+                            <input class="form-control form-control-sm" type="text" placeholder="Escribe tu área" aria-label=".form-control-sm example" name="area" id="area" required>   
                         </div>
                         <div>
                             <label for="usuarios" class="labelMayor">Usuario</label>
-                            <select name="usuarios" id="usuarios">
+                            <select name="usuarios" id="usuarios" class="form-select form-select-sm">
                                 <% usuarios.forEach(usuario => { %>
                                 <option value="<%= usuario.IdUsuario %>"><%= usuario.Nombre %></option>
                                 <% }); %>
@@ -89,74 +96,75 @@
                     <fieldset>
                         <legend class="labelMayor">Equipos</legend>
                         <div class="contenedor-checkbox">
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Monitor" onchange="handleCheckboxChange(this)">
-                                <label for="monitor">Monitor</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Monitor" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="monitor">Monitor</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Nodo" onchange="handleCheckboxChange(this)">
-                                <label for="nodo">Nodo</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Nodo" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="nodo">Nodo</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="UPS" onchange="handleCheckboxChange(this)">
-                                <label for="ups">UPS</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="UPS" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="ups">UPS</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Laptop" onchange="handleCheckboxChange(this)">
-                                <label for="laptop">Laptop</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="equipos" value="Laptop" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="laptop">Laptop</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Proyector" onchange="handleCheckboxChange(this)">
-                                <label for="proyector">Proyector</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Proyector" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="proyector">Proyector</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Access Point" onchange="handleCheckboxChange(this)">
-                                <label for="access">Acess Point</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Access Point" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="access">Acess Point</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="PC" onchange="handleCheckboxChange(this)">
-                                <label for="pc">PC</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="PC" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="pc">PC</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Gabinete" onchange="handleCheckboxChange(this)">
-                                <label for="gabinete">Gabinete</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="equipos" value="Gabinete" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="gabinete">Gabinete</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Teclado" onchange="handleCheckboxChange(this)">
-                                <label for="teclado">Teclado</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="equipos" value="Teclado" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="teclado">Teclado</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Mouse" onchange="handleCheckboxChange(this)">
-                                <label for="mouse">Mouse</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Mouse" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="mouse">Mouse</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Teléfono" onchange="handleCheckboxChange(this)">
-                                <label for="telefono">Teléfono</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Teléfono" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="telefono">Teléfono</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Impresora" onchange="handleCheckboxChange(this)">
-                                <label for="impresora">Impresora</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Impresora" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="impresora">Impresora</label>
                             </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="otro" value="" onchange="handleCheckboxChange(this)">
-                                <label for="otro">Otro</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="otro" value="" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="otro">Otro</label>
                             </div>
-                            <div id="otroInputContainer">
+                            <div id="otroInputContainer" >
                                 <label for="otroInput">Especifique:</label>
-                                <input type="text" name="otroInput" id="otroInput" disabled>
+                                <input class="form-control form-control-sm" type="text"  name="otroInput" id="otroInput" disabled>
                             </div>
                             <input type="hidden" name="equiposSeleccionados" id="equiposSeleccionados" value="">
                         </div>
                     </fieldset>
         
                     <label for="descripcion" class="labelMayor">Descripción del problema</label>
-                    <textarea name="descripcion" id="descripcion" cols="30" rows="8" placeholder="Escribe todos los detalles de tu problema"></textarea>
-                    
+                    <textarea class="form-control" name="descripcion" id="descripcion" rows="8" placeholder="Escribe todos los detalles de tu problema" required></textarea>
+
                     <div class="enviarSoli">
-                        <button type="submit" id="enviar" value="Submit">Enviar</button>
+                        <button type="submit" class="btn btn-outline-dark" id="enviar" value="Submit">Enviar</button>
                     </div>
                 </form>
             </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
             <script src="resources/scripts/seleccionMultiple.js"></script>
             <script src="resources/scripts/solicitudSoporte.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
@@ -184,112 +192,133 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="resources/css/solicitud_vale.css">
-     </head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    </head>
     <body>
         <!-- Contenedor principal -->
         <div class="contenedor-principal" id="contenedorPDF">
-            <h2>Creacion de Vales Servicio Técnico</h2>
+            <h2 >Creacion de Vales Servicio Técnico</h2>
             <!-- Contenedor azul con información del vale de entrada -->
             <form action="vales" method="post">
-                <label for="folios" class="labelFolio">Folio de la solicitud</label>
-                <select name="folios" id="folios">
-                    <% folioSolicitudes.forEach(folio => { %>
-                    <option value="<%= folio.FolioSolicitud %>"><%= folio.FolioSolicitud %></option>
-                    <% }); %>
-                </select>
-                
-                <fieldset>
+                <div class="mb-3 row">
+                    <label for="folios" class="col-sm-2 col-form-label labelFolio">Folio de la solicitud</label>
+                    <div class="col-sm-10">
+                        <select name="folios" id="folios" class="form-select form-select-sm">
+                            <% folioSolicitudes.forEach(folio => { %>
+                            <option value="<%= folio.FolioSolicitud %>"><%= folio.FolioSolicitud %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                  </div>
+                  <fieldset>
                     <legend class="labelMayor">Equipos</legend>
                     <div class="contenedor-checkbox">
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Monitor" onchange="handleCheckboxChange(this)">
-                            <label for="monitor">Monitor</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="monitor" value="Monitor" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="monitor">Monitor</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Nodo" onchange="handleCheckboxChange(this)">
-                            <label for="nodo">Nodo</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="nodo" value="Nodo" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="nodo">Nodo</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="UPS" onchange="handleCheckboxChange(this)">
-                            <label for="ups">UPS</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="ups" value="UPS" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="ups">UPS</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Laptop" onchange="handleCheckboxChange(this)">
-                            <label for="laptop">Laptop</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="laptop" value="Laptop" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="laptop">Laptop</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Proyector" onchange="handleCheckboxChange(this)">
-                            <label for="proyector">Proyector</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="proyector" value="Proyector" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="proyector">Proyector</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Access Point" onchange="handleCheckboxChange(this)">
-                            <label for="access">Acess Point</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="access" value="Access Point" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="access">Acess Point</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="PC" onchange="handleCheckboxChange(this)">
-                            <label for="pc">PC</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="pc" value="PC" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="pc">PC</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Gabinete" onchange="handleCheckboxChange(this)">
-                            <label for="gabinete">Gabinete</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="gabinete" value="Gabinete" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="gabinete">Gabinete</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Teclado" onchange="handleCheckboxChange(this)">
-                            <label for="teclado">Teclado</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="teclado" value="Teclado" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="teclado">Teclado</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Mouse" onchange="handleCheckboxChange(this)">
-                            <label for="mouse">Mouse</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="mouse" value="Mouse" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="mouse">Mouse</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Teléfono" onchange="handleCheckboxChange(this)">
-                            <label for="telefono">Teléfono</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="tele" value="Teléfono" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="telefono">Teléfono</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Impresora" onchange="handleCheckboxChange(this)">
-                            <label for="impresora">Impresora</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="impresora" value="Impresora" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="impresora">Impresora</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="otro" value="" onchange="handleCheckboxChange(this)">
-                            <label for="otro">Otro</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="otro2" value="" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="otro">Otro</label>
                         </div>
-                        <div id="otroInputContainer">
+                        <div id="otroInputContainer" >
                             <label for="otroInput">Especifique:</label>
-                            <input type="text" name="otroInput" id="otroInput" disabled>
+                            <input class="form-control form-control-sm" type="text"  name="otroInput" id="otroInput2" disabled>
                         </div>
-                        <input type="hidden" name="equiposSeleccionados" id="equiposSeleccionados" value="">
+                        <input type="hidden" name="equiposSeleccionados" id="listaEquiposCheck" value="">
                     </div>
                 </fieldset>
                 <fieldset>
                     <legend class="labelMayor">Datos del equipo:</legend>
-                    <label for="serie">No. Serie:</label>
-                    <input type="text" name="serie" id="serie" required>
-                    <label for="marca">Marca:</label>
-                    <input type="text" name="marca" id="marca" required>
-                    <label for="modelo">Modelo:</label>
-                    <input type="text" name="modelo" id="modelo" required>
+                    
+                    <div class="mb-3 row">
+                        <label for="serie" class="col-sm-2 col-form-label">No. Serie:</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control datosEquipo" name="serie" id="serie" required>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="marca" class="col-sm-2 col-form-label">Marca:</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control datosEquipo" name="marca" id="marca" required>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="modelo" class="col-sm-2 col-form-label">Modelo:</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control datosEquipo"  name="modelo" id="modelo" required>
+                        </div>
+                    </div>
                     <label for="caracteristicas">Características:</label>
-                    <textarea name="caracteristicas" id="caracteristicas" rows="4" cols="50" required></textarea>
+                    <textarea class="form-control" nname="caracteristicas" id="caracteristicas" rows="8" required></textarea>
+
                 </fieldset>
                 <div class="contenedor-estatus">
-                    <label for="estatus">Estatus:</label>
-                    <select name="estatus" id="estatus" required>
-                    <option value="Funciona">Funciona</option>
-                    <option value="No funciona">No funciona</option>
-                    <option value="Esperar">Esperar piezas</option>
-                    </select>
-                </div>
-                <div class="contenedor-nuevo">
-                    <div class="contenedor-texto">
-                        <label for="revision">Revisó:</label>
-                        <input type="text" name="revision" id="revision" required>
+                    <div>
+                        <label for="estatus" class="col-sm-2 col-form-label labelFolio" id="lblEstatus">Estatus:</label>
+                            <select name="estatus" id="estatus" class="form-select form-select-sm" required>
+                                <option value="Funciona">Funciona</option>
+                                <option value="No funciona">No funciona</option>
+                                <option value="Esperar">Esperar piezas</option>
+                            </select>
+                    </div>
+                    <div>
+                        <label for="revision" class="col-sm-2 col-form-label" id="lblRevision">Revisó:</label>
+                        <input type="text" class="form-control datosEquipo" name="revision" id="revision" required>
                     </div>
                 </div>
-            </div> <!-- Fin del contenedor azul -->
-            <button class="boton-generar-pdf" id="generarPDF">Generar PDF</button>
+                <div class="enviarVale">
+                    <button type="submit" class="btn btn-outline-dark" id="generarPDF" value="Submit">Generar PDF</button>
+                </div>
             </form>
-        </div> <!-- Fin del contenedor princiupal-->    
-        <script src="resources/scripts/seleccionMultiple"></script>        
+        </div>
+    </div> <!-- Fin del contenedor princiupal-->    
+        <script src="resources/scripts/seleccionMultiple.js"></script>        
         <script src="resources/scripts/vale.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
         <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
@@ -317,42 +346,49 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Creación de Dictamen</title>
         <link rel="stylesheet" href="resources/css/solicitud_dictamen.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     </head>
     <body class="bodyDictamen">
         <div class="creacionDictamen">
             <p id="fechaDictamen"></p>
             <h2>Creación de Dictámenes</h2>
-            <div>
-                    <label for="folioSolicitud" class="labelMayor">Folio:</label>
-                    <input type="text" name="folioSolicitud" id="folioSolicitudDictamen" class="labelMayor"  placeholder="Escribe el folio de la solicitud de soporte técnico">
-                    <button type="button" id="btnBuscarFolio" onclick="buscarFolio()">Buscar</button> 
+            <div class="row g-3">
+                <div class="col-auto">
+                    <label for="folioSolicitud" class="form-control-plaintext">Folio:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" name="folioSolicitud" id="folioSolicitudDictamen" class="form-control"  placeholder="Folio de la solicitud de soporte técnico">
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-outline-dark" id="btnBuscarFolio" onclick="buscarFolio()">Buscar</button> 
+                </div>
             </div>
             <form action="/guardar-datos" method="post">
                 <div class="contenedorDictamen">
                     <div>
                         <label for="valeId" class="labelMayor">Vale:</label>
-                        <input type="text" id="identificadorVale" name="valeId" class="labelMayor">
+                        <input type="text" id="identificadorVale" name="valeId" class="form-control form-control-sm" required>
                     </div>
                     <div>
                         <label for="equipoDictamen" class="labelMayor">Equipo:</label>
-                        <input type="text" id="equipoDictamen" name="equipoDictamen" class="labelMayor">
+                        <input type="text" id="equipoDictamen" name="equipoDictamen" class="form-control form-control-sm" required>
                     </div>
                     <div>
                         <label for="marcaEquipo" class="labelMayor">Marca:</label>
-                        <input type="text" name="marcaEquipo" id="marcaEquipo" class="labelMayor" placeholder="Escribe la marca del equipo"> 
+                        <input type="text" name="marcaEquipo" id="marcaEquipo" class="form-control form-control-sm" required> 
                     </div>
                     <div>
                         <label for="modeloEquipo" class="labelMayor">Modelo:</label>
-                        <input type="text" name="modeloEquipo" id="modeloEquipo" class="labelMayor" placeholder="Escribe el modelo del equipo"> 
+                        <input type="text" name="modeloEquipo" id="modeloEquipo" class="form-control form-control-sm" required> 
                     </div>
                     <div>
                         <label for="noSerieEquipo" class="labelMayor">N° de serie:</label>
-                        <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="labelMayor" placeholder="Escribe el número de serie del equipo"> 
+                        <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required> 
                     </div>
                     <div>
                         <label for="estadoDictamen" class="labelMayor">Estado:</label>
-                        <select name="estadoDictamen" id="estadoDictamen">
+                        <select name="estadoDictamen" id="estadoDictamen" class="form-select form-select-sm" required>
                             <option value="blanco">&nbsp;</option>
                             <option value="vigente">Vigente</option>
                             <option value="obsoleto">Obsoleto</option>
@@ -360,7 +396,7 @@
                     </div>
                     <div>
                         <label for="tipoDictamen" class="labelMayor">Dictamen:</label>
-                        <select name="tipoDictamen" id="tipoDictamen">
+                        <select name="tipoDictamen" id="tipoDictamen" class="form-select form-select-sm">
                             <option value="blanco">&nbsp;</option>
                             <option value="Funciona">Funcional</option>
                             <option value="No Funciona">Obsoleto</option>
@@ -372,18 +408,18 @@
                 <div class="contenedorSecundario">
                     <div>
                         <label for="caractDictamen" class="labelMayor">Características:</label>
-                        <textarea name="caractDictamen" id="caractDictamen" cols="30" rows="5"></textarea>
+                        <textarea class="form-control" name="caractDictamen" id="caractDictamen" cols="30" rows="5"></textarea>
                     </div>
                     <div>
                         <label for="observacionesDictamen" class="labelMayor">Observaciones:</label>
-                        <textarea name="observacionesDictamen" id="observacionesDictamen" cols="30" rows="5"></textarea>
+                        <textarea class="form-control" name="observacionesDictamen" id="observacionesDictamen" cols="30" rows="5"></textarea>
                     </div>
                     <div>
                         <label for="descripcionDictamen" class="labelMayor">Descripción técnica de partes necesarias:</label>
-                        <textarea name="descripcionDictamen" id="descripcionDictamen" cols="30" rows="5"></textarea>
+                        <textarea class="form-control" name="descripcionDictamen" id="descripcionDictamen" cols="30" rows="5"></textarea>
                     </div>
                     <div class="btnGuardarDatos">
-                        <button type="submit" id="btnGuardarDatos" value="submit">Guardar Datos</button>
+                        <button type="submit" id="btnGuardarDatos" class="btn btn-outline-dark" value="submit">Guardar Datos</button>
                     </div>
                 </div>    
             </form>
@@ -391,16 +427,25 @@
         <div class="creacionDictamen">
             <h2>Generar dictamen</h2>
             <form action="" method="post">
-                <div>
-                    <label for="folioValePDF" class="labelMayor">Folio de vale:</label>
-                    <input type="text" name="folioValePDF" id="folioValePDF" class="labelMayor" placeholder="Escribe el folio del vale">
-                    <button type="button" id="btnBuscarFolioVale">Buscar</button> 
+                <div class="row g-3" id="pdfDictamen">
+                    <div class="col-auto">
+                        <label for="folioValePDF" class="form-control-plaintext">Folio de vale:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" name="folioValePDF" id="folioValePDF" class="form-control"  placeholder="Escribe el folio del vale">
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-outline-dark" id="btnBuscarFolioVale" onclick="buscarFolio()">Buscar</button> 
+                    </div>
                 </div>
             </form>
-            <button type="button" id="btnGenerarPDF">Generar PDF</button>
+            <div class="btnGenerarPDF">
+                <button type="button" id="btnGenerarPDF" class="btn btn-outline-dark">Generar PDF</button>
+            </div>
         </div>
         <br>
         <div id="pdfContainer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -442,7 +487,6 @@
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
 <!-- SOLICITUD DE HISTORIAL DE SOLICITUDES -->
 <div id="Historial" class="contenido-individual">
-    <html lang="es">
     <head>
         <!-- Metadatos -->
         <meta charset="UTF-8">
@@ -453,103 +497,125 @@
         <!-- Fuentes -->
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     </head>
-<body class="bodyHistorial">
+    <body class="bodyHistorial">
     <!-- Contenedor principal para el historial de solicitudes -->
-    <div class="historialSolicitudes">
-        <!-- Título de la sección -->
-        <h2 id="tituloHistorialSoli">Historial de solicitudes</h2>
-        
-        <!-- Formulario para filtrar el historial -->
-        <form action="#" method="post">
-            <!-- Contenedor para los campos de filtro -->
-            <div class="contenedorFiltro">
-                <!-- Campo de búsqueda -->
-                <div>
-                    <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
+        <div class="historialSolicitudes">
+            <!-- Título de la sección -->
+            <h2 id="tituloHistorialSoli">Historial de solicitudes</h2>
+            <!-- Formulario para filtrar el historial -->
+            <form action="#" method="post">
+                <!-- Contenedor para los campos de filtro -->
+                <div class="contenedorFiltro">
+                    <!-- Campo de búsqueda -->
+                    <div>
+                        <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
+                    </div>
+                    <!-- Campo de selección de estado -->
+                    <div>
+                        <select name="estado" id="estado">
+                            <option value="blanco">Filtro</option>
+                            <option value="folio">Folio</option>
+                            <option value="fecha">Fecha</option>
+                            <option value="usuario">Usuario</option>
+                            <option value="estado">Estado</option>
+                        </select>
+                    </div>
+                    <!-- Botón para aplicar el filtro -->
+                    <div class="btnFiltrar">
+                        <button  type="submit" id="btnFiltrar">Filtrar</button>
+                    </div>
                 </div>
-                <!-- Campo de selección de estado -->
-                <div>
-                    <select name="estado" id="estado">
-                        <option value="blanco">Filtro</option>
-                        <option value="folio">Folio</option>
-                        <option value="fecha">Fecha</option>
-                        <option value="usuario">Usuario</option>
-                        <option value="estado">Estado</option>
-                    </select>
-                </div>
-                <!-- Botón para aplicar el filtro -->
-                <div class="btnFiltrar">
-                    <button  type="submit" id="btnFiltrar">Filtrar</button>
-                </div>
-            </div>
-            
-            <!-- Contenedor para la tabla del historial -->
-            <div class="table-responsive">
-                <table  class="table table-hover table-light">
-                    <tr class="table-dark">
-                        <th>Folio</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Usuario</th>
-                        <th>Equipo</th>
-                        <th>Estado</th>
-                        <th>Vale</th>
-                        <th>Dictamen</th>
-                    </tr>
-                    <% historial.forEach(solicitud => { %>
-                        <!-- Fila de la tabla para cada solicitud en el historial -->
-                        <tr>
-                            <td><%= solicitud.FolioSolicitud %></td>
-                            <td><%= solicitud.Fecha %></td>
-                            <td><%= solicitud.Hora %></td>
-                            <td><%= solicitud.NombreUsuario %></td>
-                            <td><%= solicitud.Equipo%></td>
-                            <td><%= solicitud.Estado%></td>
-                            <td><%= solicitud.Vale %></td>
-                            <td><%= solicitud.Dictamen %></td>
+                
+                <!-- Contenedor para la tabla del historial -->
+                <div class="table-responsive">
+                    <table  class="table table-hover table-light">
+                        <tr class="table-dark">
+                            <th>Folio</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Usuario</th>
+                            <th>Equipo</th>
+                            <th>Estado</th>
+                            <th>Vale</th>
+                            <th>Dictamen</th>
                         </tr>
-                    <% }); %>
-                </table>
-            </div>
-        </form>
+                        <% historial.forEach(solicitud => { %>
+                            <!-- Fila de la tabla para cada solicitud en el historial -->
+                            <tr>
+                                <td><%= solicitud.FolioSolicitud %></td>
+                                <td><%= solicitud.Fecha %></td>
+                                <td><%= solicitud.Hora %></td>
+                                <td><%= solicitud.NombreUsuario %></td>
+                                <td><%= solicitud.Equipo%></td>
+                                <td><%= solicitud.Estado%></td>
+                                <td><%= solicitud.Vale %></td>
+                                <td><%= solicitud.Dictamen %></td>
+                            </tr>
+                        <% }); %>
+                    </table>
+                </div>
+            </form>
         </div>
     </body>
-    </html>
-
 </div>
 
-	
+<!-- REGISTRO DE USUARIOS------------------------------------------------------------------------------ -->	
     <div id="Registro" class="contenido-individual">
-        <!-- Contenido de historial -->
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Registro usuarios</title>
-        <link rel="stylesheet" href="resources/css/style_login.css">
+        <!-- Contenido de Registro -->
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Registro usuarios</title>
+            <link rel="stylesheet" href="resources/css/style_registro.css">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">      
         </head>
         <body>
-        
         <div class="contenedor">
-            <a href="ruta_de_la_pagina_web_que_deseas"></a>
-            <h2>CIC Assistance</h2>
-            <h3>Registrar Usuario</h3>
-            <form action="register" method="post" onsubmit="return validar();">
-                <input type="text" id="username" name="username" placeholder="Nombre de Usuario" required>
-                <input type="password" id="password" name="password" placeholder="Contraseña" required>
-                <input type="password" id="password2" name="password2" placeholder="Escriba nuevamente la contraseña" required>
-                <input type="text" id="name" name="name" placeholder="Nombre Completo" required>
-                <div class="selects_registro">
-                <label for="rol">Rol:</label>
-                <select name="rol" id="rol" required>
-                <option value="admin">Administrador</option>
-                <option value="usuario">Usuario</option>
-                </select>
-                <label for="genero">Genero:</label>
-                <select name="genero" id="genero" required>
-                <option value="F">Femenino</option>
-                <option value="M">Masculino</option>
-                </select>
+            <h3 class="titulosLogin">Registrar Usuario</h3>
+            <form action="registerP" method="post" onsubmit="return validar();" id="formRegistro">
+                <div class="registroCampos">
+                    <label for="username" class="lblRegistro">Nombre de Usuario</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de usuario unico" required>
                 </div>
-                <input type="submit" value="Registrar" onclick="validar()">
+                <div class="registroCampos">
+                    <label for="password" class="lblRegistro">Contraseña</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="8 caracteres mínimo, sin espacios" required>
+                </div>
+                <div class="registroCampos">
+                    <label for="password2" class="lblRegistro">Repita su contraseña</label>
+                    <input type="password" class="form-control" id="password2" name="password2" placeholder="8 caracteres mínimo, sin espacios" required>
+                </div>
+                <div class="registroCampos">
+                    <label for="name" class="lblRegistro">Nombre Completo</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Nombres y apellidos" required>
+                </div>
+                <div class="registroCampos">
+                    <label for="correo" class="lblRegistro">Correo institucional</label>
+                    <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@uacam.mx" required>
+                </div>
+                <div class="selects_registro">
+                    <div class="mb-3 row">
+                        <label for="rol" class="col-sm-2 col-form-label">Rol:</label>
+                        <div class="col-sm-10">
+                            <select name="rol" id="rol" class="form-select form-select-sm" required>
+                                <option value="Admin">Administrador</option>
+                                <option value="Usuario">Usuario</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="genero" class="col-sm-2 col-form-label">Genero:</label>
+                        <div class="col-sm-10">
+                            <select name="genero" id="genero" class="form-select form-select-sm" required>
+                                <option value="F">Femenino</option>
+                                <option value="M">Masculino</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="enviarRegistro">
+                    <input type="submit" value="Registrar" class="btn btn-outline-dark" onclick="validar()">
+                </div>
             </form>
         </div>
         <script src="resources/scripts/validacion.js"></script>
@@ -567,12 +633,10 @@
                 window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
             })
         </script>
-        <% } %>
-        
+        <% } %>       
         </body>
     </div>
-    <!-- Agrega aquí más secciones de contenido según sea necesario -->
-	
+<!-- HISTORIAL 2----------------------------------------------------------------------------------------------- -->
     <div id="Historial2" class="contenido-individual">
         <!-- Contenido de historial -->
     <head>

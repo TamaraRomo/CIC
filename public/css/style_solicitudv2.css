@@ -39,17 +39,11 @@
     flex-wrap: wrap;
 }
 .contenedorInicial div{
-    margin-right: 4em;
+    margin-right: 6em;
 }
 
 .contenedorInicial ::placeholder, #descripcion::placeholder{
     color: rgba(0, 0, 0, .40);
-}
-#telefono{
-    width: 85%;
-}
-#area{
-    width: 70%;
 }
 /*Abarca todo el apartado de "Equipos"*/
 fieldset {
