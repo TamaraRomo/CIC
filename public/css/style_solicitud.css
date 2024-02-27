@@ -32,8 +32,10 @@
 }
 .solicitud h2{
     margin-top: 0;
-    margin-bottom: 1.5em;
+    margin-bottom: 1em;
     color: #0D1642;
+    font-family: 'Roboto';
+    font-weight: bold;
 }
 /*Todas las label deben resaltar (label que no son opciones, si no titulos)*/
 .labelMayor{

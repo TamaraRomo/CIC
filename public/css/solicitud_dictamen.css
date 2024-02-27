@@ -18,6 +18,7 @@
     border: 1px solid #311C6C;
     border-radius: 5px;
     margin: auto;
+    margin-top: 10px;
     padding: 0 0 0 1em;
     background-color: #babdf0;
     width: 85%;
@@ -97,7 +98,8 @@
 #btnGuardarDatos,
 #btnGenerarPDF,
 #btnFiltrar,
-#btnBuscarFolio {
+#btnBuscarFolio,
+#btnBuscarFolioVale {
     height: 2em;
     background-color: #0D1642;
     color: white;

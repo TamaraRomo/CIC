@@ -74,13 +74,13 @@
                         </div>
                         <div>
                             <label for="area" class="labelMayor">Ubicación física</label>
-                            <input type="number" name="area" id="area" placeholder="Escribe tu área">
+                            <input type="text" name="area" id="area" placeholder="Escribe tu área">
                         </div>
                         <div>
                             <label for="usuarios" class="labelMayor">Usuario</label>
                             <select name="usuarios" id="usuarios">
                                 <% usuarios.forEach(usuario => { %>
-                                <option value="<%= usuario.Nombre %>"><%= usuario.Nombre %></option>
+                                <option value="<%= usuario.IdUsuario %>"><%= usuario.Nombre %></option>
                                 <% }); %>
                             </select>
                             
@@ -90,61 +90,62 @@
                         <legend class="labelMayor">Equipos</legend>
                         <div class="contenedor-checkbox">
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Monitor">
+                                <input type="checkbox" name="equipos" id="equipos" value="Monitor" onchange="handleCheckboxChange(this)">
                                 <label for="monitor">Monitor</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Nodo">
+                                <input type="checkbox" name="equipos" id="equipos" value="Nodo" onchange="handleCheckboxChange(this)">
                                 <label for="nodo">Nodo</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="UPS">
+                                <input type="checkbox" name="equipos" id="equipos" value="UPS" onchange="handleCheckboxChange(this)">
                                 <label for="ups">UPS</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Laptop">
+                                <input type="checkbox" name="equipos" id="equipos" value="Laptop" onchange="handleCheckboxChange(this)">
                                 <label for="laptop">Laptop</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Proyector">
+                                <input type="checkbox" name="equipos" id="equipos" value="Proyector" onchange="handleCheckboxChange(this)">
                                 <label for="proyector">Proyector</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Access Point">
+                                <input type="checkbox" name="equipos" id="equipos" value="Access Point" onchange="handleCheckboxChange(this)">
                                 <label for="access">Acess Point</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="PC">
+                                <input type="checkbox" name="equipos" id="equipos" value="PC" onchange="handleCheckboxChange(this)">
                                 <label for="pc">PC</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Gabinete">
+                                <input type="checkbox" name="equipos" id="equipos" value="Gabinete" onchange="handleCheckboxChange(this)">
                                 <label for="gabinete">Gabinete</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Teclado">
+                                <input type="checkbox" name="equipos" id="equipos" value="Teclado" onchange="handleCheckboxChange(this)">
                                 <label for="teclado">Teclado</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Mouse">
+                                <input type="checkbox" name="equipos" id="equipos" value="Mouse" onchange="handleCheckboxChange(this)">
                                 <label for="mouse">Mouse</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Teléfono">
+                                <input type="checkbox" name="equipos" id="equipos" value="Teléfono" onchange="handleCheckboxChange(this)">
                                 <label for="telefono">Teléfono</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="equipos" value="Impresora">
+                                <input type="checkbox" name="equipos" id="equipos" value="Impresora" onchange="handleCheckboxChange(this)">
                                 <label for="impresora">Impresora</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" name="equipos" id="otro" value="">
+                                <input type="checkbox" name="equipos" id="otro" value="" onchange="handleCheckboxChange(this)">
                                 <label for="otro">Otro</label>
                             </div>
                             <div id="otroInputContainer">
                                 <label for="otroInput">Especifique:</label>
                                 <input type="text" name="otroInput" id="otroInput" disabled>
                             </div>
+                            <input type="hidden" name="equiposSeleccionados" id="equiposSeleccionados" value="">
                         </div>
                     </fieldset>
         
@@ -156,6 +157,7 @@
                     </div>
                 </form>
             </div>
+            <script src="resources/scripts/seleccionMultiple.js"></script>
             <script src="resources/scripts/solicitudSoporte.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
             <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
@@ -200,61 +202,62 @@
                     <legend class="labelMayor">Equipos</legend>
                     <div class="contenedor-checkbox">
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Monitor">
+                            <input type="checkbox" name="equipos" id="equipos" value="Monitor" onchange="handleCheckboxChange(this)">
                             <label for="monitor">Monitor</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Nodo">
+                            <input type="checkbox" name="equipos" id="equipos" value="Nodo" onchange="handleCheckboxChange(this)">
                             <label for="nodo">Nodo</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="UPS">
+                            <input type="checkbox" name="equipos" id="equipos" value="UPS" onchange="handleCheckboxChange(this)">
                             <label for="ups">UPS</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Laptop">
+                            <input type="checkbox" name="equipos" id="equipos" value="Laptop" onchange="handleCheckboxChange(this)">
                             <label for="laptop">Laptop</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Proyector">
+                            <input type="checkbox" name="equipos" id="equipos" value="Proyector" onchange="handleCheckboxChange(this)">
                             <label for="proyector">Proyector</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Access Point">
+                            <input type="checkbox" name="equipos" id="equipos" value="Access Point" onchange="handleCheckboxChange(this)">
                             <label for="access">Acess Point</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="PC">
+                            <input type="checkbox" name="equipos" id="equipos" value="PC" onchange="handleCheckboxChange(this)">
                             <label for="pc">PC</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Gabinete">
+                            <input type="checkbox" name="equipos" id="equipos" value="Gabinete" onchange="handleCheckboxChange(this)">
                             <label for="gabinete">Gabinete</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Teclado">
+                            <input type="checkbox" name="equipos" id="equipos" value="Teclado" onchange="handleCheckboxChange(this)">
                             <label for="teclado">Teclado</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Mouse">
+                            <input type="checkbox" name="equipos" id="equipos" value="Mouse" onchange="handleCheckboxChange(this)">
                             <label for="mouse">Mouse</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Teléfono">
+                            <input type="checkbox" name="equipos" id="equipos" value="Teléfono" onchange="handleCheckboxChange(this)">
                             <label for="telefono">Teléfono</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="equipos" value="Impresora">
+                            <input type="checkbox" name="equipos" id="equipos" value="Impresora" onchange="handleCheckboxChange(this)">
                             <label for="impresora">Impresora</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipos" id="otro" value="">
+                            <input type="checkbox" name="equipos" id="otro" value="" onchange="handleCheckboxChange(this)">
                             <label for="otro">Otro</label>
                         </div>
                         <div id="otroInputContainer">
                             <label for="otroInput">Especifique:</label>
                             <input type="text" name="otroInput" id="otroInput" disabled>
                         </div>
+                        <input type="hidden" name="equiposSeleccionados" id="equiposSeleccionados" value="">
                     </div>
                 </fieldset>
                 <fieldset>
@@ -285,7 +288,8 @@
             </div> <!-- Fin del contenedor azul -->
             <button class="boton-generar-pdf" id="generarPDF">Generar PDF</button>
             </form>
-        </div> <!-- Fin del contenedor princiupal-->            
+        </div> <!-- Fin del contenedor princiupal-->    
+        <script src="resources/scripts/seleccionMultiple"></script>        
         <script src="resources/scripts/vale.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
         <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
@@ -326,8 +330,14 @@
             </div>
             <form action="/guardar-datos" method="post">
                 <div class="contenedorDictamen">
-                    <label for="valeId" class="labelMayor">Vale:</label>
-                    <input type="text" id="identificadorVale" name="valeId" class="labelMayor">
+                    <div>
+                        <label for="valeId" class="labelMayor">Vale:</label>
+                        <input type="text" id="identificadorVale" name="valeId" class="labelMayor">
+                    </div>
+                    <div>
+                        <label for="equipoDictamen" class="labelMayor">Equipo:</label>
+                        <input type="text" id="equipoDictamen" name="equipoDictamen" class="labelMayor">
+                    </div>
                     <div>
                         <label for="marcaEquipo" class="labelMayor">Marca:</label>
                         <input type="text" name="marcaEquipo" id="marcaEquipo" class="labelMayor" placeholder="Escribe la marca del equipo"> 
@@ -378,6 +388,38 @@
                 </div>    
             </form>
         </div>
+        <div class="creacionDictamen">
+            <h2>Generar dictamen</h2>
+            <form action="" method="post">
+                <div>
+                    <label for="folioValePDF" class="labelMayor">Folio de vale:</label>
+                    <input type="text" name="folioValePDF" id="folioValePDF" class="labelMayor" placeholder="Escribe el folio del vale">
+                    <button type="button" id="btnBuscarFolioVale">Buscar</button> 
+                </div>
+            </form>
+            <button type="button" id="btnGenerarPDF">Generar PDF</button>
+        </div>
+        <br>
+        <div id="pdfContainer"></div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnGenerarPDF").click(function () {
+                var folioVale = $("#folioValePDF").val();
+                $.ajax({
+                    url: "/generatePDF",
+                    method: "GET",
+                    data: { folioValePDF: encodeURIComponent(folioVale) },
+                    success: function (data) {
+                        $("#pdfContainer").html('<object width="100%" height="600px" type="application/pdf" data="data:application/pdf;base64,' + data + '"></object>');
+                    },
+                    error: function (error) {
+                        console.error("Error al generar el PDF:", error.responseText);
+                    }
+                });
+            });
+        });
+    </script>
     <script src="resources/scripts/dictamenes_fecha.js"></script>
     <script src="resources/scripts/relleno_dictamen.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
@@ -406,7 +448,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Historial de Solicitudes</title>
-        <!-- Estilos -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="estilos/solicitud_historial.css">
         <!-- Fuentes -->
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -415,7 +457,7 @@
     <!-- Contenedor principal para el historial de solicitudes -->
     <div class="historialSolicitudes">
         <!-- Título de la sección -->
-        <h2>Historial de solicitudes</h2>
+        <h2 id="tituloHistorialSoli">Historial de solicitudes</h2>
         
         <!-- Formulario para filtrar el historial -->
         <form action="#" method="post">
@@ -442,9 +484,9 @@
             </div>
             
             <!-- Contenedor para la tabla del historial -->
-            <div class="contenedorTabla">
-                <table id="tablaHistorial">
-                    <tr>
+            <div class="table-responsive">
+                <table  class="table table-hover table-light">
+                    <tr class="table-dark">
                         <th>Folio</th>
                         <th>Fecha</th>
                         <th>Hora</th>
@@ -470,9 +512,6 @@
                 </table>
             </div>
         </form>
-        
-            <!-- Párrafo vacío para llenar con información -->
-            <p></p>
         </div>
     </body>
     </html>

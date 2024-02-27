@@ -77,3 +77,24 @@ tr.selected {
     border: 1px solid #91AEE7; /* Cambiado el color */
     border-radius: 3px; /* Cambiado el valor */
 }
+
+@media only screen and (max-width: 600px) {
+    /* Estilos para dispositivos móviles */
+    th, td {
+        font-size: 12px; /* Ajustar tamaño de fuente para pantallas pequeñas */
+    }
+
+    /* Ocultar ciertas columnas en pantallas pequeñas si es necesario */
+    th:nth-child(5),
+    td:nth-child(5),
+    th:nth-child(6),
+    td:nth-child(6) {
+        display: none;
+    }
+
+    /* Agregar desplazamiento horizontal si la tabla es demasiado ancha */
+    .contenedorTabla {
+        overflow-x: auto;
+    }
+
+}

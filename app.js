@@ -1,7 +1,10 @@
 //Invocamos express
 const express = require('express');
 const app = express();
-
+const pdf = require('html-pdf');
+const path = require('path');
+const ejs = require('ejs');
+const fs = require('fs');
 //seteamos urlencoded para capturar los datos del formulario
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -39,7 +42,9 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
-
+app.get('/generarDictamen', (req, res) => {
+    res.render('generarDictamen');
+});
 app.get('/panelUsuario',checkRole('Usuario'), (req, res) => {
 
     if (!req.session.loggedin) {
@@ -87,7 +92,7 @@ app.get('/panelAdmin',checkRole('Admin'), async (req, res) => {
         });
     }
     const folios = await query('SELECT FolioSolicitud FROM solicitudes');
-    const usuarios = await query('SELECT Nombre from usuarios');
+    const usuarios = await query('SELECT IdUsuario,Nombre from usuarios');
     const historialSoli = await query(`SELECT s.FolioSolicitud AS FolioSolicitud, s.Fecha AS Fecha, s.Hora AS Hora, u.Nombre AS NombreUsuario, s.Equipo AS Equipo, s.Estado AS Estado, CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' WHEN d.FolioSolicitud IS NOT NULL THEN 'No disponible' ELSE 'No Disponible' END AS Vale, CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario; `);
     
         res.render('panelAdmin', {
@@ -125,7 +130,7 @@ function checkRole(role) {
 app.get('/obtener-informacion-folio/:folioSolicitud', (req, res) => {
     const folioSolicitud = req.params.folioSolicitud;
     req.session.folioSolicitudDictamen = folioSolicitud;
-    const query = 'SELECT idVale,NoSerieEquipo,MarcaEquipo,ModeloEquipo FROM vales WHERE FolioSolicitud = ?';
+    const query = 'SELECT idVale,Equipo,NoSerieEquipo,MarcaEquipo,ModeloEquipo FROM vales WHERE FolioSolicitud = ?';
 
     connection.query(query, [folioSolicitud], (error, results) => {
         if (error) {
@@ -144,6 +149,43 @@ app.get('/obtener-informacion-folio/:folioSolicitud', (req, res) => {
         }
     });
 });
+
+app.get('/generatePDF', (req, res) => {
+    const valePDF = parseInt(req.query.folioValePDF, 10);
+    console.log(valePDF);
+    const query = 'SELECT idDictamen,Equipo, MarcaEquipo, ModeloEquipo, NoSerieEquipo, EstadoDictamen, DictamenFinal, caracDictamen, Observaciones, Descripcion FROM dictamenes WHERE idVale= ?'
+    // Realiza la consulta a la base de datos para obtener los datos de la tabla dictamenes
+    connection.query(query,[valePDF], (error, results) => {
+        if (error) {
+            console.log('Error al obtener datos de la base de datos:', error);
+            res.status(500).send('Error al obtener datos de la base de datos');
+        } else {
+            // Renderiza el contenido del PDF con los datos obtenidos
+            ejs.renderFile(path.join(__dirname, './views/', 'generarDictamen.ejs'), {          
+                dictamenes: results
+            }, (err, data) => {
+                if (err) {
+                    res.status(500).send(err);
+                } else {
+                    // Crea el archivo PDF
+                    const pdfFilePath = path.join(__dirname, './docs/', 'reporte3.pdf');
+                    const options = { format: 'Letter', orientation: 'landscape' };
+                    pdf.create(data, options).toFile(pdfFilePath, function (err, data) {
+                        if (err) {
+                            res.status(500).send(err);
+                        } else {
+                            // Lee el contenido del archivo PDF y lo envía como respuesta
+                            const pdfData = fs.readFileSync(pdfFilePath, { encoding: 'base64' });
+                            res.send(pdfData);
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+
 
 
 //10 Hacer registro
@@ -180,7 +222,7 @@ app.post('/solicitud', async(req, res) => {
     const telefono = req.body.telefono;
     const edificio = req.body.edificio;
     const ubicacion = req.body.area;
-    const equipo = req.body.equipos;
+    const equipo = req.body.equiposSeleccionados || '';
     const descripcion = req.body.descripcion;
     connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, Edificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
@@ -223,7 +265,7 @@ app.post('/solicitudAdmin', async(req, res) => {
     const telefono = req.body.telefono;
     const edificio = req.body.edificio;
     const ubicacion = req.body.area;
-    const equipo = req.body.equipos;
+    const equipo = req.body.equiposSeleccionados || '';
     const descripcion = req.body.descripcion;
     connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, Edificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
@@ -260,6 +302,7 @@ app.post('/solicitudAdmin', async(req, res) => {
 });
 
 
+//11 Autenticacion
 //11 Autenticacion
 app.post('/auth', async (req,res)=> {
     const user = req.body.username;
@@ -323,7 +366,8 @@ app.post('/vales', async(req, res) => {
     const usuario = req.session.name;
     const fecha = obtenerFechaHoraActual();
     const folioSolicitud = req.body.folios;
-    const equipo = req.body.equipos;
+    console.log(folioSolicitud);
+    const equipo = req.body.equiposSeleccionados || '';
     const noSerie = req.body.serie;
     const marca = req.body.marca;
     const modelo = req.body.modelo;
@@ -360,6 +404,7 @@ app.post('/guardar-datos', async (req, res)=>{
     const folioSolicitudDictamen = req.session.folioSolicitudDictamen;
     const vale = req.body.valeId;
     console.log(folioSolicitudDictamen); 
+    const equipoDictamen = req.body.equipoDictamen;
     const marcaEquipo = req.body.marcaEquipo;
     const modeloEquipo = req.body.modeloEquipo;
     const noSerieEquipo = req.body.noSerieEquipo;
@@ -369,7 +414,7 @@ app.post('/guardar-datos', async (req, res)=>{
     const observacionesDictamen = req.body.observacionesDictamen;
     const descripcionDictamen = req.body.descripcionDictamen;
 
-    connection.query('INSERT INTO dictamenes SET ?',{Encargado:usuario,FechaDictamen: fecha,FolioSolicitud:folioSolicitudDictamen,idVale: vale ,MarcaEquipo:marcaEquipo, ModeloEquipo:modeloEquipo, NoSerieEquipo:noSerieEquipo, EstadoDictamen:estadoDictamen, DictamenFinal:tipoDictamen, caracDictamen:caractDictamen, Observaciones:observacionesDictamen, Descripcion:descripcionDictamen}, (error, results)=>{
+    connection.query('INSERT INTO dictamenes SET ?',{Encargado:usuario,FechaDictamen: fecha,FolioSolicitud:folioSolicitudDictamen,idVale: vale ,Equipo:equipoDictamen,MarcaEquipo:marcaEquipo, ModeloEquipo:modeloEquipo, NoSerieEquipo:noSerieEquipo, EstadoDictamen:estadoDictamen, DictamenFinal:tipoDictamen, caracDictamen:caractDictamen, Observaciones:observacionesDictamen, Descripcion:descripcionDictamen}, (error, results)=>{
         if(error){
             console.log(error);
         }else{

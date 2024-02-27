@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Dictamen</title>
+    <style>
+        /* Agrega estilos CSS según tu diseño específico */
+        *{
+            margin: 5px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div id="generarPDF">
+        <h1 style="text-align: center;">Dictamen Técnico<%= dictamenes.idDictamen %></h1>
+        <p style="text-align: right;">San Francisco de Campeche, Camp a </p>
+        <h3>Mtro. Francisco Barrera Lao</h3>
+        <h3>Director Académico de la Facultad de Ingeniería</h3>
+        <p>Presente</p>
+        <table>
+                <tr>
+                    <th>Equipo</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Características</th>
+                    <th>N° de Serie</th>
+                    <th>Estado</th>
+                    <th>Dictamen</th>
+                    <th>Observaciones</th>
+                    <th>Descripción técnica de las partes necesarias</th>
+                </tr>
+                <% dictamenes.forEach(dictamen => { %>
+                    <tr>
+                        <td><%= dictamen.Equipo %></td>
+                        <td><%= dictamen.MarcaEquipo %></td>
+                        <td><%= dictamen.ModeloEquipo %></td>
+                        <td><%= dictamen.CaracDictamen %></td>
+                        <td><%= dictamen.NoSerieEquipo %></td>
+                        <td><%= dictamen.EstadoDictamen %></td>
+                        <td><%= dictamen.DictamenFinal %></td>
+                        <td><%= dictamen.Observaciones %></td>
+                        <td><%= dictamen.Descripcion %></td>
+                        <!-- Agrega otras celdas según tus campos -->
+                    </tr>
+                <% }); %>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Dictamen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>VIGENTE: </strong>si al equipo le sirven todas sus piezas, o si alguna pieza esta dañada y es reemplazable.
+                        <br>
+                        <strong>OBSOLETO: </strong> si no cumple con características mínimas definidas por DGTI.
+                    </td>
+                    <td>
+                        <strong>FUNCIONAL: </strong>si el equipo le sirven todas sus piezas, o si alguna pieza está dañada y es reempalazable.
+                        <br>
+                        <strong>NO FUNCIONAL: </strong> si el accesorio o equipo después de las revisiones y pruebas técnicas NO FUNCIONA y no tiene reparación.
+                        <br>
+                        <strong>TRAMITAR BAJA: </strong> si alguna pieza falta o está dañada y no es reemplazable, pero además el ESTADO es OBSOLETO, entonces debe tramitarse la baja.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Si el dictamen de alguno de los equipos revisados es TRAMITAR BAJA, éste se quedará en el CIC para que, con base en el procedimiento interno de inventarios de ésta facultad y de estar conforme se proceda a tramitar la baja correspondente ante la Coordinación Administrativa FdI.</p>
+    </div>
+    
+    
+</body>
+</html>

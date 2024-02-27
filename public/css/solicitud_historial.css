@@ -108,29 +108,41 @@
 }
 
 /*Tabla historial*/
-.contenedorTabla {
-    display: flex;
-    justify-content: center; 
+.historialSolicitudes h2,#tituloHistorialSoli{
+    font-size: 1.5em;
+    margin-top: 1.5em;
     margin-bottom: 1.5em;
-    width: 100%;
-}
-
-#tablaHistorial{
-    border: 1px solid #311C6C;
-    border-collapse: collapse;
-    border-radius: 5px;
-    background-color: white;
-    width: 100%;
-    text-align: center;
-    table-layout: fixed;
-}
-
-#tablaHistorial th{
-    background-color:  #91AEE7;
     color: #0D1642;
+    font-family: 'Roboto';
+    font-weight: bold;
+}
+#tituloHistorialSoli{
+    font-size: 1.5em;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    color: #0D1642;
+    font-family: 'Roboto';
+    font-weight: bold;
 }
 
-#tablaHistorial th, #tablaHistorial td {
-    border: 1px solid #4d3788;
-    padding: 8px; /* Ajustar el relleno de celda */
+
+@media only screen and (max-width: 600px) {
+    /* Estilos para dispositivos móviles */
+    th, td {
+        font-size: 12px; /* Ajustar tamaño de fuente para pantallas pequeñas */
+    }
+
+    /* Ocultar ciertas columnas en pantallas pequeñas si es necesario */
+    th:nth-child(5),
+    td:nth-child(5),
+    th:nth-child(6),
+    td:nth-child(6) {
+        display: none;
+    }
+
+    /* Agregar desplazamiento horizontal si la tabla es demasiado ancha */
+    .contenedorTabla {
+        overflow-x: auto;
+    }
+
 }

@@ -21,7 +21,6 @@ h1, h2 {
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white; /* Cambiado el color */
     border: 1px solid #311C6C; /* Cambiado el color */
 }
 
@@ -55,4 +54,24 @@ tr:nth-child(even) {
 
 .statistics-btn:hover {
     background-color: #3e8e41; /* Cambiado el color */
+}
+@media only screen and (max-width: 600px) {
+    /* Estilos para dispositivos móviles */
+    th, td {
+        font-size: 12px; /* Ajustar tamaño de fuente para pantallas pequeñas */
+    }
+
+    /* Ocultar ciertas columnas en pantallas pequeñas si es necesario */
+    th:nth-child(5),
+    td:nth-child(5),
+    th:nth-child(6),
+    td:nth-child(6) {
+        display: none;
+    }
+
+    /* Agregar desplazamiento horizontal si la tabla es demasiado ancha */
+    .contenedorTabla {
+        overflow-x: auto;
+    }
+
 }

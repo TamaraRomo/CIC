@@ -16,6 +16,7 @@ function buscarFolio() {
 
             // Rellena los campos con la información obtenida
             document.getElementById('identificadorVale').value = data.idVale;
+            document.getElementById('equipoDictamen').value = data.Equipo;
             document.getElementById('marcaEquipo').value = data.MarcaEquipo;
             document.getElementById('modeloEquipo').value = data.ModeloEquipo;
             document.getElementById('noSerieEquipo').value = data.NoSerieEquipo;
