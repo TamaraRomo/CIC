@@ -52,20 +52,9 @@
                         <div>
                             <label for="edificio" class="labelMayor">Edificio y nivel</label>
                             <select name="edificio" id="edificio" class="form-select form-select-sm" required>
-                                <option value="A">Edificio A</option>
-                                <option value="B">Edificio B</option>
-                                <option value="C">Edficio C</option>
-                                <option value="D">Edificio D</option>
-                                <option value="E">Edificio E</option>
-                                <option value="F">Edificio F</option>
-                                <option value="G">Edficio G</option>
-                                <option value="H">Edificio H</option>
-                                <option value="I">Edificio I</option>
-                                <option value="J">Edficio J</option>
-                                <option value="K">Edificio K</option>
-                                <option value="Coordinacion">Edificio Coordinacion</option>
-                                <option value="CIC">Edificio CIC</option>
-                                <option value="IDI">Edificio I+D+I</option>
+                                <% edificios.forEach(edificios => { %>
+                                <option value="<%= edificios.IdEdificio %>"><%= edificios.NombreEdificio %></option>
+                                <% }); %>
                             </select>
                         </div>
                         <div>

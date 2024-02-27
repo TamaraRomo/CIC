@@ -48,7 +48,7 @@ app.get('/generarDictamen', (req, res) => {
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
-app.get('/panelUsuario',checkRole('Usuario'), (req, res) => {
+app.get('/panelUsuario',checkRole('Usuario'), async (req, res) => {
 
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
@@ -63,24 +63,19 @@ app.get('/panelUsuario',checkRole('Usuario'), (req, res) => {
         });
     }
     const usuario = req.session.idUsuario;
-    console.log(usuario);
-    const query = `
-    SELECT s.FolioSolicitud AS FolioSolicitud, s.Fecha AS Fecha, s.Equipo AS Equipo, s.Estado AS Estado, CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Vale, CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud WHERE s.IdUsuario = ?
+    const edificios = await query('SELECT * FROM edificios');
+    const historialUsuario = `
+    SELECT s.FolioSolicitud AS FolioSolicitud, s.Fecha AS Fecha, s.Equipo AS Equipo, s.Estado AS Estado, CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Vale, CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud WHERE s.IdUsuario = ${usuario}
     `;
-
-    connection.query(query, [usuario], (error, result) => {
-        if (error) {
-            console.error(error);
-        } else {
-            res.render('panelUsuario', {
-                login: req.session.loggedin,
-                name: req.session.name,
-                historial: result
-            });
-        }
+    const historial = await query(historialUsuario);
+    console.log(edificios);
+    res.render('panelUsuario', {
+        edificios: edificios,
+        login: req.session.loggedin,
+        name: req.session.name,
+        historial: historial,
     });
 });
-
 app.get('/panelAdmin',checkRole('Admin'), async (req, res) => {
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
@@ -94,17 +89,17 @@ app.get('/panelAdmin',checkRole('Admin'), async (req, res) => {
             ruta: 'login'
         });
     }
+    const edificios = await query('SELECT * FROM edificios');
     const folios = await query('SELECT FolioSolicitud FROM solicitudes');
     const usuarios = await query('SELECT IdUsuario,Nombre from usuarios');
     const historialSoli = await query(`SELECT s.FolioSolicitud AS FolioSolicitud, s.Fecha AS Fecha, s.Hora AS Hora, u.Nombre AS NombreUsuario, s.Equipo AS Equipo, s.Estado AS Estado, CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' WHEN d.FolioSolicitud IS NOT NULL THEN 'No disponible' ELSE 'No Disponible' END AS Vale, CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario; `);
-    
         res.render('panelAdmin', {
             login: req.session.loggedin,
             name: req.session.name,
             folioSolicitudes: folios,
             usuarios: usuarios,
-            historial: historialSoli
-            
+            historial: historialSoli,
+            edificios: edificios
         });
         console.log(historialSoli);
 });
@@ -239,11 +234,11 @@ app.post('/solicitud', async(req, res) => {
     const ubicacion = req.body.area;
     const equipo = req.body.equiposSeleccionados || '';
     const descripcion = req.body.descripcion;
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, Edificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
-            res.render('panelUsuario',{ //pasar parametros para el mensaje AlertSweet
+            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Solicitud",
                 alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
@@ -282,7 +277,7 @@ app.post('/solicitudAdmin', async(req, res) => {
     const ubicacion = req.body.area;
     const equipo = req.body.equiposSeleccionados || '';
     const descripcion = req.body.descripcion;
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, Edificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -440,7 +435,7 @@ app.post('/guardar-datos', async (req, res)=>{
                 alertIcon: "success",
                 showConfirmButton: false,
                 timer: 1500,
-                ruta: 'generarDictamen'
+                ruta: 'panelAdmin'
             })
         }
     })
