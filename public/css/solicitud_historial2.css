@@ -1,83 +1,39 @@
-.indexHistorial {
-    font-family: 'Roboto', sans-serif; /* Cambiado a Roboto */
-    padding: 0;
+.historialBody {
     margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 
-.historialContenedor {
-    padding: 1%;
-    margin: 3% 20%;
-    background-color: #AFB2F4; /* Cambiado el color */
-    border-radius: 5px; /* Cambiado el valor */
+.historialContenedor{
+    border: 1px solid #311C6C;
+    border-radius: 5px;
+    margin: auto;
+    padding: 0 2em; /* Modificado el padding */
+    background-color: #babdf0;
+    width: 85%;
+    text-align: center; /* Alineación del texto centrada */
+    box-sizing: border-box; /* Incluir padding en el ancho total */
 }
-
-.historialTitulo {
+#tituloBitacora{
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: #0D1642;
+    font-family: 'Roboto';
+    font-weight: bold;
     text-align: center;
-    padding-bottom: 2%;
-    font-weight: bold; /* Añadido */
-    color: #0D1642; /* Añadido */
 }
 
-.historialTabla {
-    border-collapse: collapse;
-    width: 100%;
-    border: 1px solid #311C6C; /* Cambiado el color */
-    background-color: white; /* Cambiado el color */
+.tablaContenedor{
+    display: flex;
+    justify-content: center;
+    padding: 2% 0px;
 }
 
-.tablaContenedor {
-    padding: 3% 0; /* Modificado el valor */
+.Tabla01{
+    background-color: rgba(51, 42, 177, 0.2);
+    border-radius: 15px;
+    padding: 15px 15px;
 }
-
-.tablaEncabezados {
-    text-align: center;
-    font-weight: bold; /* Añadido */
-    color: #0D1642; /* Añadido */
-}
-
-th, td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #4CAF50; /* Cambiado el color */
-    color: white; /* Cambiado el color */
-}
-
-.tablaFila:hover {
-    background-color: #0011ff;
-}
-
-tr.selected {
-    background-color: #0011ff;
-}
-
-.botonBuscar, .botonEditar, .botonEliminar {
-    background-color: #4CAF50; /* Cambiado el color */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.botonBuscar:hover, .botonEditar:hover, .botonEliminar:hover {
-    background-color: #45a049; /* Cambiado el color */
-}
-
-.inputBuscar {
-    padding: 10px 5px;
-    border: 1px solid #91AEE7; /* Cambiado el color */
-    border-radius: 3px; /* Cambiado el valor */
-}
-
 @media only screen and (max-width: 600px) {
     /* Estilos para dispositivos móviles */
     th, td {

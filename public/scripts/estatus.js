@@ -1,39 +1,46 @@
-function addRow() {
-    const table = document.getElementById('solicitudesTable');
-    const newRow = table.insertRow(-1);
+function obtenerCambios() {
+    const cambios = [];
+    document.querySelectorAll('.cambiarEstado').forEach(select => {
+        const nuevoEstado = select.value;
+        const folio = select.dataset.folio;
+        // Agrega la información al array de cambios solo si el estado ha cambiado
+        if (nuevoEstado !== select.dataset.estadoOriginal) {
+            cambios.push({
+                folio: folio,
+                nuevoEstado: nuevoEstado
+            });
+        }
+    });
 
-    const fechaCell = newRow.insertCell(0);
-    const fechaInput = document.createElement('input');
-    fechaInput.type = 'text';
-    fechaCell.appendChild(fechaInput);
-
-    const horaCell = newRow.insertCell(1);
-    const horaInput = document.createElement('input');
-    horaInput.type = 'text';
-    horaCell.appendChild(horaInput);
-
-    const folioCell = newRow.insertCell(2);
-    const folioInput = document.createElement('input');
-    folioInput.type = 'text';
-    folioCell.appendChild(folioInput);
-
-    const nombreCell = newRow.insertCell(3);
-    const nombreInput = document.createElement('input');
-    nombreInput.type = 'text';
-    nombreCell.appendChild(nombreInput);
-
-    const estatusCell = newRow.insertCell(5);
-    const estatusInput = document.createElement('input');
-    estatusInput.type = 'text';
-    estatusCell.appendChild(estatusInput);
-
-    const observacionCell = newRow.insertCell(6);
-    const observacionInput = document.createElement('input');
-    observacionInput.type = 'text';
-    observacionCell.appendChild(observacionInput);
-
-    const fechaHoraCell = newRow.insertCell(7);
-    const fechaHoraInput = document.createElement('input');
-    fechaHoraInput.type = 'text';
-    fechaHoraCell.appendChild(fechaHoraInput);
+    return cambios;
 }
+document.getElementById('guardarCambios').addEventListener('click', function () {
+    var cambios = obtenerCambios();  // Implementa la función obtenerCambios según tu lógica
+    var totalCambios = cambios.length;
+    // Itera sobre los cambios y envía la solicitud al servidor
+    cambios.forEach(cambio => {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/actualizar-estado', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log('Respuesta del servidor recibida:');
+                console.log(xhr.responseText);
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    // Resta uno al total de cambios
+                    totalCambios--;
+                    if (totalCambios === 0) {
+                        // Muestra la alerta solo cuando se hayan procesado todas las solicitudes
+                        alert('Estado actualizado con éxito');
+                    }
+                }
+            } else {
+                console.error('Error al enviar la solicitud al servidor');
+            }
+        };
+
+        xhr.send(JSON.stringify(cambio));
+    });
+});

@@ -93,13 +93,21 @@ app.get('/panelAdmin',checkRole('Admin'), async (req, res) => {
     const folios = await query('SELECT FolioSolicitud FROM solicitudes');
     const usuarios = await query('SELECT IdUsuario,Nombre from usuarios');
     const historialSoli = await query(`SELECT s.FolioSolicitud AS FolioSolicitud, s.Fecha AS Fecha, s.Hora AS Hora, u.Nombre AS NombreUsuario, s.Equipo AS Equipo, s.Estado AS Estado, CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' WHEN d.FolioSolicitud IS NOT NULL THEN 'No disponible' ELSE 'No Disponible' END AS Vale, CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario; `);
-        res.render('panelAdmin', {
+    const soloAbiertas = await query('SELECT * FROM solicitudes WHERE Estado = "Abierto"')
+    const soliPendiente = await query('SELECT * FROM solicitudes WHERE Estado = "Pendiente"')
+    const soliCerradas = await query('SELECT * FROM solicitudes WHERE Estado = "Cerrado"')
+    const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale;");
+    res.render('panelAdmin', {
             login: req.session.loggedin,
             name: req.session.name,
             folioSolicitudes: folios,
             usuarios: usuarios,
             historial: historialSoli,
-            edificios: edificios
+            edificios: edificios,
+            abierto: soloAbiertas,
+            pendiente:  soliPendiente,
+            cerrado: soliCerradas,
+            vales:inforVales
         });
         console.log(historialSoli);
 });
@@ -124,7 +132,7 @@ function checkRole(role) {
     };
 }
 
-// Asumiendo que tienes una ruta como esta en tu servidor
+// BUSQUEDA DE FOLIO PARA RELLENO AUTOMATICO DE INFO EN DICTAMENES
 app.get('/obtener-informacion-folio/:folioSolicitud', (req, res) => {
     const folioSolicitud = req.params.folioSolicitud;
     req.session.folioSolicitudDictamen = folioSolicitud;
@@ -147,7 +155,7 @@ app.get('/obtener-informacion-folio/:folioSolicitud', (req, res) => {
         }
     });
 });
-
+//GENERAR PDF BUSQUEDA POR VALE, LLAMA AL VIEW DEL PDF
 app.get('/generatePDF', (req, res) => {
     const valePDF = parseInt(req.query.folioValePDF, 10);
     console.log(valePDF);
@@ -449,6 +457,22 @@ app.post('/guardar-datos', async (req, res)=>{
         return `${año}-${mes}-${dia}`;
     }
 })
+//ACTUALIZAR ESTADO DE LAS SOLICITUDES
+app.post('/actualizar-estado', (req, res) => {
+    const { folio, nuevoEstado } = req.body;
+
+    const query = 'UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ?';
+
+    connection.query(query, [nuevoEstado, folio], (error, results, fields) => {
+        if (error) {
+            console.error('Error al actualizar la base de datos:', error);
+            res.status(500).json({ error: 'Error al actualizar el estado en la base de datos' });
+        } else {
+            console.log('Estado actualizado en la base de datos:', results);
+            res.json({ success: true, mensaje: 'Estado actualizado exitosamente' });
+        }
+    });
+});
 
 //12 Auth page
 app.get('/', (req, res)=>{

@@ -633,65 +633,50 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="resources/css/solicitud_historial2.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">      
+        
         <title>Historial</title>
     </head>
-    <body class="indexHistorial">
-        
+    <body class="historialBody">
         <div class="historialContenedor">
-            <h2 class="historialTitulo">Historial</h2>
-            <div>
-                <input class="inputBuscar" type="text" placeholder="Buscar...">
-                <button class="botonBuscar">Buscar</button>
-                <button class="botonEditar">Editar</button>
-                <button class="botonEliminar" onclick="confirmarEliminacion()">Eliminar</button>
-            </div>
-
-            <div class="tablaContenedor">
-                <table class="historialTabla">
-                    <thead class="tablaEncabezados">
-                        <tr>
-                            <th>ID</th>
-                            <th>Solicitudes</th>
-                            <th>Vales</th>
-                            <th>Dictamen</th>
-                        </tr>
-                    </thead>
-                    <tbody class="tablaInformacion">
-                        <tr class="tablaFila" onclick="resaltarFila(this)">
-                            <td>1</td>
-                            <td>Solicitud01</td>
-                            <td>vale01</td>
-                            <td>Dictamen01</td>
-                        </tr>
-                        <tr class="tablaFila" onclick="resaltarFila(this)">
-                            <td>2</td>
-                            <td>Solicitud02</td>
-                            <td>Vale02</td>
-                            <td>Dictamen02</td>
-                        </tr>
-                        <tr class="tablaFila" onclick="resaltarFila(this)">
-                            <td>3</td>
-                            <td>Solicitud03</td>
-                            <td>Vale03</td>
-                            <td>Dictamen03</td>
-                        </tr>
-                        <tr class="tablaFila" onclick="resaltarFila(this)">
-                            <td>4</td>
-                            <td>Solicitud04</td>
-                            <td>Vale04</td>
-                            <td>Dictamen04</td>
-                        </tr>
-                        <tr class="tablaFila" onclick="resaltarFila(this)">
-                            <td>5</td>
-                            <td>Solicitud05</td>
-                            <td>Vale05</td>
-                            <td>Dictamen05</td>
-                        </tr>
-                        </tbody>
-                </table>
+            <h2 id="tituloBitacora">Historial Vales</h2>   
+            <div class="historialTablaContenedor">
+                <div class="table-responsive">
+                    <table  class="table table-hover table-light">
+                        <thead>
+                            <tr class="table-dark">
+                                <td>Folio</td>
+                                <td>Vale</td>
+                                <td>Equipo</td>
+                                <td>Marca</td>
+                                <td>Modelo</td>
+                                <td>NoSerie</td>
+                                <td>Estado</td>
+                                <td>Dictamen</td>
+                                <td>Vale-PDF</td>
+                                <td>Dicta-PDF</td>
+                            </tr>
+                        </thead>
+                        
+                        <% vales.forEach((variables) => { %>
+                            <tr>
+                                <td><%= variables.FolioSolicitud %></td>
+                                <td><%= variables.idVale %></td>
+                                <td><%= variables.Equipo %></td>
+                                <td><%= variables.MarcaEquipo %></td>
+                                <td><%= variables.ModeloEquipo %></td>
+                                <td><%= variables.NoSerieEquipo %></td>
+                                <td><%= variables.Estado %></td>
+                                <td><%= variables.IdDictamen %></td>
+                                <td><img src="resources/images/downloads.png" alt="Descargar Vale"></td>
+                                <td><img src="resources/images/downloads.png" alt="Descargar Dictamen"></td>
+                                
+                            </tr>
+                        <% }); %>
+                    </table>
+                </div>
             </div>
         </div>
-        <script src="resources/scripts/solicitud_historial2.js"></script>
     </body>
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
@@ -706,36 +691,88 @@
         <title>Statistics Example</title>
     </head>
     <body>
-        <div class="container">
-            <h1>CENTRO DE INGENIERIA COMPUTACIONAL</h1>
-            <h2>SOLICITUDES PENDIENTES</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Folio</th>
-                        <th>Nombre</th>
-                        <th>Estatus</th>
-                        <th>Observacion</th>
-                        <th>Fecha Hora</th>
+        <div class="container" >
+            <h2 id="estadoSolicitudes">Estado de solicitudes</h2>
+            
+            <div class="table-responsive">
+                <table  class="table table-hover table-light table-bordered" id="estatusTabla">
+                    <tr class="table-dark">
+                        <th colspan="4" class="tablaTitulos">Abierto</th>
+                        <th colspan="3" class="tablaTitulos">Pendiente</th>
+                        <th colspan="2" class="tablaTitulos">Cerrado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>2022-06-01</td>
-                        <td>14:30</td>
-                        <td>12345</td>
-                        <td>Juan Perez</td>
-                        <td>Pendiente</td>
-                        <td>-</td>
-                        <td>2022-06-01 14:30</td>
+                    <tr class="table-secondary">
+                        <td>Folio</td>
+                        <td>Equipo</td>
+                        <td>Fecha</td>
+                        <td id="bordeD">Estatus</td>
+                        <td >Folio</td>
+                        <td>Equipo</td>
+                        <td id="bordeDer">Estatus</td>
+                        <td>Folio</td>
+                        <td>Equipo</td>
                     </tr>
-                    <!-- Add more rows as needed -->
+                    <tr class="table-light">
+                        <% for (let i = 0; i < Math.max(abierto.length, pendiente.length, cerrado.length); i++) { %>
+                            <tr>
+                                <!-- Abierto -->
+                                <% if (i < abierto.length) { %>
+                                    <td><%= abierto[i].FolioSolicitud %></td>
+                                    <td id="equipoEstado<%= i %>"><%= abierto[i].Equipo %></td>
+                                    <td id="fechaEstado<%= i %>"><%= abierto[i].Fecha %></td>
+                                    <td class="seleccion" id="bordeDerecho<%= i %>" >
+                                        <select class="form-select cambiarEstado" data-folio="<%= abierto[i].FolioSolicitud %>">
+                                            <option value="Abierto" selected>Abierto</option>
+                                            <option value="Pendiente">Pendiente</option>
+                                            <option value="Cerrado">Cerrado</option>
+                                        </select>
+                                    </td>
+                                <% } else { %>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td id="bordeDerechoVacio"></td>
+                                <% } %>
+                
+                                <!-- Pendiente -->
+                                <% if (i < pendiente.length) { %>
+                                    <td><%= pendiente[i].FolioSolicitud %></td>
+                                    <td><%= pendiente[i].Equipo %></td>
+                                    <td class="seleccion" id="pendienteDerecha<%= i %>">
+                                        <select class="form-select cambiarEstado" data-folio="<%= pendiente[i].FolioSolicitud %>">
+                                            <option value="Pendiente" selected>Pendiente</option>
+                                            <option value="Cerrado">Cerrado</option>
+                                        </select>
+                                    </td>
+                                <% } else { %>
+                                    <td></td>
+                                    <td></td>
+                                    <td id="pendienteVacioDerecha"></td>
+                                  
+                                <% } %>
+                
+                                <!-- Cerrado -->
+                                <% if (i < cerrado.length) { %>
+                                    <td><%= cerrado[i].FolioSolicitud %></td>
+                                    <td><%= cerrado[i].Equipo %></td>
+                                <% } else { %>
+                                    <td></td>
+                                    <td></td>
+                                    
+                                <% } %>
+                            </tr>
+                        <% } %>
+                    </tr>
                 </tbody>
             </table>
+            </div>
+            <div class="guardarCambios">
+                <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
+            </div>
         </div>
-        <button class="statistics-btn">Estadisticas</button>
+        <script src="resources/scripts/estatus.js"></script>
         </body>
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
