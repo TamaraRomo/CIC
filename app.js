@@ -545,8 +545,8 @@ app.get('/logout', (req, res)=>{
 })
 
 //Hacemos que funcione el servidor local en el puerto
-app.listen(3000, (req, res)=> {
-    console.log('SERVER RUNNING IN http://localhost:3000');
+app.listen(80, (req, res)=> {
+    console.log('SERVER RUNNING IN http://localhost:80');
 });
 
 
