@@ -4,12 +4,12 @@
 
 /*Formulario Creación de Dictámenes*/
 .creacionDictamen{
-    border: 1px solid #311C6C;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     border-radius: 5px;
     margin: auto;
     margin-top: 10px;
     padding: 0 0 0 1em;
-    background-color: #babdf0;
+    background-color: #fafafaf6;
     width: 85%;
 }
 .creacionDictamen h2,#tituloHistorialSoli{
@@ -24,11 +24,11 @@
     margin-top: 1em;
 }
 .historialSolicitudes {
-    border: 1px solid #311C6C;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     border-radius: 5px;
     margin: auto;
     padding: 0 2em; /* Modificado el padding */
-    background-color: #babdf0;
+    background-color: #fafafaf6;
     width: 85%;
     text-align: center; /* Alineación del texto centrada */
     box-sizing: border-box; /* Incluir padding en el ancho total */
@@ -74,6 +74,7 @@
     border: 1px solid #91AEE7;
     border-radius: 3px;
     padding: 4px;
+
 }
 
 /* Botón generar */

@@ -1,34 +1,13 @@
 *{
     font-family: 'Roboto';
 }
-/*Encabezado*/
-.encabezado{
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin-bottom: 1em;
-}
-
-.encabezado h1{
-    font-weight: lighter;
-    vertical-align: baseline;
-}
 /*Formulario Creación de Dictámenes*/
-.creacionDictamen{
-    border: 1px solid #311C6C;
-    border-radius: 5px;
-    margin: auto;
-    padding: 0 0 0 1em;
-    background-color: #babdf0;
-    width: 85%;
-}
-
 .historialSolicitudes {
-    border: 1px solid #311C6C;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     border-radius: 5px;
     margin: auto;
     padding: 0 2em; /* Modificado el padding */
-    background-color: #babdf0;
+    background-color: #fafafaf6;
     width: 85%;
     text-align: center; /* Alineación del texto centrada */
     box-sizing: border-box; /* Incluir padding en el ancho total */

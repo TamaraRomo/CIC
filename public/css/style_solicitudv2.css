@@ -3,11 +3,12 @@
 }
 /*Formulario de solicitud*/
 .solicitud{
-    border: 1px solid #311C6C;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     border-radius: 5px;
     margin: auto;
     padding: 0 0 0 4em;
-    background-color: #babdf0;
+    background-color: #fafafaf6;
+    /*border: 1px solid black;*/
     width: 85%;
 
 }
@@ -15,6 +16,7 @@
     text-align: right;
     margin-right: 2em;
     margin-bottom: 0;
+    font-weight: bold;
 }
 .solicitud h2{
     margin-top: 0;
@@ -58,8 +60,8 @@ fieldset {
 #descripcion{
     width: 95%;
     display: block;
-    border: none;
     margin-bottom: 1em;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
 }
 .enviarSoli{
     text-align: right;

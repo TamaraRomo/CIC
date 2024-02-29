@@ -46,6 +46,7 @@ body {
 .contenido {
     padding: 10px; /* Reducir el relleno del contenido */
     margin-bottom: 50px; /* Reducir el margen inferior del contenido */
+    background-color: #f0f0f0;
 }
 
 .contenido-individual {
