@@ -5,6 +5,7 @@ const pdf = require('html-pdf');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
+const puppeteer = require('puppeteer');
 const {authPage,authSub} = require('./middleware')
 //seteamos urlencoded para capturar los datos del formulario
 app.use(express.urlencoded({ extended: false }));
@@ -91,7 +92,7 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
         });
     }
     const edificios = await query('SELECT * FROM edificios');
-    const folios = await query('SELECT FolioSolicitud FROM solicitudes');
+    const folios = await query('SELECT FolioSolicitud FROM solicitudes WHERE NOT EXISTS ( SELECT 1 FROM vales WHERE vales.FolioSolicitud = solicitudes.FolioSolicitud )');
     const usuarios = await query('SELECT IdUsuario,Nombre from usuarios');
     const historialSoli = await query(`SELECT s.FolioSolicitud AS FolioSolicitud, s.Fecha AS Fecha, s.Hora AS Hora, u.Nombre AS NombreUsuario, s.Equipo AS Equipo, s.Estado AS Estado, CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' WHEN d.FolioSolicitud IS NOT NULL THEN 'No disponible' ELSE 'No Disponible' END AS Vale, CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario; `);
     const soloAbiertas = await query('SELECT * FROM solicitudes WHERE Estado = "Abierto"')
@@ -383,6 +384,59 @@ app.post('/vales', async(req, res) => {
     const marca = req.body.marca;
     const modelo = req.body.modelo;
     const estado = req.body.estatus;
+
+    const { folios, equipos, serie, marcaE, modeloE, caracteristicas, estatus, revision } = req.body;
+    const fechaHoraActual = new Date().toLocaleString();
+    const folioSeleccionado = folios;
+    const templatePath = path.join(__dirname, 'views', 'generarVale.ejs');
+    fs.readFile(templatePath, 'utf8', async (err, data) => {
+        if (err) {
+            console.error('Error al leer la plantilla HTML:', err);
+            return res.status(500).send('Error interno del servidor');
+        }
+    const htmlContent = ejs.render(data, {
+            folio: folioSeleccionado,
+            equipos,
+            serie,
+            marca,
+            modelo,
+            caracteristicas,
+            estatus,
+            revision,
+            fechaHoraActual
+        });
+                // Crear una instancia de Puppeteer
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        
+        const pdfPath = path.join(__dirname, 'docs', `generarVale${folioSeleccionado}.pdf`);
+        await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+        await page.pdf({ path: pdfPath, format: 'A4' });
+        await browser.close();
+        app.get('/:filename', (req, res) => {
+            const { filename } = req.params;
+            const filePath = path.join(__dirname,'docs',filename);
+            res.download(filePath, (err) => {
+                if (err) {
+                    console.error('Error al descargar el archivo PDF:', err);
+                    return res.status(500).send('Error interno del servidor');
+                } else {
+                    console.log('Archivo PDF descargado correctamente');
+                    res.render('vales', {
+                        folioSolicitudes: [{ folioSeleccionado }],
+                        alert: {
+                            alertTitle: 'Ã‰xito',
+                            alertMessage: 'PDF generado y descargado correctamente',
+                            alertIcon: 'success',
+                            showConfirmButton: true,
+                            timer: 5000,
+                            ruta: 'panelAdmin'
+                        }
+                    });
+                }
+            });
+        })
+    })
     connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo, Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
         if(error){
             console.log(error);
@@ -408,6 +462,7 @@ app.post('/vales', async(req, res) => {
         return `${año}-${mes}-${dia}`;
     }
 });
+
 //DICTAMENES
 app.post('/guardar-datos', async (req, res)=>{
     const usuario = req.session.name;
@@ -493,3 +548,5 @@ app.get('/logout', (req, res)=>{
 app.listen(3000, (req, res)=> {
     console.log('SERVER RUNNING IN http://localhost:3000');
 });
+
+

@@ -319,7 +319,8 @@
                 icon: '<%= alertIcon %>',
                 showConfirmButton: <%= showConfirmButton %>,
                 timer: <%= timer %>
-            }).then(() =>{
+            }).then((result) =>{
+                window.location.href = '/Vale_de_entrada_001.pdf';
                 window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
             })
         </script>
@@ -680,7 +681,7 @@
     </body>
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
-
+<!-----ESTATUSSSSSSSS--------------------------------------------------------------------------------------------->
     <div id="Estatus" class="contenido-individual">
         <!-- Contenido de historial -->
     <head>
@@ -743,6 +744,7 @@
                                     <td class="seleccion" id="pendienteDerecha<%= i %>">
                                         <select class="form-select cambiarEstado" data-folio="<%= pendiente[i].FolioSolicitud %>">
                                             <option value="Pendiente" selected>Pendiente</option>
+                                            <option value="Abierto">Abierto</option>
                                             <option value="Cerrado">Cerrado</option>
                                         </select>
                                     </td>

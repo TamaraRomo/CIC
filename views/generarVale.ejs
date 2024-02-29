@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vale de entrada</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { text-align: center; }
+        table { margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        td { text-align: left; }
+        .footer { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); text-align: center; }
+        .logo-left { position: absolute; top: 20px; left: 20px; width: 100px; }
+        .logo-right { position: absolute; top: 20px; right: 20px; width: 100px; }
+    </style>
+</head>
+<body>
+    <!-- Imágenes -->
+    <img src="resources\uac_logo.png" class="logo-left">
+    <h1>CIC ASSISTANCE</h1>
+    <img src="resources\facu_logo.png" class="logo-right">
+    <h2 style="text-align: center;">Vale de entrada</h2>
+    
+    <!-- Tabla -->
+    <table>
+        <tr>
+            <th>Folio</th>
+            <td><%= folio %></td>
+        </tr>
+        <tr>
+            <th>Equipos</th>
+            <td><%= equipos %></td>
+        </tr>
+        <tr>
+            <th>No. Serie</th>
+            <td><%= serie %></td>
+        </tr>
+        <tr>
+            <th>Marca</th>
+            <td><%= marca %></td>
+        </tr>
+        <tr>
+            <th>Modelo</th>
+            <td><%= modelo %></td>
+        </tr>
+        <tr>
+            <th>Características</th>
+            <td><%= caracteristicas %></td>
+        </tr>
+        <tr>
+            <th>Estatus</th>
+            <td><%= estatus %></td>
+        </tr>
+        <tr>
+            <th>Revisión</th>
+            <td><%= revision %></td>
+        </tr>
+    </table>
+
+    <!-- Pie de página -->
+    <div class="footer">Fecha de generación: <%= fechaHoraActual %></div>
+</body>
+</html>
