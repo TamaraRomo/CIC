@@ -5,6 +5,7 @@ const pdf = require('html-pdf');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
+const {authPage,authSub} = require('./middleware')
 //seteamos urlencoded para capturar los datos del formulario
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -39,16 +40,16 @@ console.log(__dirname);
 app.get('/login', (req, res) => {
     res.render('login');
 });
-app.get('/registerP', (req, res) => {
+app.get('/registerP',authPage('Admin'), (req, res) => {
     res.render('register');
 });
-app.get('/generarDictamen', (req, res) => {
+app.get('/generarDictamen',authPage('Admin'), (req, res) => {
     res.render('generarDictamen');
 });
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
-app.get('/panelUsuario',checkRole('Usuario'), async (req, res) => {
+app.get('/panelUsuario',authPage(["Usuario","Admin"]), async (req, res) => {
 
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
@@ -76,7 +77,7 @@ app.get('/panelUsuario',checkRole('Usuario'), async (req, res) => {
         historial: historial,
     });
 });
-app.get('/panelAdmin',checkRole('Admin'), async (req, res) => {
+app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
         return res.render('login', {
@@ -123,17 +124,9 @@ function query(sql) {
     });
 }
 
-function checkRole(role) {
-    return (req, res, next) => {
-        if (req.session.loggedin && req.session.rol === role) {
-            return next();
-        }
-        res.redirect('/login');
-    };
-}
 
 // BUSQUEDA DE FOLIO PARA RELLENO AUTOMATICO DE INFO EN DICTAMENES
-app.get('/obtener-informacion-folio/:folioSolicitud', (req, res) => {
+app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, res) => {
     const folioSolicitud = req.params.folioSolicitud;
     req.session.folioSolicitudDictamen = folioSolicitud;
     const query = 'SELECT idVale,Equipo,NoSerieEquipo,MarcaEquipo,ModeloEquipo FROM vales WHERE FolioSolicitud = ?';
@@ -156,7 +149,7 @@ app.get('/obtener-informacion-folio/:folioSolicitud', (req, res) => {
     });
 });
 //GENERAR PDF BUSQUEDA POR VALE, LLAMA AL VIEW DEL PDF
-app.get('/generatePDF', (req, res) => {
+app.get('/generatePDF',authPage('Admin'),(req, res) => {
     const valePDF = parseInt(req.query.folioValePDF, 10);
     console.log(valePDF);
     const query = 'SELECT idDictamen,Equipo, MarcaEquipo, ModeloEquipo, NoSerieEquipo, EstadoDictamen, DictamenFinal, caracDictamen, Observaciones, Descripcion FROM dictamenes WHERE idVale= ?'
@@ -195,7 +188,7 @@ app.get('/generatePDF', (req, res) => {
 
 
 //10 Hacer registro
-app.post('/registerP', async(req, res) => {
+app.post('/registerP',authPage('Admin'),async(req, res) => {
     const user = req.body.username;
     const name = req.body.name;
     const pass = req.body.password;
@@ -276,7 +269,7 @@ app.post('/solicitud', async(req, res) => {
     }
 });
 
-app.post('/solicitudAdmin', async(req, res) => {
+app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     const usuario = req.body.usuarios;
     const fecha = obtenerFechaActual();
     const hora = obtenerHoraActual();
