@@ -5,61 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vale de entrada</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        h1 { text-align: center; }
-        table { margin: 20px auto; border-collapse: collapse; }
-        th, td { border: 1px solid black; padding: 8px; }
-        th { background-color: #f2f2f2; }
-        td { text-align: left; }
-        .footer { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); text-align: center; }
-        .logo-left { position: absolute; top: 20px; left: 20px; width: 100px; }
-        .logo-right { position: absolute; top: 20px; right: 20px; width: 100px; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .container { width: 80%; max-width: 600px; text-align: left; padding: 20px; box-sizing: border-box; }
+        .header-section { text-align: left; }
+        .data-section { margin-top: 40px; padding: 0 5px; text-align: left; }
+        .data-section p { margin: 10px 0; padding-left: 50px;}
+        .data-section .status { display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
-    <!-- Imágenes -->
-    <img src="resources\uac_logo.png" class="logo-left">
+    <!-- Título -->
     <h1>CIC ASSISTANCE</h1>
-    <img src="resources\facu_logo.png" class="logo-right">
-    <h2 style="text-align: center;">Vale de entrada</h2>
-    
-    <!-- Tabla -->
-    <table>
-        <tr>
-            <th>Folio</th>
-            <td><%= folio %></td>
-        </tr>
-        <tr>
-            <th>Equipos</th>
-            <td><%= equipos %></td>
-        </tr>
-        <tr>
-            <th>No. Serie</th>
-            <td><%= serie %></td>
-        </tr>
-        <tr>
-            <th>Marca</th>
-            <td><%= marca %></td>
-        </tr>
-        <tr>
-            <th>Modelo</th>
-            <td><%= modelo %></td>
-        </tr>
-        <tr>
-            <th>Características</th>
-            <td><%= caracteristicas %></td>
-        </tr>
-        <tr>
-            <th>Estatus</th>
-            <td><%= estatus %></td>
-        </tr>
-        <tr>
-            <th>Revisión</th>
-            <td><%= revision %></td>
-        </tr>
-    </table>
 
-    <!-- Pie de página -->
-    <div class="footer">Fecha de generación: <%= fechaHoraActual %></div>
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Descripción -->
+        <div class="header-section">
+            <h3>Descripción</h3>
+            <h4>ENTRADA: Este apartado tiene 3 secciones de datos:</h4>
+            
+            <!-- Origen de la entrada -->
+            <h4>Origen de la entrada:</h4>
+            <ul>
+                <li>Por asignación de la dirección.</li>
+                <li>Por separación (en estos casos tiene que existir una hoja de solicitud de servicio técnico).</li>
+            </ul>
+            
+            <!-- Vale Entrada/Salida ALM -->
+            <table style="margin: 0 auto; border-collapse: collapse; width: 50%;">
+            <!-- Título -->
+                <tr style="border: 1px solid black;">
+                    <td style="text-align: center; padding: 1px;">
+                        <h4>Vale Entrada/Salida ALM</h4>
+                    </td>
+                </tr>
+            <!-- Descripción -->
+                <tr style="border: 1px solid black;">
+                    <td style="text-align: center; padding: 1px;">
+                        <p>Entrada</p>
+                    </td>
+                </tr>
+            <!-- Folio -->
+                <tr style="border: 1px solid black;">
+                    <td style="text-align: center; padding: 1px;">
+                        <h4>Folio: <%= folio %></h4>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Equipo/Accesorio -->
+        <div class="data-section">
+            <h4>Equipo/Accesorio: Debe identificarse cuál es el tipo de equipo/accesorio que se recibe.</h4>
+            
+            <!-- Equipo -->
+            <p><%= equipos %></p>
+        </div>
+
+        <!-- Datos del equipo/Accesorio -->
+        <div class="data-section">
+            <h4>Datos del equipo/Accesorio: Identificar los datos del equipo.</h4>
+            <p><strong>No. Serie:</strong> <%= serie %></p>
+            <p><strong>Marca:</strong> <%= marca %></p>
+            <p><strong>Modelo:</strong> <%= modelo %></p>
+            <p><strong>Características:</strong> <%= caracteristicas %></p>
+        </div>
+
+        <!-- Estatus del bien -->
+        <div class="data-section">
+            <h4>Estatus del bien: Señalar si el equipo funciona, requiere una pieza para ser reparado o no funciona.</h4>
+            
+        <!-- Fecha y Revisó -->
+        <div class="status">
+            <p><strong>Estatus:</strong> <%= estatus %></p>
+            <p><strong>Fecha:</strong> <%= fechaHoraActual %></p>
+        </div>
+            <p><strong>Revisó:</strong> <%= revision %></p>
+        </div>
+    </div>
 </body>
 </html>

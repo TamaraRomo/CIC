@@ -202,7 +202,7 @@ app.post('/registerP',authPage('Admin'),async(req, res) => {
         if (error) {
             console.log(error);
             if (error.code === 'ER_DUP_ENTRY') {
-                res.render('solicitud', {
+                res.render('alerta', {
                     alert: true,
                     alertTitle: "Error",
                     alertMessage: "¡Debe elegir otro nombre de usuario!",
@@ -213,7 +213,7 @@ app.post('/registerP',authPage('Admin'),async(req, res) => {
                 });
             }
         } else {
-            res.render('solicitud', {
+            res.render('alerta', {
                 alert: true,
                 alertTitle: "Registro",
                 alertMessage: "¡Registro Exitoso!",
@@ -545,8 +545,8 @@ app.get('/logout', (req, res)=>{
 })
 
 //Hacemos que funcione el servidor local en el puerto
-app.listen(80, (req, res)=> {
-    console.log('SERVER RUNNING IN http://localhost:80');
+app.listen(3000, (req, res)=> {
+    console.log('SERVER RUNNING IN http://localhost:3000');
 });
 
 
