@@ -240,7 +240,15 @@ app.post('/solicitud', async(req, res) => {
         if(error){
             console.log(error);
         }else{
-            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
+            const idSolicitud = results.insertId;
+            console.log(idSolicitud);
+            const logQuery = `INSERT INTO solicitudes_log (IdUsuario, FolioSolicitud, NuevoEstado, Fecha, Hora) VALUES (${req.session.idUsuario},${idSolicitud},"Abierto","${fecha}","${hora}")`;
+
+            connection.query(logQuery, (error, cambioResults) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Solicitud",
                 alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
@@ -248,6 +256,8 @@ app.post('/solicitud', async(req, res) => {
                 showConfirmButton: false,
                 timer: 1500,
                 ruta: 'panelUsuario'
+                })
+            }
             })
         }
     })
@@ -283,14 +293,24 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
         if(error){
             console.log(error);
         }else{
-            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
+            const idSolicitud = results.insertId;
+            console.log(idSolicitud);
+            const logQuery = `INSERT INTO solicitudes_log (IdUsuario, FolioSolicitud, NuevoEstado, Fecha, Hora) VALUES (${usuario},${idSolicitud},"Abierto","${fecha}","${hora}")`;
+
+            connection.query(logQuery, (error, cambioResults) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Solicitud",
                 alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
                 alertIcon: "success",
                 showConfirmButton: false,
                 timer: 1500,
-                ruta: 'panelAdmin'
+                ruta: 'panelUsuario'
+                })
+            }
             })
         }
     })
@@ -506,20 +526,62 @@ app.post('/guardar-datos', async (req, res)=>{
     }
 })
 //ACTUALIZAR ESTADO DE LAS SOLICITUDES
-app.post('/actualizar-estado', (req, res) => {
+app.post('/actualizar-estado', async (req, res) => {
     const { folio, nuevoEstado } = req.body;
+    const fecha = obtenerFechaActual().toString();
+    const hora = obtenerHoraActual().toString();
 
-    const query = 'UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ?';
+    // Consulta para actualizar el estado en la tabla solicitudes
+    const cambiarEstado = 'UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ?';
+    // Consulta para insertar el cambio en el log, solo si hay un cambio en el estado
+    const logQuery = 'INSERT INTO solicitudes_log (IdUsuario, FolioSolicitud, NuevoEstado, Fecha, Hora) VALUES (?, ?, ?, ?, ?)';
+    // Consulta para obtener el estado original antes de la actualización
+    const obtenerEstadoOriginal = 'SELECT Estado FROM solicitudes WHERE FolioSolicitud = ?';
 
-    connection.query(query, [nuevoEstado, folio], (error, results, fields) => {
+    connection.query(obtenerEstadoOriginal, [folio], async (error, results) => {
         if (error) {
-            console.error('Error al actualizar la base de datos:', error);
-            res.status(500).json({ error: 'Error al actualizar el estado en la base de datos' });
+            console.error('Error al obtener el estado original:', error);
+            res.status(500).json({ error: 'Error al obtener el estado original' });
         } else {
-            console.log('Estado actualizado en la base de datos:', results);
-            res.json({ success: true, mensaje: 'Estado actualizado exitosamente' });
+            const estadoOriginal = results[0].Estado;
+            // Ejecuta la consulta para cambiar el estado
+            connection.query(cambiarEstado, [nuevoEstado, folio], (updateError, updateResults) => {
+                if (updateError) {
+                    console.error('Error al actualizar la base de datos:', updateError);
+                    res.status(500).json({ error: 'Error al actualizar el estado en la base de datos' });
+                } else {
+                    console.log('Estado actualizado en la base de datos:', updateResults);
+                    // Inserta en el log solo si hay un cambio en el estado
+                    if (estadoOriginal !== nuevoEstado) {
+                        connection.query(logQuery, [req.session.idUsuario, folio, nuevoEstado, fecha, hora], (logError, logResults) => {
+                            if (logError) {
+                                console.error('Error al insertar en el log:', logError);
+                            } else {
+                                console.log('Cambio registrado en el log:', logResults);
+                            }
+                        });
+                    }
+                    res.json({ success: true, mensaje: 'Estado actualizado exitosamente' });
+                }
+            });
         }
     });
+    function obtenerFechaActual() {
+        const fecha = new Date();
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        return `${año}-${mes}-${dia}`;
+    }
+    function obtenerHoraActual() {
+        const fecha = new Date();
+        const horas = String(fecha.getHours()).padStart(2, '0');
+        const minutos = String(fecha.getMinutes()).padStart(2, '0');
+        const segundos = String(fecha.getSeconds()).padStart(2, '0');
+
+        return `${horas}:${minutos}:${segundos}`;
+
+    }
 });
 
 //12 Auth page

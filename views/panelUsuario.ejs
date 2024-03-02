@@ -53,7 +53,7 @@
                             <label for="edificio" class="labelMayor">Edificio y nivel</label>
                             <select name="edificio" id="edificio" class="form-select form-select-sm" required>
                                 <% edificios.forEach(edificios => { %>
-                                <option value="<%= edificios.IdEdificio %>"><%= edificios.NombreEdificio %></option>
+                                <option value="<%= edificios.IdEdificio %>"><%= edificios.NombreEdificio %>-<%= edificios.Nivel %></option>
                                 <% }); %>
                             </select>
                         </div>
