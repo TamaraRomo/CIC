@@ -429,7 +429,7 @@ app.post('/vales', async(req, res) => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         
-        const pdfPath = path.join(__dirname, 'docs', `generarVale${folioSeleccionado}.pdf`);
+        const pdfPath = path.join(__dirname, 'docs', `ValeST24-${folioSeleccionado}.pdf`);
         await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
         await page.pdf({ path: pdfPath, format: 'A4' });
         await browser.close();
