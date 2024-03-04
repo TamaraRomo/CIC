@@ -150,43 +150,50 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
     });
 });
 //GENERAR PDF BUSQUEDA POR VALE, LLAMA AL VIEW DEL PDF
-app.get('/generatePDF',authPage('Admin'),(req, res) => {
+app.get('/generatePDF', authPage('Admin'), (req, res) => {
     const valePDF = parseInt(req.query.folioValePDF, 10);
     console.log(valePDF);
-    const query = 'SELECT idDictamen,Equipo, MarcaEquipo, ModeloEquipo, NoSerieEquipo, EstadoDictamen, DictamenFinal, caracDictamen, Observaciones, Descripcion FROM dictamenes WHERE idVale= ?'
+    const query = 'SELECT idDictamen, Equipo, MarcaEquipo, ModeloEquipo, NoSerieEquipo, EstadoDictamen, DictamenFinal, caracDictamen, Observaciones, Descripcion FROM dictamenes WHERE idVale = ?';
+
     // Realiza la consulta a la base de datos para obtener los datos de la tabla dictamenes
-    connection.query(query,[valePDF], (error, results) => {
+    connection.query(query, [valePDF], (error, results) => {
         if (error) {
             console.log('Error al obtener datos de la base de datos:', error);
             res.status(500).send('Error al obtener datos de la base de datos');
         } else {
-            // Renderiza el contenido del PDF con los datos obtenidos
-            ejs.renderFile(path.join(__dirname, './views/', 'generarDictamen.ejs'), {          
-                dictamenes: results
-            }, (err, data) => {
-                if (err) {
-                    res.status(500).send(err);
-                } else {
-                    // Crea el archivo PDF
-                    const pdfFilePath = path.join(__dirname, './docs/', 'reporte3.pdf');
-                    const options = { format: 'Letter', orientation: 'landscape' };
-                    pdf.create(data, options).toFile(pdfFilePath, function (err, data) {
-                        if (err) {
-                            res.status(500).send(err);
-                        } else {
-                            // Lee el contenido del archivo PDF y lo envía como respuesta
-                            const pdfData = fs.readFileSync(pdfFilePath, { encoding: 'base64' });
-                            res.send(pdfData);
-                        }
-                    });
-                }
-            });
+            // Verifica si se obtuvieron resultados de la consulta
+            if (results.length > 0) {
+                const idDictamen = results[0].idDictamen;
+
+                // Renderiza el contenido del PDF con los datos obtenidos
+                ejs.renderFile(path.join(__dirname, './views/', 'generarDictamen.ejs'), {
+                    dictamenes: results
+                }, (err, data) => {
+                    if (err) {
+                        res.status(500).send(err);
+                    } else {
+                        // Crea el archivo PDF con el nombre personalizado
+                        const pdfFileName = `DT24-${idDictamen}.pdf`;
+                        const pdfFilePath = path.join(__dirname, './docs/', pdfFileName);
+                        const options = { format: 'Letter', orientation: 'landscape' };
+                        
+                        pdf.create(data, options).toFile(pdfFilePath, function (err, data) {
+                            if (err) {
+                                res.status(500).send(err);
+                            } else {
+                                // Lee el contenido del archivo PDF y lo envía como respuesta
+                                const pdfData = fs.readFileSync(pdfFilePath, { encoding: 'base64' });
+                                res.send(pdfData);
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.status(404).send('No se encontraron dictámenes para el folio de vale proporcionado');
+            }
         }
     });
 });
-
-
-
 
 //10 Hacer registro
 app.post('/registerP',authPage('Admin'),async(req, res) => {
@@ -429,7 +436,7 @@ app.post('/vales', async(req, res) => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         
-        const pdfPath = path.join(__dirname, 'docs', `generarVale${folioSeleccionado}.pdf`);
+        const pdfPath = path.join(__dirname, 'docs', `ValeST24-${folioSeleccionado}.pdf`);
         await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
         await page.pdf({ path: pdfPath, format: 'A4' });
         await browser.close();
@@ -506,8 +513,8 @@ app.post('/guardar-datos', async (req, res)=>{
         }else{
             res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
-                alertTitle: "Solicitud",
-                alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
+                alertTitle: "Dictamen",
+                alertMessage: "¡Dictamen creado correctamente!",
                 alertIcon: "success",
                 showConfirmButton: false,
                 timer: 1500,
@@ -582,6 +589,51 @@ app.post('/actualizar-estado', async (req, res) => {
         return `${horas}:${minutos}:${segundos}`;
 
     }
+});
+
+//DESCARGAR PDF DESDE EL HISTORIAL
+//DESCARGAR VALE
+app.get('/descargarPDFvale', (req, res) => {
+    const folioSolicitud = req.query.folioSolicitud;
+    const pdfFileName = `ValeST24-${folioSolicitud}.pdf`; // Asegúrate de que el nombre del archivo refleje tu estructura
+    const pdfFilePath = path.join(__dirname, 'docs', pdfFileName);
+
+    res.download(pdfFilePath, (err) => {
+        if (err) {
+            console.error('Error al descargar el archivo PDF:', err);
+            res.render('alerta', {
+                alert: true,
+                alertTitle: "Vale no encontrado",
+                alertMessage: "Cree el vale para que se pueda descargar",
+                alertIcon: "warning",
+                showConfirmButton: true,
+                timer: 3000,  
+                ruta: 'panelAdmin'
+            });
+        }
+    });
+});
+
+//DESCARGAR DICTAMEN
+app.get('/descargarPDFdictamen', (req, res) => {
+    const idDictamen = req.query.idDictamen;
+    const pdfFileName = `DT24-${idDictamen}.pdf`; // Asegúrate de que el nombre del archivo refleje tu estructura
+    const pdfFilePath = path.join(__dirname, 'docs', pdfFileName);
+
+    res.download(pdfFilePath, (err) => {
+        if (err) {
+            console.error('Error al descargar el archivo PDF:', err);
+            res.render('alerta', {
+                alert: true,
+                alertTitle: "Dictamen no encontrado",
+                alertMessage: "Cree el dictamen para que se pueda descargar",
+                alertIcon: "warning",
+                showConfirmButton: true,
+                timer: 3000,  
+                ruta: 'panelAdmin'
+            });
+        }
+    });
 });
 
 //12 Auth page

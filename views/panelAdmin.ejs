@@ -669,8 +669,8 @@
                                 <td><%= variables.NoSerieEquipo %></td>
                                 <td><%= variables.Estado %></td>
                                 <td><%= variables.IdDictamen %></td>
-                                <td><img src="resources/images/downloads.png" alt="Descargar Vale"></td>
-                                <td><img src="resources/images/downloads.png" alt="Descargar Dictamen"></td>
+                                <td><a href="/descargarPDFvale?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
+                                <td><a href="/descargarPDFdictamen?idDictamen=<%= variables.IdDictamen %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
                                 
                             </tr>
                         <% }); %>
