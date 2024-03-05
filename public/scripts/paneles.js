@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", function () {
+    // Activar la primera opción por defecto
+    mostrarContenido('solicitud-de-reportes')
+});
 function mostrarContenido(id) {
     // Oculta todos los contenidos
     var contenidos = document.querySelectorAll('.contenido-individual');

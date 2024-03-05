@@ -41,6 +41,7 @@ console.log(__dirname);
 app.get('/login', (req, res) => {
     res.render('login');
 });
+
 app.get('/registerP',authPage('Admin'), (req, res) => {
     res.render('register');
 });
@@ -150,13 +151,12 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
     });
 });
 //GENERAR PDF BUSQUEDA POR VALE, LLAMA AL VIEW DEL PDF
-app.get('/generatePDF', authPage('Admin'), (req, res) => {
+app.get('/generatePDF',authPage('Admin'),(req, res) => {
     const valePDF = parseInt(req.query.folioValePDF, 10);
     console.log(valePDF);
-    const query = 'SELECT idDictamen, Equipo, MarcaEquipo, ModeloEquipo, NoSerieEquipo, EstadoDictamen, DictamenFinal, caracDictamen, Observaciones, Descripcion FROM dictamenes WHERE idVale = ?';
-
+    const query = 'SELECT idDictamen,Equipo, MarcaEquipo, ModeloEquipo, NoSerieEquipo, EstadoDictamen, DictamenFinal, caracDictamen, Observaciones, Descripcion FROM dictamenes WHERE idVale= ?'
     // Realiza la consulta a la base de datos para obtener los datos de la tabla dictamenes
-    connection.query(query, [valePDF], (error, results) => {
+    connection.query(query,[valePDF], (error, results) => {
         if (error) {
             console.log('Error al obtener datos de la base de datos:', error);
             res.status(500).send('Error al obtener datos de la base de datos');
@@ -176,7 +176,7 @@ app.get('/generatePDF', authPage('Admin'), (req, res) => {
                         const pdfFileName = `DT24-${idDictamen}.pdf`;
                         const pdfFilePath = path.join(__dirname, './docs/', pdfFileName);
                         const options = { format: 'Letter', orientation: 'landscape' };
-                        
+
                         pdf.create(data, options).toFile(pdfFilePath, function (err, data) {
                             if (err) {
                                 res.status(500).send(err);
@@ -194,6 +194,9 @@ app.get('/generatePDF', authPage('Admin'), (req, res) => {
         }
     });
 });
+
+
+
 
 //10 Hacer registro
 app.post('/registerP',authPage('Admin'),async(req, res) => {
@@ -241,8 +244,15 @@ app.post('/solicitud', async(req, res) => {
     const telefono = req.body.telefono;
     const edificio = req.body.edificio;
     const ubicacion = req.body.area;
-    const equipo = req.body.equiposSeleccionados || '';
+    let equipo = req.body.equiposSeleccionados || '';
     const descripcion = req.body.descripcion;
+    const otroInput = req.body.otroInput || '';
+
+    // Añadir el valor de otroInput a la cadena de equipos
+    if (otroInput) {
+        equipo += (equipo ? ':' : '') + otroInput;
+    }
+    console.log(otroInput);
     connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
@@ -294,8 +304,14 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     const telefono = req.body.telefono;
     const edificio = req.body.edificio;
     const ubicacion = req.body.area;
-    const equipo = req.body.equiposSeleccionados || '';
+    let equipo = req.body.equiposSeleccionados || '';
     const descripcion = req.body.descripcion;
+    const otroInput = req.body.otroInput || '';
+
+    // Añadir el valor de otroInput a la cadena de equipos
+    if (otroInput) {
+        equipo += (equipo ? ':' : '') + otroInput;
+    }
     connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
@@ -315,7 +331,7 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
                 alertIcon: "success",
                 showConfirmButton: false,
                 timer: 1500,
-                ruta: 'panelUsuario'
+                ruta: 'panelAdmin'
                 })
             }
             })
@@ -405,13 +421,20 @@ app.post('/vales', async(req, res) => {
     const usuario = req.session.name;
     const fecha = obtenerFechaHoraActual();
     const folioSolicitud = req.body.folios;
-    console.log(folioSolicitud);
-    const equipo = req.body.equiposSeleccionados || '';
+    let equipo = req.body.listaEquiposCheck || '';
+    const otroInput = req.body.otroInput2 || '';  
     const noSerie = req.body.serie;
     const marca = req.body.marca;
     const modelo = req.body.modelo;
     const estado = req.body.estatus;
 
+    
+    // Añadir el valor de otroInput a la cadena de equipos
+    if (otroInput) {
+        equipo += (equipo ? ':' : '') + otroInput;
+    }
+    console.log("EYYYYY"+req.body.listaEquiposCheck);
+    
     const { folios, equipos, serie, marcaE, modeloE, caracteristicas, estatus, revision } = req.body;
     const fechaHoraActual = new Date().toLocaleString();
     const folioSeleccionado = folios;
@@ -471,7 +494,7 @@ app.post('/vales', async(req, res) => {
             res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Vale",
-                alertMessage: "¡Vale de Soporte Técnico Creado!",
+                alertMessage: "¡Vale y PDF creado corractamente!",
                 alertIcon: "success",
                 showConfirmButton: false,
                 timer: 1500,
@@ -591,8 +614,6 @@ app.post('/actualizar-estado', async (req, res) => {
     }
 });
 
-//DESCARGAR PDF DESDE EL HISTORIAL
-//DESCARGAR VALE
 app.get('/descargarPDFvale', (req, res) => {
     const folioSolicitud = req.query.folioSolicitud;
     const pdfFileName = `ValeST24-${folioSolicitud}.pdf`; // Asegúrate de que el nombre del archivo refleje tu estructura
@@ -635,6 +656,7 @@ app.get('/descargarPDFdictamen', (req, res) => {
         }
     });
 });
+
 
 //12 Auth page
 app.get('/', (req, res)=>{

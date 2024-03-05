@@ -7,18 +7,20 @@ function obtenerFechaActual() {
     const año = fecha.getFullYear();
     return `${dia}/${mes}/${año}`;
 }
-
-                // Agregar para campo para especificar otro equipo
-var otroCheckbox = document.getElementById("otro");
-var otroInput = document.getElementById("otroInput");
-otroCheckbox.addEventListener("change", function () {
-otroInput.disabled = !otroCheckbox.checked;
-if (!otroCheckbox.checked) {
-    otroCheckbox.value = "";
-     otroInput.value = "";
-}
-});
-otroInput.addEventListener("input", function () {
-    otroCheckbox.value = "Otro " + otroInput.value;
+document.addEventListener('DOMContentLoaded', function () {
+    var otroCheckbox = document.getElementById("otro");
+    var otroInput = document.getElementById("otroInput");
+    otroCheckbox.addEventListener("change", function () {
+        otroInput.disabled = !otroCheckbox.checked;
+        // Restaurar el valor original del checkbox 'otro' cuando no está marcado
+        if (!otroCheckbox.checked) {
+            otroCheckbox.value = "";
+            otroInput.value = "";
+        }
     });
-
+    otroInput.addEventListener("input", function () {
+        otroCheckbox.value = "Otro " + otroInput.value;
+        console.log(otroCheckbox.value);
+    });
+    }
+            );

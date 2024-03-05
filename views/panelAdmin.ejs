@@ -31,7 +31,7 @@
     <div class="opcion-menu" onclick="mostrarContenido('Vales')">Vales</div>
     <div class="opcion-menu" onclick="mostrarContenido('Dictamen')">Dictamen</div>
     <div class="opcion-menu" onclick="mostrarContenido('Historial')">Historial Solicitudes</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Historial2')">Historial General</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Historial2')">Historial Vales</div>
     <div class="opcion-menu" onclick="mostrarContenido('Estatus')">Estatus</div>
     <div class="opcion-menu" onclick="mostrarContenido('Registro')">Registro</div>
 </nav>
@@ -86,59 +86,56 @@
                         <legend class="labelMayor">Equipos</legend>
                         <div class="contenedor-checkbox">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Monitor" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="monitor1" value="Monitor" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="monitor">Monitor</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Nodo" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="nodo1" value="Nodo" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="nodo">Nodo</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="UPS" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="ups1" value="UPS" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="ups">UPS</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox"  name="equipos" id="equipos" value="Laptop" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="laptop1" value="Laptop" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="laptop">Laptop</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Proyector" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="proyector1" value="Proyector" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="proyector">Proyector</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Access Point" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="point" value="Access Point" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="access">Acess Point</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="PC" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="pc1" value="PC" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="pc">PC</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox"  name="equipos" id="equipos" value="Gabinete" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="gabinete1" value="Gabinete" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="gabinete">Gabinete</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox"  name="equipos" id="equipos" value="Teclado" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="teclado1" value="Teclado" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="teclado">Teclado</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Mouse" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="raton" value="Mouse" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="mouse">Mouse</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Teléfono" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="telef" value="Teléfono" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="telefono">Teléfono</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="equipos" id="equipos" value="Impresora" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="impresora1" value="Impresora" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="impresora">Impresora</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox"  name="equipos" id="otro" value="" onchange="checboxListado(this)">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="otro" value="Otro" data-input-id="otroInput" onchange="checboxListado(this)">
                                 <label class="form-check-label" for="otro">Otro</label>
-                            </div>
-                            <div id="otroInputContainer" >
-                                <label for="otroInput">Especifique:</label>
                                 <input class="form-control form-control-sm" type="text"  name="otroInput" id="otroInput" disabled>
                             </div>
                             <input type="hidden" name="equiposSeleccionados" id="equiposSeleccionados" value="">
@@ -252,14 +249,12 @@
                             <label class="form-check-label" for="impresora">Impresora</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox"  name="equipos" id="otro2" value="" onchange="handleCheckboxChange(this)">
-                            <label class="form-check-label" for="otro">Otro</label>
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="otro2" value="Otro" data-input-id="otroInput2" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="otro2">Otro</label>
+                            <input class="form-control form-control-sm" type="text"  name="otroInput2" id="otroInput2" disabled>
                         </div>
-                        <div id="otroInputContainer" >
-                            <label for="otroInput">Especifique:</label>
-                            <input class="form-control form-control-sm" type="text"  name="otroInput" id="otroInput2" disabled>
-                        </div>
-                        <input type="hidden" name="equiposSeleccionados" id="listaEquiposCheck" value="">
+                        <input type="hidden" name="listaEquiposCheck" id="listaEquiposCheck" value="">
+                    
                     </div>
                 </fieldset>
                 <fieldset>
