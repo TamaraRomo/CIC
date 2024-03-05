@@ -427,7 +427,7 @@ app.post('/vales', async(req, res) => {
     const marca = req.body.marca;
     const modelo = req.body.modelo;
     const estado = req.body.estatus;
-
+    const caracteris = req.body.caracteristicas;
     
     // Añadir el valor de otroInput a la cadena de equipos
     if (otroInput) {
@@ -487,7 +487,8 @@ app.post('/vales', async(req, res) => {
             });
         })
     })
-    connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo, Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
+    console.log(caracteris);
+    connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -661,12 +662,12 @@ app.get('/descargarPDFdictamen', (req, res) => {
 //12 Auth page
 app.get('/', (req, res)=>{
     if(req.session.loggedin){
-        res.render('index',{
+        res.render('login',{
             login: true,
             name: req.session.name
         });
     }else{
-        res.render('index',{
+        res.render('login',{
             login: false,
             name: 'Debe iniciar sesión'
         })
