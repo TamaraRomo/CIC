@@ -165,6 +165,31 @@
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
             <link rel="stylesheet" href="resources/css/solicitud_historial.css">
             <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Obtener todas las celdas de la columna Vale
+                    var celdasVale = document.querySelectorAll('#historial .table td:nth-child(5)');
+                    var celdasDictamen = document.querySelectorAll('#historial .table td:nth-child(7)');
+                    
+                    // Iterar sobre cada celda de vale
+                    celdasVale.forEach(function (celdaVale) {
+                        // Verificar el contenido de la celda
+                        if (celdaVale.textContent.trim() === 'No Disponible') {
+                            // Ocultar la columna siguiente (Descargar Vale)
+                            celdaVale.nextElementSibling.textContent = ' ';
+                        }
+                    });
+
+                    // Iterar sobre cada celda de dictamen
+                    celdasDictamen.forEach(function (celdaDic) {
+                        // Verificar el contenido de la celda
+                        if (celdaDic.textContent.trim() === 'No Disponible') {
+                            // Ocultar la columna siguiente (Descargar Vale)
+                            celdaDic.nextElementSibling.textContent = ' ';
+                        }
+                    });
+                });
+            </script>
         </head>
         <body class="bodyHistorial">
             <div class="historialSolicitudes">
@@ -194,8 +219,8 @@
                                 <th>Equipo</th>
                                 <th>Fecha</th>
                                 <th>Estado</th>
-                                <th>Vale</th>
-                                <th>Dictamen</th>
+                                <th colspan="2">Vale</th>
+                                <th colspan="2">Dictamen</th>
                             </tr>
                             <% historial.forEach(solicitud => { %>
                                 <!-- Fila de la tabla para cada solicitud en el historial -->
@@ -205,7 +230,9 @@
                                     <td><%= solicitud.Fecha %></td>
                                     <td><%= solicitud.Estado %></td>
                                     <td><%= solicitud.Vale %></td>
+                                    <td><a href="/descargarPDFvale?folioSolicitud=<%= solicitud.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
                                     <td><%= solicitud.Dictamen %></td>
+                                    <td><a href="/descargarPDFdictamen?folioSolicitud=<%= solicitud.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
                                 </tr>
                             <% }); %>
                         </table>
@@ -214,8 +241,10 @@
                 <p></p>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+            
         </body>
     </div>  
+
 
 </main>
 
