@@ -324,151 +324,112 @@
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
 <!-- DICTAMENES------------------------------------------------------------------------------------------------ -->
-    <div id="Dictamen" class="contenido-individual">
-        <!-- Contenido de historial -->
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Creación de Dictamen</title>
-        <link rel="stylesheet" href="resources/css/solicitud_dictamen.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    </head>
-    <body class="bodyDictamen">
-        <div class="creacionDictamen">
-            <p id="fechaDictamen"></p>
-            <h2>Creación de Dictámenes</h2>
-            <div class="row g-3">
-                <div class="col-auto">
-                    <label for="folioSolicitud" class="form-control-plaintext">Folio:</label>
-                </div>
-                <div class="col-auto">
-                    <input type="text" name="folioSolicitud" id="folioSolicitudDictamen" class="form-control"  placeholder="Folio de la solicitud de soporte técnico">
-                </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-outline-dark" id="btnBuscarFolio" onclick="buscarFolio()">Buscar</button> 
-                </div>
+<div id="Dictamen" class="contenido-individual">
+    <!-- Contenido de historial -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de Dictamen</title>
+    <link rel="stylesheet" href="resources/css/solicitud_dictamen.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bodyDictamen">
+    <div class="creacionDictamen">
+        <p id="fechaDictamen"></p>
+        <h2>Creación de Dictámenes</h2>
+        <div class="row g-3">
+            <div class="col-auto">
+                <label for="folioSolicitud" class="form-control-plaintext">Folio:</label>
             </div>
-            <form action="/guardar-datos" method="post">
-                <div class="contenedorDictamen">
-                    <div>
-                        <label for="valeId" class="labelMayor">Vale:</label>
-                        <input type="text" id="identificadorVale" name="valeId" class="form-control form-control-sm" required>
-                    </div>
-                    <div>
-                        <label for="equipoDictamen" class="labelMayor">Equipo:</label>
-                        <input type="text" id="equipoDictamen" name="equipoDictamen" class="form-control form-control-sm" required>
-                    </div>
-                    <div>
-                        <label for="marcaEquipo" class="labelMayor">Marca:</label>
-                        <input type="text" name="marcaEquipo" id="marcaEquipo" class="form-control form-control-sm" required> 
-                    </div>
-                    <div>
-                        <label for="modeloEquipo" class="labelMayor">Modelo:</label>
-                        <input type="text" name="modeloEquipo" id="modeloEquipo" class="form-control form-control-sm" required> 
-                    </div>
-                    <div>
-                        <label for="noSerieEquipo" class="labelMayor">N° de serie:</label>
-                        <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required> 
-                    </div>
-                    <div>
-                        <label for="estadoDictamen" class="labelMayor">Estado:</label>
-                        <select name="estadoDictamen" id="estadoDictamen" class="form-select form-select-sm" required>
-                            <option value="blanco">&nbsp;</option>
-                            <option value="vigente">Vigente</option>
-                            <option value="obsoleto">Obsoleto</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="tipoDictamen" class="labelMayor">Dictamen:</label>
-                        <select name="tipoDictamen" id="tipoDictamen" class="form-select form-select-sm" required>
-                            <option value="blanco">&nbsp;</option>
-                            <option value="Funciona">Funcional</option>
-                            <option value="No Funciona">Obsoleto</option>
-                            <option value="'Baja">Tramitar Baja</option>
-                        </select>
-                    </div>   
-                
-                </div>
-                <div class="contenedorSecundario">
-                    <div>
-                        <label for="caractDictamen" class="labelMayor">Características:</label>
-                        <textarea class="form-control" name="caractDictamen" id="caractDictamen" cols="30" rows="5" required></textarea>
-                    </div>
-                    <div>
-                        <label for="observacionesDictamen" class="labelMayor">Observaciones:</label>
-                        <textarea class="form-control" name="observacionesDictamen" id="observacionesDictamen" cols="30" rows="5" required></textarea>
-                    </div>
-                    <div>
-                        <label for="descripcionDictamen" class="labelMayor">Descripción técnica de partes necesarias:</label>
-                        <textarea class="form-control" name="descripcionDictamen" id="descripcionDictamen" cols="30" rows="5" required></textarea>
-                    </div>
-                    <div class="btnGuardarDatos">
-                        <button type="submit" id="btnGuardarDatos" class="btn btn-outline-dark" value="submit">Guardar Datos</button>
-                    </div>
-                </div>    
-            </form>
-        </div>
-        <div class="creacionDictamen">
-            <h2>Generar dictamen</h2>
-            <form action="" method="post">
-                <div class="row g-3" id="pdfDictamen">
-                    <div class="col-auto">
-                        <label for="folioValePDF" class="form-control-plaintext">Folio de vale:</label>
-                    </div>
-                    <div class="col-auto">
-                        <input type="text" name="folioValePDF" id="folioValePDF" class="form-control"  placeholder="Escribe el folio del vale">
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-outline-dark" id="btnBuscarFolioVale" onclick="buscarFolio()">Buscar</button> 
-                    </div>
-                </div>
-            </form>
-            <div class="btnGenerarPDF">
-                <button type="button" id="btnGenerarPDF" class="btn btn-outline-dark">Generar PDF</button>
+            <div class="col-auto">
+                <input type="text" name="folioSolicitud" id="folioSolicitudDictamen" class="form-control"  placeholder="Folio de la solicitud de soporte técnico">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-dark" id="btnBuscarFolio" onclick="buscarFolio()">Buscar</button> 
             </div>
         </div>
-        <br>
-        <div id="pdfContainer"></div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#btnGenerarPDF").click(function () {
-                var folioVale = $("#folioValePDF").val();
-                $.ajax({
-                    url: "/generatePDF",
-                    method: "GET",
-                    data: { folioValePDF: encodeURIComponent(folioVale) },
-                    success: function (data) {
-                        $("#pdfContainer").html('<object width="100%" height="600px" type="application/pdf" data="data:application/pdf;base64,' + data + '"></object>');
-                    },
-                    error: function (error) {
-                        console.error("Error al generar el PDF:", error.responseText);
-                    }
-                });
-            });
-        });
-    </script>
-    <script src="resources/scripts/dictamenes_fecha.js"></script>
-    <script src="resources/scripts/relleno_dictamen.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
-        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
-        <% if(typeof alert != "undefined"){ %>
-        <script>
-            Swal.fire({
-                title: '<%= alertTitle %>',
-                text: '<%= alertMessage %>',
-                icon: '<%= alertIcon %>',
-                showConfirmButton: <%= showConfirmButton %>,
-                timer: <%= timer %>
-            }).then(() =>{
-                window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
-            })
-        </script>
-        <% } %>
-    </body>
+        <form action="/guardar-datos-y-generar-pdf" method="post">
+            <div class="contenedorDictamen">
+                <div>
+                    <label for="valeId" class="labelMayor">Vale:</label>
+                    <input type="text" id="identificadorVale" name="valeId" class="form-control form-control-sm" required>
+                </div>
+                <div>
+                    <label for="equipoDictamen" class="labelMayor">Equipo:</label>
+                    <input type="text" id="equipoDictamen" name="equipoDictamen" class="form-control form-control-sm" required>
+                </div>
+                <div>
+                    <label for="marcaEquipo" class="labelMayor">Marca:</label>
+                    <input type="text" name="marcaEquipo" id="marcaEquipo" class="form-control form-control-sm" required> 
+                </div>
+                <div>
+                    <label for="modeloEquipo" class="labelMayor">Modelo:</label>
+                    <input type="text" name="modeloEquipo" id="modeloEquipo" class="form-control form-control-sm" required> 
+                </div>
+                <div>
+                    <label for="noSerieEquipo" class="labelMayor">N° de serie:</label>
+                    <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required> 
+                </div>
+                <div>
+                    <label for="estadoDictamen" class="labelMayor">Estado:</label>
+                    <select name="estadoDictamen" id="estadoDictamen" class="form-select form-select-sm" required>
+                        <option value="blanco">&nbsp;</option>
+                        <option value="vigente">Vigente</option>
+                        <option value="obsoleto">Obsoleto</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tipoDictamen" class="labelMayor">Dictamen:</label>
+                    <select name="tipoDictamen" id="tipoDictamen" class="form-select form-select-sm" required>
+                        <option value="blanco">&nbsp;</option>
+                        <option value="Funciona">Funcional</option>
+                        <option value="No Funciona">Obsoleto</option>
+                        <option value="'Baja">Tramitar Baja</option>
+                    </select>
+                </div>   
+            
+            </div>
+            <div class="contenedorSecundario">
+                <div>
+                    <label for="caracDictamen" class="labelMayor">Características:</label>
+                    <textarea class="form-control" name="caracDictamen" id="caracDictamen" cols="30" rows="5" required></textarea>
+                </div>
+                <div>
+                    <label for="observacionesDictamen" class="labelMayor">Observaciones:</label>
+                    <textarea class="form-control" name="observacionesDictamen" id="observacionesDictamen" cols="30" rows="5" required></textarea>
+                </div>
+                <div>
+                    <label for="descripcionDictamen" class="labelMayor">Descripción técnica de partes necesarias:</label>
+                    <textarea class="form-control" name="descripcionDictamen" id="descripcionDictamen" cols="30" rows="5" required></textarea>
+                </div>
+                <div class="btnGuardarDatos">
+                    <button type="submit" id="btnGuardarDatos" class="btn btn-outline-dark" value="submit">Guardar datos y generar PDF</button>
+                </div>
+            </div>    
+        </form>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="resources/scripts/dictamenes_fecha.js"></script>
+<script src="resources/scripts/relleno_dictamen.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+<!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+<% if(typeof alert != "undefined"){ %>
+    <script>
+        Swal.fire({
+            title: '<%= alertTitle %>',
+            text: '<%= alertMessage %>',
+            icon: '<%= alertIcon %>',
+            showConfirmButton: <%= showConfirmButton %>,
+            timer: <%= timer %>
+        }).then((result) =>{
+            window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+        })
+    </script>
+    <% } %>
+</body>
+</div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
 <!-- SOLICITUD DE HISTORIAL DE SOLICITUDES -->
 <div id="Historial" class="contenido-individual">
@@ -622,59 +583,77 @@
         </body>
     </div>
 <!-- HISTORIAL 2----------------------------------------------------------------------------------------------- -->
-    <div id="Historial2" class="contenido-individual">
-        <!-- Contenido de historial -->
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="resources/css/solicitud_historial2.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">      
-        
-        <title>Historial</title>
-    </head>
-    <body class="historialBody">
-        <div class="historialContenedor">
-            <h2 id="tituloBitacora">Historial Vales</h2>   
-            <div class="historialTablaContenedor">
-                <div class="table-responsive">
-                    <table  class="table table-hover table-striped">
-                        <thead>
-                            <tr class="table-dark">
-                                <td>Folio</td>
-                                <td>Vale</td>
-                                <td>Equipo</td>
-                                <td>Marca</td>
-                                <td>Modelo</td>
-                                <td>NoSerie</td>
-                                <td>Estado</td>
-                                <td>Dictamen</td>
-                                <td>Vale-PDF</td>
-                                <td>Dicta-PDF</td>
-                            </tr>
-                        </thead>
-                        
-                        <% vales.forEach((variables) => { %>
-                            <tr>
-                                <td><%= variables.FolioSolicitud %></td>
-                                <td><%= variables.idVale %></td>
-                                <td><%= variables.Equipo %></td>
-                                <td><%= variables.MarcaEquipo %></td>
-                                <td><%= variables.ModeloEquipo %></td>
-                                <td><%= variables.NoSerieEquipo %></td>
-                                <td><%= variables.Estado %></td>
-                                <td><%= variables.IdDictamen %></td>
-                                <td><a href="/descargarPDFvale?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
-                                <td><a href="/descargarPDFdictamen?idDictamen=<%= variables.IdDictamen %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
-                                
-                            </tr>
-                        <% }); %>
-                    </table>
-                </div>
+<div id="Historial2" class="contenido-individual">
+    <!-- Contenido de historial -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resources/css/solicitud_historial2.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">      
+    
+    <title>Historial</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtener todas las celdas de la columna IdDictamen
+            var celdasIdDictamen = document.querySelectorAll('.historialTablaContenedor .table td:nth-child(8)');
+            
+            // Iterar sobre cada celda
+            celdasIdDictamen.forEach(function (celda) {
+                // Verificar el contenido de la celda
+                if (celda.textContent.trim() === 'No existe') {
+                    // Obtener las celdas de las columnas "Dicta-PDF"
+                    var celdaDictaPDF = celda.parentElement.querySelector('td:nth-child(10)');
+                    
+                    // Cambiar el contenido por un espacio en blanco en ambas celdas
+                    celdaDictaPDF.textContent = ' ';
+                }
+            });
+        });
+    </script>
+</head>
+<body class="historialBody">
+    <div class="historialContenedor">
+        <h2 id="tituloBitacora">Historial Vales</h2>   
+        <div class="historialTablaContenedor">
+            <div class="table-responsive">
+                <table  class="table table-hover table-striped">
+                    <thead>
+                        <tr class="table-dark">
+                            <td>Folio</td>
+                            <td>Vale</td>
+                            <td>Equipo</td>
+                            <td>Marca</td>
+                            <td>Modelo</td>
+                            <td>NoSerie</td>
+                            <td>Estado</td>
+                            <td>Dictamen</td>
+                            <td>Vale-PDF</td>
+                            <td>Dicta-PDF</td>
+                        </tr>
+                    </thead>
+                    
+                    <% vales.forEach((variables) => { %>
+                        <tr>
+                            <td><%= variables.FolioSolicitud %></td>
+                            <td><%= variables.idVale %></td>
+                            <td><%= variables.Equipo %></td>
+                            <td><%= variables.MarcaEquipo %></td>
+                            <td><%= variables.ModeloEquipo %></td>
+                            <td><%= variables.NoSerieEquipo %></td>
+                            <td><%= variables.Estado %></td>
+                            <td><%= variables.IdDictamen %></td>
+                            <td><a href="/descargarPDFvale?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
+                            <td><a href="/descargarPDFdictamen?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
+                            
+                        </tr>
+                    <% }); %>
+                </table>
             </div>
         </div>
-    </body>
     </div>
+</body>
+</div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
 <!-----ESTATUSSSSSSSS--------------------------------------------------------------------------------------------->
     <div id="Estatus" class="contenido-individual">
