@@ -150,53 +150,6 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
         }
     });
 });
-//GENERAR PDF BUSQUEDA POR VALE, LLAMA AL VIEW DEL PDF
-app.get('/generatePDF',authPage('Admin'),(req, res) => {
-    const valePDF = parseInt(req.query.folioValePDF, 10);
-    console.log(valePDF);
-    const query = 'SELECT idDictamen,Equipo, MarcaEquipo, ModeloEquipo, NoSerieEquipo, EstadoDictamen, DictamenFinal, caracDictamen, Observaciones, Descripcion FROM dictamenes WHERE idVale= ?'
-    // Realiza la consulta a la base de datos para obtener los datos de la tabla dictamenes
-    connection.query(query,[valePDF], (error, results) => {
-        if (error) {
-            console.log('Error al obtener datos de la base de datos:', error);
-            res.status(500).send('Error al obtener datos de la base de datos');
-        } else {
-            // Verifica si se obtuvieron resultados de la consulta
-            if (results.length > 0) {
-                const idDictamen = results[0].idDictamen;
-
-                // Renderiza el contenido del PDF con los datos obtenidos
-                ejs.renderFile(path.join(__dirname, './views/', 'generarDictamen.ejs'), {
-                    dictamenes: results
-                }, (err, data) => {
-                    if (err) {
-                        res.status(500).send(err);
-                    } else {
-                        // Crea el archivo PDF con el nombre personalizado
-                        const pdfFileName = `DT24-${idDictamen}.pdf`;
-                        const pdfFilePath = path.join(__dirname, './docs/', pdfFileName);
-                        const options = { format: 'Letter', orientation: 'landscape' };
-
-                        pdf.create(data, options).toFile(pdfFilePath, function (err, data) {
-                            if (err) {
-                                res.status(500).send(err);
-                            } else {
-                                // Lee el contenido del archivo PDF y lo envía como respuesta
-                                const pdfData = fs.readFileSync(pdfFilePath, { encoding: 'base64' });
-                                res.send(pdfData);
-                            }
-                        });
-                    }
-                });
-            } else {
-                res.status(404).send('No se encontraron dictámenes para el folio de vale proporcionado');
-            }
-        }
-    });
-});
-
-
-
 
 //10 Hacer registro
 app.post('/registerP',authPage('Admin'),async(req, res) => {
@@ -356,8 +309,6 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     }
 });
 
-
-//11 Autenticacion
 //11 Autenticacion
 app.post('/auth', async (req,res)=> {
     const user = req.body.username;
@@ -514,38 +465,90 @@ app.post('/vales', async(req, res) => {
     }
 });
 
-//DICTAMENES
-app.post('/guardar-datos', async (req, res)=>{
+// DICTAMENES
+app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
     const usuario = req.session.name;
     const fecha = obtenerFechaHoraActual();
     const folioSolicitudDictamen = req.session.folioSolicitudDictamen;
     const vale = req.body.valeId;
-    console.log(folioSolicitudDictamen); 
+    console.log(folioSolicitudDictamen);
     const equipoDictamen = req.body.equipoDictamen;
     const marcaEquipo = req.body.marcaEquipo;
     const modeloEquipo = req.body.modeloEquipo;
     const noSerieEquipo = req.body.noSerieEquipo;
     const estadoDictamen = req.body.estadoDictamen;
     const tipoDictamen = req.body.tipoDictamen;
-    const caractDictamen = req.body.caractDictamen;
+    const caracDictamen = req.body.caracDictamen;
     const observacionesDictamen = req.body.observacionesDictamen;
     const descripcionDictamen = req.body.descripcionDictamen;
+    const fechaHoraActual = new Date().toLocaleString();
 
-    connection.query('INSERT INTO dictamenes SET ?',{Encargado:usuario,FechaDictamen: fecha,FolioSolicitud:folioSolicitudDictamen,idVale: vale ,Equipo:equipoDictamen,MarcaEquipo:marcaEquipo, ModeloEquipo:modeloEquipo, NoSerieEquipo:noSerieEquipo, EstadoDictamen:estadoDictamen, DictamenFinal:tipoDictamen, caracDictamen:caractDictamen, Observaciones:observacionesDictamen, Descripcion:descripcionDictamen}, (error, results)=>{
-        if(error){
+    connection.query('INSERT INTO dictamenes SET ?', {
+        Encargado: usuario,
+        FechaDictamen: fecha,
+        FolioSolicitud: folioSolicitudDictamen,
+        idVale: vale,
+        Equipo: equipoDictamen,
+        MarcaEquipo: marcaEquipo,
+        ModeloEquipo: modeloEquipo,
+        NoSerieEquipo: noSerieEquipo,
+        EstadoDictamen: estadoDictamen,
+        DictamenFinal: tipoDictamen,
+        caracDictamen: caracDictamen,
+        Observaciones: observacionesDictamen,
+        Descripcion: descripcionDictamen
+    }, (error, results) => {
+        if (error) {
             console.log(error);
-        }else{
-            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
-                alert: true,
-                alertTitle: "Dictamen",
-                alertMessage: "¡Dictamen creado correctamente!",
-                alertIcon: "success",
-                showConfirmButton: false,
-                timer: 1500,
-                ruta: 'panelAdmin'
-            })
+            res.status(500).send('Error al guardar los datos en la base de datos');
+        } else {
+            const idDictamen = results.insertId;
+            // Renderiza el contenido del PDF con los datos obtenidos
+            ejs.renderFile(path.join(__dirname, './views/', 'generarDictamen.ejs'), {
+                //dictamenes: results
+                dictamenes: [{
+                    idDictamen,
+                    FolioSolicitud: folioSolicitudDictamen,
+                    Equipo: equipoDictamen,
+                    MarcaEquipo: marcaEquipo,
+                    ModeloEquipo: modeloEquipo,
+                    NoSerieEquipo: noSerieEquipo,
+                    EstadoDictamen: estadoDictamen,
+                    DictamenFinal: tipoDictamen,
+                    caracDictamen: caracDictamen,
+                    Observaciones: observacionesDictamen,
+                    Descripcion: descripcionDictamen
+                    
+                }]
+            }, (err, data) => {
+                if (err) {
+                    res.status(500).send(err);
+                } else {
+                    // Crea el archivo PDF con el nombre personalizado
+                    const pdfFileName = `DT24-${folioSolicitudDictamen}.pdf`;
+                    const pdfFilePath = path.join(__dirname, './docs/', pdfFileName);
+                    const options = { format: 'Letter', orientation: 'landscape' };
+
+                    pdf.create(data, options).toFile(pdfFilePath, function (err, data) {
+                        if (err) {
+                            res.status(500).send(err);
+                        } else {
+                            console.log('Archivo PDF descargado correctamente');
+                            res.render('alerta', {
+                                alert: true,
+                                alertTitle: 'Éxito',
+                                alertMessage: 'PDF generado y descargado correctamente',
+                                alertIcon: 'success',
+                                showConfirmButton: false,
+                                timer: 5000,
+                                ruta: 'panelAdmin'
+                            }
+                        )};
+                    });
+                }
+            });
         }
-    })
+    });
 
     function obtenerFechaHoraActual() {
         const fecha = new Date();
@@ -555,7 +558,8 @@ app.post('/guardar-datos', async (req, res)=>{
 
         return `${año}-${mes}-${dia}`;
     }
-})
+});
+
 //ACTUALIZAR ESTADO DE LAS SOLICITUDES
 app.post('/actualizar-estado', async (req, res) => {
     const { folio, nuevoEstado } = req.body;
@@ -615,6 +619,8 @@ app.post('/actualizar-estado', async (req, res) => {
     }
 });
 
+//DESCARGAR PDF DESDE EL HISTORIAL
+//DESCARGAR VALE
 app.get('/descargarPDFvale', (req, res) => {
     const folioSolicitud = req.query.folioSolicitud;
     const pdfFileName = `ValeST24-${folioSolicitud}.pdf`; // Asegúrate de que el nombre del archivo refleje tu estructura
@@ -623,37 +629,21 @@ app.get('/descargarPDFvale', (req, res) => {
     res.download(pdfFilePath, (err) => {
         if (err) {
             console.error('Error al descargar el archivo PDF:', err);
-            res.render('alerta', {
-                alert: true,
-                alertTitle: "Vale no encontrado",
-                alertMessage: "Cree el vale para que se pueda descargar",
-                alertIcon: "warning",
-                showConfirmButton: true,
-                timer: 3000,  
-                ruta: 'panelAdmin'
-            });
+            console.log('Vale no encontrado');
         }
     });
 });
 
 //DESCARGAR DICTAMEN
 app.get('/descargarPDFdictamen', (req, res) => {
-    const idDictamen = req.query.idDictamen;
-    const pdfFileName = `DT24-${idDictamen}.pdf`; // Asegúrate de que el nombre del archivo refleje tu estructura
+    const folioSolicitud = req.query.folioSolicitud;
+    const pdfFileName = `DT24-${folioSolicitud}.pdf`; // Asegúrate de que el nombre del archivo refleje tu estructura
     const pdfFilePath = path.join(__dirname, 'docs', pdfFileName);
 
     res.download(pdfFilePath, (err) => {
         if (err) {
             console.error('Error al descargar el archivo PDF:', err);
-            res.render('alerta', {
-                alert: true,
-                alertTitle: "Dictamen no encontrado",
-                alertMessage: "Cree el dictamen para que se pueda descargar",
-                alertIcon: "warning",
-                showConfirmButton: true,
-                timer: 3000,  
-                ruta: 'panelAdmin'
-            });
+            console.log('Dictamen no encontrado');
         }
     });
 });
