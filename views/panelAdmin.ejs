@@ -76,7 +76,7 @@
                             <label for="usuarios" class="labelMayor">Usuario</label>
                             <select name="usuarios" id="usuarios" class="form-select form-select-sm">
                                 <% usuarios.forEach(usuario => { %>
-                                <option value="<%= usuario.IdUsuario %>"><%= usuario.Nombre %></option>
+                                    <option value="<%= usuario.IdUsuario + '|' + usuario.Correo %>"><%= usuario.Nombre %></option>
                                 <% }); %>
                             </select>
                             
@@ -192,7 +192,7 @@
                     <div class="col-sm-10">
                         <select name="folios" id="folios" class="form-select form-select-sm">
                             <% folioSolicitudes.forEach(folio => { %>
-                            <option value="<%= folio.FolioSolicitud %>"><%= folio.FolioSolicitud %></option>
+                            <option value="<%= folio.FolioSolicitud + '|' + folio.Correo %>"><%= folio.FolioSolicitud %></option>
                             <% }); %>
                         </select>
                     </div>
@@ -644,7 +644,7 @@
                             <td><%= variables.MarcaEquipo %></td>
                             <td><%= variables.ModeloEquipo %></td>
                             <td><%= variables.NoSerieEquipo %></td>
-                            <td><%= variables.Estado %></td>
+                            <td class="estado-td" data-estado="<%= variables.Estado %>"><%= variables.Estado %></td>
                             <td><%= variables.IdDictamen %></td>
                             <td><a href="/descargarPDFvale?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
                             <td><a href="/descargarPDFdictamen?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
@@ -655,6 +655,7 @@
             </div>
         </div>
     </div>
+    <script src="resources/scripts/semaforoVales.js"></script>
 </body>
 </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
@@ -675,21 +676,24 @@
             <div class="table-responsive">
                 <table  class="table  table-light" id="estatusTabla">
                     <tr class="table-dark">
-                        <th colspan="4" class="tablaTitulos">Abierto</th>
-                        <th colspan="3" class="tablaTitulos">Pendiente</th>
-                        <th colspan="2" class="tablaTitulos">Cerrado</th>
+                        <th colspan="5" class="tablaTitulos">Abierto</th>
+                        <th colspan="4" class="tablaTitulos">Pendiente</th>
+                        <th colspan="3" class="tablaTitulos">Cerrado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="table-secondary">
                         <td>Folio</td>
+                        <td>Nombre</td>
                         <td>Equipo</td>
                         <td>Fecha</td>
                         <td id="bordeD">Estatus</td>
                         <td >Folio</td>
+                        <td>Nombre</td>
                         <td>Equipo</td>
                         <td id="bordeDer">Estatus</td>
                         <td>Folio</td>
+                        <td>Nombre</td>
                         <td>Equipo</td>
                     </tr>
                     <tr class="table-light">
@@ -698,6 +702,7 @@
                                 <!-- Abierto -->
                                 <% if (i < abierto.length) { %>
                                     <td class="bg-success"><%= abierto[i].FolioSolicitud %></td>
+                                    <td class="bg-success"><%= abierto[i].Nombre %></td>
                                     <td class="bg-success" id="equipoEstado<%= i %>"><%= abierto[i].Equipo %></td>
                                     <td class="bg-success" id="fechaEstado<%= i %>"><%= abierto[i].Fecha %></td>
                                     <td class="seleccion bg-success" id="bordeDerecho<%= i %>" >
@@ -708,15 +713,17 @@
                                         </select>
                                     </td>
                                 <% } else { %>
-                                    <td class="bg-success"></td>
-                                    <td class="bg-success"></td>
-                                    <td class="bg-success"></td>
-                                    <td id="bordeDerechoVacio" class="bg-success"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td id="bordeDerechoVacio"></td>
                                 <% } %>
                 
                                 <!-- Pendiente -->
                                 <% if (i < pendiente.length) { %>
                                     <td class="bg-warning"><%= pendiente[i].FolioSolicitud %></td>
+                                    <td class="bg-warning"><%= pendiente[i].Nombre %></td>
                                     <td class="bg-warning"><%= pendiente[i].Equipo %></td>
                                     <td class="seleccion bg-warning" id="pendienteDerecha<%= i %>">
                                         <select class="form-select cambiarEstado" data-folio="<%= pendiente[i].FolioSolicitud %>">
@@ -726,19 +733,22 @@
                                         </select>
                                     </td>
                                 <% } else { %>
-                                    <td class="bg-warning"></td>
-                                    <td class="bg-warning"></td>
-                                    <td id="pendienteVacioDerecha" class="bg-warning"></td>
+                                    <td ></td>
+                                    <td ></td>
+                                    <td ></td>
+                                    <td id="pendienteVacioDerecha"></td>
                                   
                                 <% } %>
                 
                                 <!-- Cerrado -->
                                 <% if (i < cerrado.length) { %>
                                     <td class="bg-danger"><%= cerrado[i].FolioSolicitud %></td>
+                                    <td class="bg-danger"><%= cerrado[i].Nombre %></td>
                                     <td class="bg-danger"><%= cerrado[i].Equipo %></td>
                                 <% } else { %>
-                                    <td class="bg-danger"></td>
-                                    <td class="bg-danger"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     
                                 <% } %>
                             </tr>
