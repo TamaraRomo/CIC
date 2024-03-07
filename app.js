@@ -481,7 +481,6 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
     const caracDictamen = req.body.caracDictamen;
     const observacionesDictamen = req.body.observacionesDictamen;
     const descripcionDictamen = req.body.descripcionDictamen;
-    const fechaHoraActual = new Date().toLocaleString();
 
     connection.query('INSERT INTO dictamenes SET ?', {
         Encargado: usuario,
@@ -497,18 +496,25 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
         caracDictamen: caracDictamen,
         Observaciones: observacionesDictamen,
         Descripcion: descripcionDictamen
-    }, (error, results) => {
+    }, async (error, results) => {
         if (error) {
             console.log(error);
             res.status(500).send('Error al guardar los datos en la base de datos');
         } else {
             const idDictamen = results.insertId;
-            // Renderiza el contenido del PDF con los datos obtenidos
-            ejs.renderFile(path.join(__dirname, './views/', 'generarDictamen.ejs'), {
-                //dictamenes: results
+
+            // Crear una instancia de Puppeteer
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+
+            // Ruta de la plantilla HTML
+            const templatePath = path.join(__dirname, 'views', 'generarDictamen.ejs');
+            console.log('Fecha a renderizar en la plantilla:', fecha);
+            const htmlContent = await ejs.renderFile(templatePath, {
                 dictamenes: [{
                     idDictamen,
                     FolioSolicitud: folioSolicitudDictamen,
+                    FechaDictamen: fecha,
                     Equipo: equipoDictamen,
                     MarcaEquipo: marcaEquipo,
                     ModeloEquipo: modeloEquipo,
@@ -518,34 +524,38 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
                     caracDictamen: caracDictamen,
                     Observaciones: observacionesDictamen,
                     Descripcion: descripcionDictamen
-                    
-                }]
-            }, (err, data) => {
-                if (err) {
-                    res.status(500).send(err);
-                } else {
-                    // Crea el archivo PDF con el nombre personalizado
-                    const pdfFileName = `DT24-${folioSolicitudDictamen}.pdf`;
-                    const pdfFilePath = path.join(__dirname, './docs/', pdfFileName);
-                    const options = { format: 'Letter', orientation: 'landscape' };
+                }],
+                fecha: fecha
+            });
 
-                    pdf.create(data, options).toFile(pdfFilePath, function (err, data) {
-                        if (err) {
-                            res.status(500).send(err);
-                        } else {
-                            console.log('Archivo PDF descargado correctamente');
-                            res.render('alerta', {
-                                alert: true,
-                                alertTitle: 'Éxito',
-                                alertMessage: 'PDF generado y descargado correctamente',
-                                alertIcon: 'success',
-                                showConfirmButton: false,
-                                timer: 5000,
-                                ruta: 'panelAdmin'
-                            }
-                        )};
-                    });
-                }
+            await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+
+            // Ruta y nombre del archivo PDF
+            const pdfFileName = `DT24-${folioSolicitudDictamen}.pdf`;
+            const pdfFilePath = path.join(__dirname, './docs/', pdfFileName);
+
+            // Configurar la orientación a horizontal
+            const options = {
+                format: 'A4',
+                landscape: true 
+            };
+
+
+            // Generar el PDF
+            await page.pdf({ path: pdfFilePath, ...options });
+
+            // Cerrar el navegador Puppeteer
+            await browser.close();
+
+            console.log('Archivo PDF generado y guardado correctamente');
+            res.render('alerta', {
+                alert: true,
+                alertTitle: 'Éxito',
+                alertMessage: 'PDF generado y guardado correctamente',
+                alertIcon: 'success',
+                showConfirmButton: false,
+                timer: 5000,
+                ruta: 'panelAdmin'
             });
         }
     });
@@ -555,7 +565,6 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
         const año = fecha.getFullYear();
         const mes = String(fecha.getMonth() + 1).padStart(2, '0');
         const dia = String(fecha.getDate()).padStart(2, '0');
-
         return `${año}-${mes}-${dia}`;
     }
 });
