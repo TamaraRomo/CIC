@@ -1,7 +1,6 @@
 //Invocamos express
 const express = require('express');
 const app = express();
-const pdf = require('html-pdf');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
