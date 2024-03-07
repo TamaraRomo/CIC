@@ -99,7 +99,7 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
     const soloAbiertas = await query('SELECT * FROM solicitudes WHERE Estado = "Abierto"')
     const soliPendiente = await query('SELECT * FROM solicitudes WHERE Estado = "Pendiente"')
     const soliCerradas = await query('SELECT * FROM solicitudes WHERE Estado = "Cerrado"')
-    const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale ORDER BY idVale DESC;");
+    const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.folioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario ORDER BY v.idVale DESC;");
     res.render('panelAdmin', {
             login: req.session.loggedin,
             name: req.session.name,
