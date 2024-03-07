@@ -4,6 +4,7 @@ const app = express();
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
+
 const puppeteer = require('puppeteer');
 const {authPage,authSub} = require('./middleware')
 //seteamos urlencoded para capturar los datos del formulario
