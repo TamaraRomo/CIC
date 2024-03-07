@@ -6,32 +6,49 @@
     <title>Generador de Dictamen</title>
     <style>
         /* Agrega estilos CSS según tu diseño específico */
-        *{
+        * {
             margin: 5px;
+            font-family: Arial, Helvetica, sans-serif;
         }
-        table {
+        
+        table.dictamen {
             border-collapse: collapse;
             width: 100%;
             margin-top: 20px;
         }
-        th, td {
+        
+        table.dictamen th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
-        th {
+        
+        table.dictamen th {
             background-color: #f2f2f2;
+        }
+    
+        /* Estilos para la tabla "firmas" */
+        table.firmas {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px auto; /* Centrado horizontal */
+        }
+    
+        table.firmas td {
+            border: none; /* Elimina los bordes de las celdas */
+            padding: 10px;
+            text-align: center; /* Centrado del contenido */
         }
     </style>
 </head>
 <body>
-    <div id="generarPDF">
-        <h1 style="text-align: center;">Dictamen Técnico</h1>
-        <p style="text-align: right;">San Francisco de Campeche, Camp a </p>
-        <h3>Mtro. Francisco Barrera Lao</h3>
+    <div id="generarPDF" class="center">
+        <h1 style="text-align: center;">Dictamen Técnico DT24-<%= dictamenes[0].idDictamen %></h1>
+        <p style="text-align: right;"><%= fecha %></p>
+        <h3>MAC. Francisco Javier Barrera Lao</h3>
         <h3>Director Académico de la Facultad de Ingeniería</h3>
         <p>Presente</p>
-        <table>
+        <table class="dictamen">
                 <tr>
                     <th>Equipo</th>
                     <th>Marca</th>
@@ -58,7 +75,7 @@
                     </tr>
                 <% }); %>
         </table>
-        <table>
+        <table class="dictamen">
             <thead>
                 <tr>
                     <th>Estado</th>
@@ -83,8 +100,26 @@
             </tbody>
         </table>
         <p>Si el dictamen de alguno de los equipos revisados es TRAMITAR BAJA, éste se quedará en el CIC para que, con base en el procedimiento interno de inventarios de ésta facultad y de estar conforme se proceda a tramitar la baja correspondente ante la Coordinación Administrativa FdI.</p>
+        <br>
+        <table class="firmas">
+            <tr>
+                <td>Revisión Técnica</td>
+                <td>Vo. Bo.</td>
+                <td>Recibí de conformidad</td>
+            </tr>
+            <br>
+            <tr>
+                <td>__________________</td>
+                <td>__________________</td>
+                <td>__________________</td>
+            </tr>
+            
+            <tr>
+                <td> </td>
+                <td>Mtro. Adrían E. Pacheco Zapata</td>
+                <td>MAC. Francisco Javier Barrera Lao</td>
+            </tr>
+        </table>
     </div>
-    
-    
 </body>
 </html>
