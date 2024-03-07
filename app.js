@@ -554,7 +554,7 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
                 alertMessage: 'PDF generado y guardado correctamente',
                 alertIcon: 'success',
                 showConfirmButton: false,
-                timer: 5000,
+                timer: 1500,
                 ruta: 'panelAdmin'
             });
         }
