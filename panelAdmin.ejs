@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <!-- Estilos CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="resources/css/style_menu_administrador.css">
+</head>
+<body>
+<div class="logo-contenedor">
+    <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+    <h1 class="titulo-sitio">CIC Assistance</h1>
+    <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+</div>
+
+<!-- Sección de sesión -->
+<% if (typeof login !== 'undefined' && login) { %>
+<div class="mostrarSesion">
+    <p class="sesion" id="sesion">Usuario: <%= name %></p>
+    <div id="logoutMenu">
+        <a href="logout">Logout</a>
+    </div>
+</div>
+<% } %>
+
+<!-- Menú de opciones -->
+<nav class="menu">
+    <div class="opcion-menu" onclick="mostrarContenido('solicitud-de-reportes')">Solicitud de Reportes</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Vales')">Vales</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Dictamen')">Dictamen</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Historial')">Historial Solicitudes</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Historial2')">Historial Vales</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Estatus')">Estatus</div>
+    <div class="opcion-menu" onclick="mostrarContenido('Registro')">Registro</div>
+</nav>
+
+
+<main class="contenido">
+	
+    <div id="solicitud-de-reportes" class="contenido-individual">
+        <!-- Contenido de la solicitud de reportes -->
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="resources/css/style_solicitud.css">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+            <title>Solicitud Soporte Tecnico</title>
+        </head>
+        <body>
+            <div class="solicitud">
+                <p id="fechaSolicitud"></p>
+                <h2>Solicitud de Servicio Técnico</h2>
+        
+                <form action="solicitudAdmin" method="post">
+                    <div class="contenedorInicial">
+                        <div>
+                            <label for="telefono" class="labelMayor">Teléfono</label>
+                            <input class="form-control form-control-sm" type="number" placeholder="Escribe tu telefono" aria-label=".form-control-sm example" name="telefono" id="telefono" required>    
+                        </div>
+                        <div>
+                            <label for="edificio" class="labelMayor">Edificio y nivel</label>
+                            <select name="edificio" id="edificio" class="form-select form-select-sm" required>
+                                <% edificios.forEach(edificio => { %>
+                                    <option value="<%= edificio.IdEdificio %>"><%= edificio.NombreEdificio %>-<%= edificio.Nivel %></option>
+                                <% }); %>
+                            </select>                         
+                        </div>
+                        <div>
+                            <label for="area" class="labelMayor">Ubicación física</label>
+                            <input class="form-control form-control-sm" type="text" placeholder="Escribe tu área" aria-label=".form-control-sm example" name="area" id="area" required>   
+                        </div>
+                        <div>
+                            <label for="usuarios" class="labelMayor">Usuario</label>
+                            <select name="usuarios" id="usuarios" class="form-select form-select-sm">
+                                <% usuarios.forEach(usuario => { %>
+                                    <option value="<%= usuario.IdUsuario + '|' + usuario.Correo %>"><%= usuario.Nombre %></option>
+                                <% }); %>
+                            </select>
+                            
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend class="labelMayor">Equipos</legend>
+                        <div class="contenedor-checkbox">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="monitor1" value="Monitor" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="monitor">Monitor</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="nodo1" value="Nodo" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="nodo">Nodo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="ups1" value="UPS" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="ups">UPS</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="laptop1" value="Laptop" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="laptop">Laptop</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="proyector1" value="Proyector" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="proyector">Proyector</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="point" value="Access Point" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="access">Access Point</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="pc1" value="PC" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="pc">PC</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="gabinete1" value="Gabinete" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="gabinete">Gabinete</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="teclado1" value="Teclado" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="teclado">Teclado</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="raton" value="Mouse" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="mouse">Mouse</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="telef" value="Teléfono" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="telefono">Teléfono</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="impresora1" value="Impresora" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="impresora">Impresora</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="otro" value="Otro" data-input-id="otroInput" onchange="checboxListado(this)">
+                                <label class="form-check-label" for="otro">Otro</label>
+                                <input class="form-control form-control-sm" type="text"  name="otroInput" id="otroInput" disabled>
+                            </div>
+                            <input type="hidden" name="equiposSeleccionados" id="equiposSeleccionados" value="">
+                        </div>
+                    </fieldset>
+        
+                    <label for="descripcion" class="labelMayor">Descripción del problema</label>
+                    <textarea class="form-control" name="descripcion" id="descripcion" rows="8" placeholder="Escribe todos los detalles de tu problema" required></textarea>
+
+                    <div class="enviarSoli">
+                        <button type="submit" class="btn btn-outline-dark" id="enviar" value="Submit">Enviar</button>
+                    </div>
+                </form>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+            <script src="resources/scripts/seleccionMultiple.js"></script>
+            <script src="resources/scripts/solicitudSoporte.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+            <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+            <% if(typeof alert != "undefined"){ %>
+            <script>
+                Swal.fire({
+                    title: '<%= alertTitle %>',
+                    text: '<%= alertMessage %>',
+                    icon: '<%= alertIcon %>',
+                    showConfirmButton: <%= showConfirmButton %>,
+                    timer: <%= timer %>
+                }).then(() =>{
+                    window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+                })
+            </script>
+            <% } %>
+        </body>
+    </div>
+	
+<!-- VALES----------------------------------------------------------------------------------------------------- -->	
+    <div id="Vales" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="resources/css/solicitud_vale.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <!-- Contenedor principal -->
+        <div class="contenedor-principal" id="contenedorPDF">
+            <h2 >Creación de Vales Servicio Técnico</h2>
+            <!-- Contenedor azul con información del vale de entrada -->
+            <form action="vales" method="post">
+                <div class="mb-3 row">
+                    <label for="folios" class="col-sm-2 col-form-label labelFolio">Folio de la solicitud</label>
+                    <div class="col-sm-10">
+                        <select name="folios" id="folios" class="form-select form-select-sm">
+                            <% folioSolicitudes.forEach(folio => { %>
+                            <option value="<%= folio.FolioSolicitud + '|' + folio.Correo %>"><%= folio.FolioSolicitud %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                  </div>
+                  <fieldset>
+                    <legend class="labelMayor">Equipos</legend>
+                    <div class="contenedor-checkbox">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="monitor" value="Monitor" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="monitor">Monitor</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="nodo" value="Nodo" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="nodo">Nodo</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="ups" value="UPS" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="ups">UPS</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="laptop" value="Laptop" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="laptop">Laptop</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="proyector" value="Proyector" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="proyector">Proyector</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="access" value="Access Point" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="access">Access Point</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="pc" value="PC" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="pc">PC</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="gabinete" value="Gabinete" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="gabinete">Gabinete</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="teclado" value="Teclado" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="teclado">Teclado</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="mouse" value="Mouse" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="mouse">Mouse</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="tele" value="Teléfono" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="telefono">Teléfono</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="equipos" id="impresora" value="Impresora" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="impresora">Impresora</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"  name="equipos" id="otro2" value="Otro" data-input-id="otroInput2" onchange="handleCheckboxChange(this)">
+                            <label class="form-check-label" for="otro2">Otro</label>
+                            <input class="form-control form-control-sm" type="text"  name="otroInput2" id="otroInput2" disabled>
+                        </div>
+                        <input type="hidden" name="listaEquiposCheck" id="listaEquiposCheck" value="">
+                    
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend class="labelMayor">Datos del equipo:</legend>
+                    
+                    <div class="mb-3 row">
+                        <label for="serie" class="col-sm-2 col-form-label">No. Serie:</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control datosEquipo" name="serie" id="serie" required>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="marca" class="col-sm-2 col-form-label">Marca:</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control datosEquipo" name="marca" id="marca" required>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="modelo" class="col-sm-2 col-form-label">Modelo:</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control datosEquipo"  name="modelo" id="modelo" required>
+                        </div>
+                    </div>
+                    <label for="caracteristicas">Características:</label>
+                    <textarea class="form-control" name="caracteristicas" id="caracteristicas" rows="8" required></textarea>
+
+                </fieldset>
+                <div class="contenedor-estatus">
+                    <div>
+                        <label for="estatus" class="col-sm-2 col-form-label labelFolio" id="lblEstatus">Estatus:</label>
+                            <select name="estatus" id="estatus" class="form-select form-select-sm" required>
+                                <option value="Funciona">Funciona</option>
+                                <option value="No funciona">No funciona</option>
+                                <option value="Esperar">Esperar piezas</option>
+                            </select>
+                    </div>
+                    <div>
+                        <label for="revision" class="col-sm-2 col-form-label" id="lblRevision">Revisó:</label>
+                        <input type="text" class="form-control datosEquipo" name="revision" id="revision" required>
+                    </div>
+                </div>
+                <div class="enviarVale">
+                    <button type="submit" class="btn btn-outline-dark" id="generarPDF" value="Submit">Generar PDF</button>
+                </div>
+            </form>
+        </div>
+    </div> <!-- Fin del contenedor princiupal-->    
+        <script src="resources/scripts/seleccionMultiple.js"></script>        
+        <script src="resources/scripts/vale.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+        <% if(typeof alert != "undefined"){ %>
+        <script>
+            Swal.fire({
+                title: '<%= alertTitle %>',
+                text: '<%= alertMessage %>',
+                icon: '<%= alertIcon %>',
+                showConfirmButton: <%= showConfirmButton %>,
+                timer: <%= timer %>
+            }).then((result) =>{
+                window.location.href = '/Vale_de_entrada_001.pdf';
+                window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+            })
+        </script>
+        <% } %>
+    </body>
+    </div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+<!-- DICTAMENES------------------------------------------------------------------------------------------------ -->
+<div id="Dictamen" class="contenido-individual">
+    <!-- Contenido de historial -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de Dictamen</title>
+    <link rel="stylesheet" href="resources/css/solicitud_dictamen.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bodyDictamen">
+    <div class="creacionDictamen">
+        <p id="fechaDictamen"></p>
+        <h2>Creación de Dictámenes</h2>
+        <div class="row g-3">
+            <div class="col-auto">
+                <label for="folioSolicitud" class="form-control-plaintext">Folio:</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" name="folioSolicitud" id="folioSolicitudDictamen" class="form-control"  placeholder="Folio de la solicitud de soporte técnico">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-dark" id="btnBuscarFolio" onclick="buscarFolio()">Buscar</button> 
+            </div>
+        </div>
+        <form action="/guardar-datos-y-generar-pdf" method="post">
+            <div class="contenedorDictamen">
+                <div>
+                    <label for="valeId" class="labelMayor">Vale:</label>
+                    <input type="text" id="identificadorVale" name="valeId" class="form-control form-control-sm" required>
+                </div>
+                <div>
+                    <label for="equipoDictamen" class="labelMayor">Equipo:</label>
+                    <input type="text" id="equipoDictamen" name="equipoDictamen" class="form-control form-control-sm" required>
+                </div>
+                <div>
+                    <label for="marcaEquipo" class="labelMayor">Marca:</label>
+                    <input type="text" name="marcaEquipo" id="marcaEquipo" class="form-control form-control-sm" required> 
+                </div>
+                <div>
+                    <label for="modeloEquipo" class="labelMayor">Modelo:</label>
+                    <input type="text" name="modeloEquipo" id="modeloEquipo" class="form-control form-control-sm" required> 
+                </div>
+                <div>
+                    <label for="noSerieEquipo" class="labelMayor">N° de serie:</label>
+                    <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required> 
+                </div>
+                <div>
+                    <label for="estadoDictamen" class="labelMayor">Estado:</label>
+                    <select name="estadoDictamen" id="estadoDictamen" class="form-select form-select-sm" required>
+                        <option value="blanco">&nbsp;</option>
+                        <option value="vigente">Vigente</option>
+                        <option value="obsoleto">Obsoleto</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tipoDictamen" class="labelMayor">Dictamen:</label>
+                    <select name="tipoDictamen" id="tipoDictamen" class="form-select form-select-sm" required>
+                        <option value="blanco">&nbsp;</option>
+                        <option value="Funciona">Funcional</option>
+                        <option value="No Funciona">Obsoleto</option>
+                        <option value="'Baja">Tramitar Baja</option>
+                    </select>
+                </div>   
+            
+            </div>
+            <div class="contenedorSecundario">
+                <div>
+                    <label for="caracDictamen" class="labelMayor">Características:</label>
+                    <textarea class="form-control" name="caracDictamen" id="caracDictamen" cols="30" rows="5" required></textarea>
+                </div>
+                <div>
+                    <label for="observacionesDictamen" class="labelMayor">Observaciones:</label>
+                    <textarea class="form-control" name="observacionesDictamen" id="observacionesDictamen" cols="30" rows="5" required></textarea>
+                </div>
+                <div>
+                    <label for="descripcionDictamen" class="labelMayor">Descripción técnica de partes necesarias:</label>
+                    <textarea class="form-control" name="descripcionDictamen" id="descripcionDictamen" cols="30" rows="5" required></textarea>
+                </div>
+                <div class="btnGuardarDatos">
+                    <button type="submit" id="btnGuardarDatos" class="btn btn-outline-dark" value="submit">Guardar datos y generar PDF</button>
+                </div>
+            </div>    
+        </form>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="resources/scripts/dictamenes_fecha.js"></script>
+<script src="resources/scripts/relleno_dictamen.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+<!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+<% if(typeof alert != "undefined"){ %>
+    <script>
+        Swal.fire({
+            title: '<%= alertTitle %>',
+            text: '<%= alertMessage %>',
+            icon: '<%= alertIcon %>',
+            showConfirmButton: <%= showConfirmButton %>,
+            timer: <%= timer %>
+        }).then((result) =>{
+            window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+        })
+    </script>
+    <% } %>
+</body>
+</div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+<!-- SOLICITUD DE HISTORIAL DE SOLICITUDES -->
+<div id="Historial" class="contenido-individual">
+    <head>
+        <!-- Metadatos -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Historial de Solicitudes</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="estilos/solicitud_historial.css">
+        <!-- Fuentes -->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+    <body class="bodyHistorial">
+    <!-- Contenedor principal para el historial de solicitudes -->
+        <div class="historialSolicitudes">
+            <!-- Título de la sección -->
+            <h2 id="tituloHistorialSoli">Historial de solicitudes</h2>
+            <!-- Formulario para filtrar el historial -->
+            <form action="#" method="post">
+                <!-- Contenedor para los campos de filtro -->
+                <div class="contenedorFiltro">
+                    <!-- Campo de búsqueda -->
+                    <div>
+                        <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
+                    </div>
+                    <!-- Campo de selección de estado -->
+                    <div>
+                        <select name="estado" id="estado">
+                            <option value="blanco">Filtro</option>
+                            <option value="folio">Folio</option>
+                            <option value="fecha">Fecha</option>
+                            <option value="usuario">Usuario</option>
+                            <option value="estado">Estado</option>
+                        </select>
+                    </div>
+                    <!-- Botón para aplicar el filtro -->
+                    <div class="btnFiltrar">
+                        <button  type="submit" id="btnFiltrar">Filtrar</button>
+                    </div>
+                </div>
+                
+                <!-- Contenedor para la tabla del historial -->
+                <div class="table-responsive">
+                    <table  class="table table-hover table-striped">
+                        <tr class="table-dark">
+                            <th>Folio</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Usuario</th>
+                            <th>Equipo</th>
+                            <th>Estado</th>
+                            <th>Vale</th>
+                            <th>Dictamen</th>
+                        </tr>
+                        <% historial.forEach(solicitud => { %>
+                            <!-- Fila de la tabla para cada solicitud en el historial -->
+                            <tr>
+                                <td><%= solicitud.FolioSolicitud %></td>
+                                <td><%= solicitud.Fecha %></td>
+                                <td><%= solicitud.Hora %></td>
+                                <td><%= solicitud.NombreUsuario %></td>
+                                <td><%= solicitud.Equipo%></td>
+                                <td class="estado-celda" data-estado="<%= solicitud.Estado %>"><%= solicitud.Estado%></td>
+                                <td><%= solicitud.Vale %></td>
+                                <td><%= solicitud.Dictamen %></td>
+                            </tr>
+                        <% }); %>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <script src="resources/scripts/semaforo.js"></script>
+    </body>
+</div>
+
+<!-- REGISTRO DE USUARIOS------------------------------------------------------------------------------ -->	
+    <div id="Registro" class="contenido-individual">
+        <!-- Contenido de Registro -->
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Registro usuarios</title>
+            <link rel="stylesheet" href="resources/css/style_registro.css">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">      
+        </head>
+        <body>
+        <div class="contenedor">
+            <h3 class="titulosLogin">Registrar Usuario</h3>
+            <form action="registerP" method="post" onsubmit="return validar();" id="formRegistro">
+                <div class="registroCampos">
+                    <label for="username" class="lblRegistro">Nombre de Usuario</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de usuario unico" required>
+                </div>
+                <div class="registroCampos">
+                    <label for="password" class="lblRegistro">Contraseña</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="8 caracteres mínimo, sin espacios" required>
+                </div>
+                <div class="registroCampos">
+                    <label for="password2" class="lblRegistro">Repita su contraseña</label>
+                    <input type="password" class="form-control" id="password2" name="password2" placeholder="8 caracteres mínimo, sin espacios" required>
+                </div>
+                <div class="registroCampos">
+                    <label for="name" class="lblRegistro">Nombre Completo</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Nombres y apellidos" required>
+                </div>
+                <div class="registroCampos">
+                    <label for="correo" class="lblRegistro">Correo institucional</label>
+                    <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@uacam.mx" required>
+                </div>
+                <div class="selects_registro">
+                    <div class="mb-3 row">
+                        <label for="rol" class="col-sm-2 col-form-label">Rol:</label>
+                        <div class="col-sm-10">
+                            <select name="rol" id="rol" class="form-select form-select-sm" required>
+                                <option value="Admin">Administrador</option>
+                                <option value="Usuario">Usuario</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="genero" class="col-sm-2 col-form-label">Genero:</label>
+                        <div class="col-sm-10">
+                            <select name="genero" id="genero" class="form-select form-select-sm" required>
+                                <option value="F">Femenino</option>
+                                <option value="M">Masculino</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="enviarRegistro">
+                    <input type="submit" value="Registrar" class="btn btn-outline-dark" onclick="validar()">
+                </div>
+            </form>
+        </div>
+        <script src="resources/scripts/validacion.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+        <% if(typeof alert != "undefined"){ %>
+        <script>
+            Swal.fire({
+                title: '<%= alertTitle %>',
+                text: '<%= alertMessage %>',
+                icon: '<%= alertIcon %>',
+                showConfirmButton: <%= showConfirmButton %>,
+                timer: <%= timer %>
+            }).then(() =>{
+                window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+            })
+        </script>
+        <% } %>       
+        </body>
+    </div>
+<!-- HISTORIAL 2----------------------------------------------------------------------------------------------- -->
+<div id="Historial2" class="contenido-individual">
+    <!-- Contenido de historial -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resources/css/solicitud_historial2.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">      
+    
+    <title>Historial</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtener todas las celdas de la columna IdDictamen
+            var celdasIdDictamen = document.querySelectorAll('.historialTablaContenedor .table td:nth-child(8)');
+            
+            // Iterar sobre cada celda
+            celdasIdDictamen.forEach(function (celda) {
+                // Verificar el contenido de la celda
+                if (celda.textContent.trim() === 'No existe') {
+                    // Obtener las celdas de las columnas "Dicta-PDF"
+                    var celdaDictaPDF = celda.parentElement.querySelector('td:nth-child(10)');
+                    
+                    // Cambiar el contenido por un espacio en blanco en ambas celdas
+                    celdaDictaPDF.textContent = ' ';
+                }
+            });
+        });
+    </script>
+</head>
+<body class="historialBody">
+    <div class="historialContenedor">
+        <h2 id="tituloBitacora">Historial Vales</h2>   
+        <div class="historialTablaContenedor">
+            <div class="table-responsive">
+                <table  class="table table-hover table-striped">
+                    <thead>
+                        <tr class="table-dark">
+                            <td>Folio</td>
+                            <td>Vale</td>
+                            <td>Usuario</td>
+                            <td>Equipo</td>
+                            <td>Marca</td>
+                            <td>Modelo</td>
+                            <td>NoSerie</td>
+                            <td>Estado</td>
+                            <td>Dictamen</td>
+                            <td>Vale-PDF</td>
+                            <td>Dicta-PDF</td>
+                        </tr>
+                    </thead>
+                    
+                    <% vales.forEach((variables) => { %>
+                        <tr>
+                            <td><%= variables.FolioSolicitud %></td>
+                            <td><%= variables.idVale %></td>
+                            <td><%= variables.NombreUsuario %></td>
+                            <td><%= variables.Equipo %></td>
+                            <td><%= variables.MarcaEquipo %></td>
+                            <td><%= variables.ModeloEquipo %></td>
+                            <td><%= variables.NoSerieEquipo %></td>
+                            <td class="estado-td" data-estado="<%= variables.Estado %>"><%= variables.Estado %></td>
+                            <td><%= variables.IdDictamen %></td>
+                            <td><a href="/descargarPDFvale?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
+                            <td><a href="/descargarPDFdictamen?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
+                            
+                        </tr>
+                    <% }); %>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="resources/scripts/semaforoVales.js"></script>
+</body>
+</div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+<!-----ESTATUSSSSSSSS--------------------------------------------------------------------------------------------->
+    <div id="Estatus" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="resources/css/solicitud_estatus.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <title>Statistics Example</title>
+    </head>
+    <body>
+        <div class="container" >
+            <h2 id="estadoSolicitudes">Estado de solicitudes</h2>
+            
+            <div class="table-responsive">
+                <table  class="table  table-light" id="estatusTabla">
+                    <tr class="table-dark">
+                        <th colspan="5" class="tablaTitulos">Abierto</th>
+                        <th colspan="4" class="tablaTitulos">Pendiente</th>
+                        <th colspan="3" class="tablaTitulos">Cerrado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-secondary">
+                        <td>Folio</td>
+                        <td>Nombre</td>
+                        <td>Equipo</td>
+                        <td>Fecha</td>
+                        <td id="bordeD">Estatus</td>
+                        <td >Folio</td>
+                        <td>Nombre</td>
+                        <td>Equipo</td>
+                        <td id="bordeDer">Estatus</td>
+                        <td>Folio</td>
+                        <td>Nombre</td>
+                        <td>Equipo</td>
+                    </tr>
+                    <tr class="table-light">
+                        <% for (let i = 0; i < Math.max(abierto.length, pendiente.length, cerrado.length); i++) { %>
+                            <tr>
+                                <!-- Abierto -->
+                                <% if (i < abierto.length) { %>
+                                    <td class="bg-success"><%= abierto[i].FolioSolicitud %></td>
+                                    <td class="bg-success"><%= abierto[i].Nombre %></td>
+                                    <td class="bg-success" id="equipoEstado<%= i %>"><%= abierto[i].Equipo %></td>
+                                    <td class="bg-success" id="fechaEstado<%= i %>"><%= abierto[i].Fecha %></td>
+                                    <td class="seleccion bg-success" id="bordeDerecho<%= i %>" >
+                                        <select class="form-select cambiarEstado" data-folio="<%= abierto[i].FolioSolicitud %>">
+                                            <option value="Abierto" selected>Abierto</option>
+                                            <option value="Pendiente">Pendiente</option>
+                                            <option value="Cerrado">Cerrado</option>
+                                        </select>
+                                    </td>
+                                <% } else { %>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td id="bordeDerechoVacio"></td>
+                                <% } %>
+                
+                                <!-- Pendiente -->
+                                <% if (i < pendiente.length) { %>
+                                    <td class="bg-warning"><%= pendiente[i].FolioSolicitud %></td>
+                                    <td class="bg-warning"><%= pendiente[i].Nombre %></td>
+                                    <td class="bg-warning"><%= pendiente[i].Equipo %></td>
+                                    <td class="seleccion bg-warning" id="pendienteDerecha<%= i %>">
+                                        <select class="form-select cambiarEstado" data-folio="<%= pendiente[i].FolioSolicitud %>">
+                                            <option value="Pendiente" selected>Pendiente</option>
+                                            <option value="Abierto">Abierto</option>
+                                            <option value="Cerrado">Cerrado</option>
+                                        </select>
+                                    </td>
+                                <% } else { %>
+                                    <td ></td>
+                                    <td ></td>
+                                    <td ></td>
+                                    <td id="pendienteVacioDerecha"></td>
+                                  
+                                <% } %>
+                
+                                <!-- Cerrado -->
+                                <% if (i < cerrado.length) { %>
+                                    <td class="bg-danger"><%= cerrado[i].FolioSolicitud %></td>
+                                    <td class="bg-danger"><%= cerrado[i].Nombre %></td>
+                                    <td class="bg-danger"><%= cerrado[i].Equipo %></td>
+                                <% } else { %>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    
+                                <% } %>
+                            </tr>
+                        <% } %>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+            <div class="guardarCambios">
+                <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
+            </div>
+        </div>
+        <script src="resources/scripts/estatus.js"></script>
+        </body>
+    </div>
+    <!-- Agrega aquí más secciones de contenido según sea necesario -->
+
+</main>
+
+<footer class="pie-pagina">
+    <p>&copy; 2024 CIC Assistance. Todos los derechos reservados.</p>
+</footer>
+
+<script src="resources/scripts/paneles.js"></script>
+
+</body>
+</html>

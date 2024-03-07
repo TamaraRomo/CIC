@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="resources/css/style_menu_usuario.css">
+</head>
+<body>
+    <div class="logo-contenedor">
+        <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+        <h1 class="titulo-sitio">CIC Assistance</h1>
+        <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+    </div>
+<% if (typeof login !== 'undefined' && login) { %>
+    <div class="mostrarSesion">
+        <p class="sesion" id="sesion">Usuario: <%= name %></p>
+        <div id="logoutMenu">
+            <a href="logout">Logout</a>
+        </div>
+    </div>
+<% } %>
+<nav class="menu">
+    <div class="opcion-menu" onclick="mostrarContenido('solicitud-de-reportes')">Solicitud de Reportes</div>
+    <div class="opcion-menu" onclick="mostrarContenido('historial')">Historial</div>
+</nav>
+
+<main class="contenido">
+	
+    <div id="solicitud-de-reportes" class="contenido-individual">
+        <!-- Contenido de la solicitud de reportes -->
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="resources/css/style_solicitudv2.css">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+            <title>Solicitud Soporte Tecnico</title>
+        </head>
+        <body>
+            <div class="solicitud">
+                <p id="fechaSolicitud"></p>
+                <h2>Solicitud de Servicio Técnico</h2>
+        
+                <form action="solicitud" method="post">
+                    <div class="contenedorInicial">
+                        <div>
+                            <label for="telefono" class="labelMayor">Teléfono</label>
+                            <input class="form-control form-control-sm" type="number" placeholder="Escribe tu telefono" aria-label=".form-control-sm example" name="telefono" id="telefono" required>    
+                        </div>
+                        <div>
+                            <label for="edificio" class="labelMayor">Edificio y nivel</label>
+                            <select name="edificio" id="edificio" class="form-select form-select-sm" required>
+                                <% edificios.forEach(edificios => { %>
+                                <option value="<%= edificios.IdEdificio %>"><%= edificios.NombreEdificio %>-<%= edificios.Nivel %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="area" class="labelMayor">Ubicación física</label>
+                            <input class="form-control form-control-sm" type="text" placeholder="Escribe tu área" aria-label=".form-control-sm example" name="area" id="area" required>   
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend class="labelMayor">Equipos</legend>
+                        <div class="contenedor-checkbox">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="monitor" value="Monitor" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="monitor">Monitor</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="nodo" value="Nodo" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="nodo">Nodo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="ups" value="UPS" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="ups">UPS</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="lap" value="Laptop" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="laptop">Laptop</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="proyector" value="Proyector" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="proyector">Proyector</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="point" value="Access Point" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="access">Access Point</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="pc" value="PC" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="pc">PC</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="gabinete" value="Gabinete" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="gabinete">Gabinete</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="teclado" value="Teclado" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="teclado">Teclado</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="mouse" value="Mouse" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="mouse">Mouse</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="telefono" value="Teléfono" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="telefono">Teléfono</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="equipos" id="impresora" value="Impresora" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="impresora">Impresora</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"  name="equipos" id="otro" value="" onchange="handleCheckboxChange(this)">
+                                <label class="form-check-label" for="otro">Otro</label>
+                                <input class="form-control form-control-sm" type="text"  name="otroInput" id="otroInput" disabled>
+
+                            </div>
+                            <div id="otroInputContainer" >
+                            </div>
+                            <input type="hidden" name="equiposSeleccionados" id="equiposSeleccionados" value="">
+                        </div>
+                    </fieldset>
+        
+                    <label for="descripcion" class="labelMayor">Descripción del problema</label>
+                    <textarea class="form-control" name="descripcion" id="descripcion" rows="8" placeholder="Escribe todos los detalles de tu problema" required></textarea>
+
+                    
+                    <div class="enviarSoli">
+                        <button type="submit" class="btn btn-outline-dark" id="enviar" value="Submit">Enviar</button>
+                    </div>
+                </form>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+            <script src="resources/scripts/solicitudSoporte.js"></script>
+            <script src="resources/scripts/seleccionMultipleUsuario.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+            <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+            <% if(typeof alert != "undefined"){ %>
+            <script>
+                Swal.fire({
+                    title: '<%= alertTitle %>',
+                    text: '<%= alertMessage %>',
+                    icon: '<%= alertIcon %>',
+                    showConfirmButton: <%= showConfirmButton %>,
+                    timer: <%= timer %>
+                }).then(() =>{
+                    window.location ='/<%= ruta %>'    //Hay que especificar la ruta con '/' que indica que nos redirige a la raiz, index
+                })
+            </script>
+            <% } %>
+        </body>
+    </div>
+
+    <div id="historial" class="contenido-individual">
+        <!-- Contenido de historial -->
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Historial de Solicitudes</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <link rel="stylesheet" href="resources/css/solicitud_historial.css">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Obtener todas las celdas de la columna Vale
+                    var celdasVale = document.querySelectorAll('#historial .table td:nth-child(5)');
+                    var celdasDictamen = document.querySelectorAll('#historial .table td:nth-child(7)');
+                    
+                    // Iterar sobre cada celda de vale
+                    celdasVale.forEach(function (celdaVale) {
+                        // Verificar el contenido de la celda
+                        if (celdaVale.textContent.trim() === 'No Disponible') {
+                            // Ocultar la columna siguiente (Descargar Vale)
+                            celdaVale.nextElementSibling.textContent = ' ';
+                        }
+                    });
+                    // Iterar sobre cada celda de dictamen
+                    celdasDictamen.forEach(function (celdaDic) {
+                        // Verificar el contenido de la celda
+                        if (celdaDic.textContent.trim() === 'No Disponible') {
+                            // Ocultar la columna siguiente (Descargar Vale)
+                            celdaDic.nextElementSibling.textContent = ' ';
+                        }
+                    });
+                });
+            </script>
+        </head>
+        <body class="bodyHistorial">
+            <div class="historialSolicitudes">
+                <h2 id="tituloHistorialSoli">Historial de solicitudes</h2>
+                <form action="#" method="post">
+                    <div class="contenedorFiltro">
+                        <div>
+                            <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
+                        </div>
+                        <div>
+                            <select name="estado" id="estado">
+                                <option value="blanco">Filtro</option>
+                                <option value="str">Solicitud de Soporte</option>
+                                <option value="vale">Vale</option>
+                                <option value="dictamen">Dictamen</option>
+                            </select>
+                        </div>
+                        <div class="btnFiltrar">
+                            <button  type="submit" id="btnFiltrar">Filtrar</button>
+                        </div>
+                        
+                    </div>
+                <div class="table-responsive">
+                        <table  class="table table-hover table-striped">
+                            <tr class="table-dark">
+                                <th>Folio</th>
+                                <th>Equipo</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th colspan="2">Vale</th>
+                                <th colspan="2">Dictamen</th>
+                            </tr>
+                            <% historial.forEach(solicitud => { %>
+                                <!-- Fila de la tabla para cada solicitud en el historial -->
+                                <tr>
+                                    <td><%= solicitud.FolioSolicitud %></td>
+                                    <td><%= solicitud.Equipo %></td>
+                                    <td><%= solicitud.Fecha %></td>
+                                    <td><%= solicitud.Estado %></td>
+                                    <td><%= solicitud.Vale %></td>
+                                    <td><a href="/descargarPDFvale?folioSolicitud=<%= solicitud.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
+                                    <td><%= solicitud.Dictamen %></td>
+                                    <td><a href="/descargarPDFdictamen?folioSolicitud=<%= solicitud.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
+                                </tr>
+                            <% }); %>
+                        </table>
+                </div>
+                </form>
+                <p></p>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        </body>
+    </div>  
+
+</main>
+
+<footer class="pie-pagina">
+    <p>&copy; 2024 CIC Assistance. Todos los derechos reservados.</p>
+</footer>
+
+<script src="resources/scripts/paneles.js"></script>
+
+</body>
+</html>
+
