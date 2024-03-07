@@ -1,10 +1,10 @@
 //Invocamos express
 const express = require('express');
 const app = express();
-const pdf = require('html-pdf');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
+
 const puppeteer = require('puppeteer');
 const {authPage,authSub} = require('./middleware')
 //seteamos urlencoded para capturar los datos del formulario
