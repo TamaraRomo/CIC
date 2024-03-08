@@ -471,11 +471,11 @@ app.post('/vales', async(req, res) => {
                     res.render('vales', {
                         folioSolicitudes: [{ folioSeleccionado }],
                         alert: {
-                            alertTitle: 'Ã‰xito',
+                            alertTitle: 'Éxito',
                             alertMessage: 'PDF generado y descargado correctamente',
                             alertIcon: 'success',
                             showConfirmButton: true,
-                            timer: 5000,
+                            timer: 1500,
                             ruta: 'panelAdmin'
                         }
                     });
