@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="resources/css/style_menu_usuario.css">
+</head>
+<body>
+    <div class="logo-contenedor">
+        <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+        <h1 class="titulo-sitio">CIC Assistance</h1>
+        <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+    </div>
+<% if (typeof login !== 'undefined' && login) { %>
+    <div class="mostrarSesion">
+        <p class="sesion" id="sesion">Usuario: <%= name %></p>
+        <div id="logoutMenu">
+            <a href="logout">Logout</a>
+        </div>
+    </div>
+<% } %>
+<nav class="menu">
+    <div class="opcion-menu" onclick="mostrarContenido('asignaciones')">Asignaciones</div>
+    <div class="opcion-menu" onclick="mostrarContenido('#')">Generar diagnosticos</div>
+</nav>
+
+<main class="contenido">
+	
+    <div id="asignaciones" class="contenido-individual">
+        <!-- Contenido de historial -->
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Asignaciones</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <link rel="stylesheet" href="resources/css/asignaciones.css">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        </head>
+        <body class="bodyHistorial">
+            <div class="historialSolicitudes">
+                <h2 id="tituloHistorialSoli">Historial de asignaciones</h2>
+                <form action="#" method="post">
+                    <div class="contenedorFiltro">
+                        <div>
+                            <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
+                        </div>
+                        <div>
+                            <select name="estado" id="estado">
+                                <option value="blanco">Filtro</option>
+                                <option value="str">Solicitud de Soporte</option>
+                                <option value="vale">Vale</option>
+                                <option value="dictamen">Dictamen</option>
+                            </select>
+                        </div>
+                        <div class="btnFiltrar">
+                            <button  type="submit" class="btn btn-outline-dark" id="btnFiltrar">Filtrar</button>
+                            <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
+                        </div>
+                        
+                    </div>
+                <div class="table-responsive">
+                        <table  class="table table-hover table-striped">
+                            <tr class="table-dark">
+                                <th>Folio</th>
+                                <th>Nombre</th>
+                                <th>Fecha solicitud</th>
+                                <th>Equipo</th>
+                                <th>Descripcion</th>
+                                <th>Modelo</th>
+                                <th>Serie</th>
+                                <th>Marca</th>
+                                <th>Estado</th>
+
+                            </tr>
+                            <% asignaciones.forEach((asignacion) => { %>
+                                <tr>
+                                    <td><%= asignacion.FolioSolicitud %></td>
+                                    <td><%= asignacion.Nombre %></td>
+                                    <td><%= asignacion.Fecha %></td>
+                                    <td><%= asignacion.Equipo %></td>
+                                    <td><%= asignacion.Descripcion %></td>
+                                    <td><%= asignacion.ModeloEquipo %></td>
+                                    <td><%= asignacion.NoSerieEquipo %></td>
+                                    <td><%= asignacion.MarcaEquipo %></td>
+                                    <td>
+                                        <select class="form-select">
+                                            <option value="Asignada" selected>Asignada</option>
+                                            <option value="Proceso">En proceso</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </table>
+                </div>
+                </form>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        </body>
+    </div>  
+
+</main>
+
+<footer class="pie-pagina">
+    <p>&copy; 2024 CIC Assistance. Todos los derechos reservados.</p>
+</footer>
+
+<script src="resources/scripts/panelTecnico.js"></script>
+
+</body>
+</html>
+

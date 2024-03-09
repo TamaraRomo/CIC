@@ -20,7 +20,9 @@ body {
     justify-content: center;
     align-items: center;
 }
-
+#contenedorTecnicos{
+    margin-top: 2em;
+}
 .titulosLogin {
     text-align: center;
     margin-top: 1em;
@@ -43,6 +45,16 @@ body {
 }
 .lblRegistro{
     width: 30%;
+}
+#tecnicoId{
+    width: 50%;
+}
+#registroTecnico{
+    display: flex;
+    margin-bottom: 1em;
+}
+#lblTec{
+    width: 50%;
 }
 #enviarRegistro{
     text-align: center;

@@ -63,6 +63,10 @@ enviarMail = async(opcion,correoObjetivo)=>{
     }else if(opcion === 4){
         textAsunto = 'Dictamen sobre solicitud'
         textoCorreo = 'Se ha determinado el dictamen a su solicitud de soporte técnico, puede revisar mas detalles del dictamen en su portal cic assistance y puede pasar por su equipo al Centro de Computo';
+    }else if(opcion === 5){
+        textAsunto = 'Solicitud Asignada'
+        textoCorreo = 'Se le ha asignado una nueva solicitud de soporte técnico porfavor entre a su portal CIC Assitance para poder ver mas información';
+   
     }
     const mensaje = {
         from: 'cic.assistance2024@gmail.com',
@@ -84,13 +88,39 @@ app.get('/login', (req, res) => {
 app.get('/registerP',authPage('Admin'), (req, res) => {
     res.render('register');
 });
+app.get('/registerT',authPage('Admin'), (req, res) => {
+    res.render('registerT');
+});
 app.get('/generarDictamen',authPage('Admin'), (req, res) => {
     res.render('generarDictamen');
 });
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
-app.get('/panelUsuario',authPage(["Usuario","Admin"]), async (req, res) => {
+app.get('/panelTecnicos',authPage(["Tecnico","Admin"]), async (req, res) => {
+
+    if (!req.session.loggedin) {
+        // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
+        return res.render('login', {
+            alert: true,
+            alertTitle: "Advertencia",
+            alertMessage: "Debes iniciar sesión antes de llenar el formulario.",
+            alertIcon: "warning",
+            showConfirmButton: true,
+            timer: 3000,  
+            ruta: 'login'
+        });
+    }
+    const usuario = req.session.idUsuario;
+    const asignaciones = await query(`SELECT s.FolioSolicitud,s.Equipo,s.Descripcion,S.Fecha, v.ModeloEquipo,v.NoSerieEquipo,v.MarcaEquipo, u.Nombre FROM solicitudes AS s JOIN tecnicos AS t ON s.TecnicoAsignado = t.IdTecnico JOIN vales AS v ON s.FolioSolicitud = v.FolioSolicitud JOIN usuarios AS u ON s.IdUsuario = u.IdUsuario WHERE t.IdUsuario = ${usuario}`);
+    console.log(asignaciones);
+    res.render('panelTecnicos',{
+        login: req.session.loggedin,
+        name: req.session.name,
+        asignaciones: asignaciones
+    });
+});
+app.get('/panelUsuario',authPage(["Usuario","Admin","Tecnico"]), async (req, res) => {
 
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
@@ -131,13 +161,17 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             ruta: 'login'
         });
     }
+    const tecnicos = await query('SELECT * FROM tecnicos');
     const edificios = await query('SELECT * FROM edificios');
     const folios = await query('SELECT solicitudes.FolioSolicitud, solicitudes.IdUsuario, usuarios.Correo FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE NOT EXISTS ( SELECT 1 FROM vales WHERE vales.FolioSolicitud = solicitudes.FolioSolicitud )');
     const usuarios = await query('SELECT * from usuarios');
+    const usuariosTecnicos = await query('SELECT * FROM usuarios WHERE rol = "Tecnico" AND NOT EXISTS ( SELECT 1 FROM tecnicos WHERE tecnicos.IdUsuario = usuarios.IdUsuario )');
     const historialSoli = await query(`SELECT s.FolioSolicitud AS FolioSolicitud,s.Fecha AS Fecha,s.Hora AS Hora,u.Nombre AS NombreUsuario,s.Equipo AS Equipo,s.Estado AS Estado,CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' WHEN d.FolioSolicitud IS NOT NULL THEN 'No disponible' ELSE 'No Disponible' END AS Vale,CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario ORDER BY FolioSolicitud DESC; `);
     const soloAbiertas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Abierto"')
-    const soliPendiente = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Pendiente"')
+    const soliPendiente = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Proceso"')
     const soliCerradas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Cerrado"')
+    const soliEspera = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Espera"')
+    const soliAsignada = await query('SELECT s.*, u.Correo, u.Nombre as UsuarioNombre, t.Nombre as TecnicoNombre FROM solicitudes s JOIN usuarios u ON s.IdUsuario = u.IdUsuario JOIN tecnicos t ON s.TecnicoAsignado = t.IdTecnico WHERE s.Estado = "Asignada"')
     const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.folioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario ORDER BY v.idVale DESC;");
     res.render('panelAdmin', {
             login: req.session.loggedin,
@@ -148,8 +182,12 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             edificios: edificios,
             abierto: soloAbiertas,
             pendiente:  soliPendiente,
+            asignada: soliAsignada,
+            espera: soliEspera,
             cerrado: soliCerradas,
-            vales:inforVales
+            vales:inforVales,
+            tecnicos: tecnicos,
+            usuariosTecnicos: usuariosTecnicos
         });
         console.log(historialSoli);
 });
@@ -227,6 +265,39 @@ app.post('/registerP',authPage('Admin'),async(req, res) => {
             });
         }
     });
+})
+
+app.post('/registerT',authPage('Admin'),async(req, res) => { ///SEPARAR EN OTRA PESTAÑA
+    const nombre = req.body.nombreT;
+    const apellidos = req.body.apellidos;
+    const numeroT = req.body.noTrabajador;
+    const email = req.body.email;
+    const telefono = req.body.telef;
+    const IdUsuario  = req.body.IdUsuario;
+    const fecha = obtenerFechaActual();  
+    connection.query('INSERT INTO tecnicos SET ?', { Nombre: nombre, Apellidos: apellidos, NoTrabajador: numeroT, Correo: email, Telefono: telefono, IdUsuario: IdUsuario,FechaRegistro: fecha }, (error, results) => {
+        if (error) {
+            console.log(error);
+        }
+             else {
+            res.render('alerta', {
+                alert: true,
+                alertTitle: "Registro",
+                alertMessage: "¡Registro Exitoso!",
+                alertIcon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                ruta: 'panelAdmin'
+            });
+        }
+    });
+    function obtenerFechaActual() {
+        const fecha = new Date();
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        return `${año}-${mes}-${dia}`;
+    }
 })
 
 //10 Hacer solicitud de soporte
@@ -386,6 +457,16 @@ app.post('/auth', async (req,res)=> {
                         timer: 1500,
                         ruta: 'panelAdmin'  // Redirigir a la página de panelAdmin
                     });
+                } else if (results[0].Rol === 'Tecnico') {
+                    res.render('login', {
+                        alert: true,
+                        alertTitle: "Conexión exitosa",
+                        alertMessage: "¡LOGIN CORRECTO!",
+                        alertIcon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        ruta: 'panelTecnicos'  // Redirigir a la página de panelTecnico
+                    });
                 } else {
                     res.render('login', {
                         alert: true,
@@ -424,13 +505,16 @@ app.post('/vales', async(req, res) => {
     const modelo = req.body.modelo;
     const estado = req.body.estatus;
     const caracteris = req.body.caracteristicas;
-    
+    const [idTecnico, correoTecnico] = req.body.tecnico.split('|');
+    console.log('ABAJO DEBE APARECER EL ID DEL TECNICO')
+    console.log(idTecnico) 
+    console.log(correoTecnico)
     // Añadir el valor de otroInput a la cadena de equipos
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    console.log("EYYYYY"+req.body.listaEquiposCheck);
-    
+    const cambioEstado = 'Asignada';
+    await query(`UPDATE solicitudes SET Estado = ${cambioEstado} WHERE FolioSolicitud = ${folioSolicitud}`);
     const { foli, equipos, serie, marcaE, modeloE, caracteristicas, estatus, revision } = req.body;
     const fechaHoraActual = new Date().toLocaleString();
     const folioSeleccionado = folioSolicitud;
@@ -475,7 +559,7 @@ app.post('/vales', async(req, res) => {
                             alertMessage: 'PDF generado y descargado correctamente',
                             alertIcon: 'success',
                             showConfirmButton: true,
-                            timer: 1500,
+                            timer: 5000,
                             ruta: 'panelAdmin'
                         }
                     });
@@ -483,21 +567,26 @@ app.post('/vales', async(req, res) => {
             });
         })
     })
+    const asignado = ` 
+    UPDATE solicitudes SET TecnicoAsignado = ${idTecnico} WHERE FolioSolicitud = ${folioSolicitud};
+    `;//Actualizar el tecnico asignado a una solicitud
+    const asignadoQ = await query(asignado);
     console.log(caracteris);
     connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
             enviarMail(3,correoUsuarioFolio);
-            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
-                alert: true,
-                alertTitle: "Vale",
-                alertMessage: "¡Vale y PDF creado corractamente!",
-                alertIcon: "success",
-                showConfirmButton: false,
-                timer: 1500,
-                ruta: 'panelAdmin'
-            })
+            enviarMail(5,correoTecnico);
+                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
+                    alert: true,
+                    alertTitle: "Vale",
+                    alertMessage: "¡Vale y PDF creado corractamente!",
+                    alertIcon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    ruta: 'panelAdmin'
+                })         
         }
     })
     // Función para obtener la fecha y hora actual en formato MySQL
@@ -602,7 +691,7 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
                 alertMessage: 'PDF generado y guardado correctamente',
                 alertIcon: 'success',
                 showConfirmButton: false,
-                timer: 5000,
+                timer: 1500,
                 ruta: 'panelAdmin'
             });
         }
