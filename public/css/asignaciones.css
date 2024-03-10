@@ -1,0 +1,104 @@
+*{
+    font-family: 'Roboto';
+}
+/*Formulario Creación de Dictámenes*/
+.historialSolicitudes {
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    margin: auto;
+    padding: 0 2em; /* Modificado el padding */
+    background-color: #fafafaf6;
+    width: 85%;
+    text-align: center; /* Alineación del texto centrada */
+    box-sizing: border-box; /* Incluir padding en el ancho total */
+}
+
+#fechaSolicitud{
+    text-align: right;
+    margin-right: 2em;
+    margin-bottom: 0;
+}
+.creacionDictamen h2{
+    margin-top: 0;
+    margin-bottom: 1.5em;
+    color: #0D1642;
+}
+
+/* Labels */
+.labelMayor {
+    font-weight: bold;
+    color: #0D1642;
+    margin-bottom: 1.5em;
+}
+
+/* Contenedores principales */
+.contenedorDictamen,
+.contenedorSecundario,
+.contenedorFiltro{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1.5em;
+}
+
+.contenedorDictamen div,
+.contenedorFiltro div,
+.contenedorSecundario div {
+    flex: 1 1 calc(33.33% - 2em);
+    margin-right: 2em;
+}
+
+
+.contenedorDictamen input,
+.contenedorDictamen select,
+.contenedorSecundario textarea,
+.contenedorFiltro input,
+.contenedorFiltro select {
+    width: 100%;
+    font-weight: bold;
+    height: auto; 
+    border: 1px solid #91AEE7;
+    border-radius: 3px;
+    padding: 4px;
+}
+
+
+
+/*Tabla historial*/
+.historialSolicitudes h2,#tituloHistorialSoli{
+    font-size: 1.5em;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    color: #0D1642;
+    font-family: 'Roboto';
+    font-weight: bold;
+}
+#tituloHistorialSoli{
+    font-size: 1.5em;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    color: #0D1642;
+    font-family: 'Roboto';
+    font-weight: bold;
+}
+
+
+@media only screen and (max-width: 600px) {
+    /* Estilos para dispositivos móviles */
+    th, td {
+        font-size: 12px; /* Ajustar tamaño de fuente para pantallas pequeñas */
+    }
+
+    /* Ocultar ciertas columnas en pantallas pequeñas si es necesario */
+    th:nth-child(5),
+    td:nth-child(5),
+    th:nth-child(6),
+    td:nth-child(6) {
+        display: none;
+    }
+
+    /* Agregar desplazamiento horizontal si la tabla es demasiado ancha */
+    .contenedorTabla {
+        overflow-x: auto;
+    }
+
+}

@@ -64,13 +64,16 @@ fieldset {
 }
 .contenedor-estatus div{
     width: 50%;
-    display: flex;
+    display: block;
 }
 #lblEstatus,#lblRevision{
     width: 20%;
     margin-right: 1em;
 }
-#revision,#estatus{
+#lblAsignado{
+    width: 100%;
+}
+#revision,#estatus,#tecnico{
     width: 65%;
     margin-right: 2em;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);

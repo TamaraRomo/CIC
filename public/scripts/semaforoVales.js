@@ -1,7 +1,7 @@
-// JavaScript
+
 document.addEventListener('DOMContentLoaded', function() {
     // Obtén todas las celdas con la clase 'estado-celda'
-    var celdas = document.querySelectorAll('.estado-celda');
+    var celdas = document.querySelectorAll('.estado-td');
   
     // Itera sobre cada celda
     celdas.forEach(function(celda) {
@@ -17,10 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para obtener el color correspondiente al estado
     function obtenerColorEstado(estado, callback) {
       var colores = {
-        'Proceso': '#FFDA6A', 
-        'Espera': '#f59622',
-        'Abierto': '#3AE261', 
-        'Cerrado': '#F53D4F'    // Rojo
+        'Esperar': '#FFDA6A', 
+        'Funciona': '#3AE261', 
+        'No Funciona': '#F53D4F'    // Rojo
       };
       // Llama al callback con el color correspondiente al estado
       callback(colores[estado] || ''); // Si el estado no tiene un color asignado, usa una cadena vacía

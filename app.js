@@ -1,12 +1,13 @@
 //Invocamos express
 const express = require('express');
 const app = express();
-const pdf = require('html-pdf');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-const {authPage,authSub} = require('./middleware')
+const {authPage,authSub} = require('./middleware');
+const nodemailer = require('nodemailer');
+
 //seteamos urlencoded para capturar los datos del formulario
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -37,6 +38,48 @@ app.use(session({
 const connection = require('./database/db');
 console.log(__dirname);
 
+//FUNCION PARA ENVIAR NOTIFICACIONES POR EMAIL
+enviarMail = async(opcion,correoObjetivo)=>{
+    const config = {
+        host : 'smtp.gmail.com',
+        port : 587,
+        auth : {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+        }
+    }
+
+    let textoCorreo;
+    let textAsunto;
+    if (opcion === 1) {
+        textAsunto = 'Solicitud de soporte creada'
+        textoCorreo = 'Ha realizado una solicitud de soporte técnico al sistema CIC Assistance, puede checar el estatus de su solicitud en su historial de solicitudes a traves de la misma página donde realizó la solicitud';
+    } else if (opcion === 2) {
+        textAsunto = 'Actualización estatus en solicitud'
+        textoCorreo = 'Ha cambiado el estatus de tu solicitud de soporte técnico, revisa tu portal cic assistance para obtener mas información';
+    } else if(opcion === 3){
+        textAsunto = 'Vale creado'
+        textoCorreo = 'Se ha creado el vale a su solicitud de soporte técnico puede descargarlo a traves del portal cic assistance en su navegador web';
+    }else if(opcion === 4){
+        textAsunto = 'Dictamen sobre solicitud'
+        textoCorreo = 'Se ha determinado el dictamen a su solicitud de soporte técnico, puede revisar mas detalles del dictamen en su portal cic assistance y puede pasar por su equipo al Centro de Computo';
+    }else if(opcion === 5){
+        textAsunto = 'Solicitud Asignada'
+        textoCorreo = 'Se le ha asignado una nueva solicitud de soporte técnico porfavor entre a su portal CIC Assitance para poder ver mas información';
+   
+    }
+    const mensaje = {
+        from: 'cic.assistance2024@gmail.com',
+        to: correoObjetivo,
+        subject: textAsunto,
+        text: textoCorreo
+    }
+    const transport = nodemailer.createTransport(config);
+    const info = await transport.sendMail(mensaje);
+}
+
+
+
 //9.- Estableciendo las rutas
 app.get('/login', (req, res) => {
     res.render('login');
@@ -45,13 +88,39 @@ app.get('/login', (req, res) => {
 app.get('/registerP',authPage('Admin'), (req, res) => {
     res.render('register');
 });
+app.get('/registerT',authPage('Admin'), (req, res) => {
+    res.render('registerT');
+});
 app.get('/generarDictamen',authPage('Admin'), (req, res) => {
     res.render('generarDictamen');
 });
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
-app.get('/panelUsuario',authPage(["Usuario","Admin"]), async (req, res) => {
+app.get('/panelTecnicos',authPage(["Tecnico","Admin"]), async (req, res) => {
+
+    if (!req.session.loggedin) {
+        // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
+        return res.render('login', {
+            alert: true,
+            alertTitle: "Advertencia",
+            alertMessage: "Debes iniciar sesión antes de llenar el formulario.",
+            alertIcon: "warning",
+            showConfirmButton: true,
+            timer: 3000,  
+            ruta: 'login'
+        });
+    }
+    const usuario = req.session.idUsuario;
+    const asignaciones = await query(`SELECT s.FolioSolicitud,s.Equipo,s.Descripcion,S.Fecha, v.ModeloEquipo,v.NoSerieEquipo,v.MarcaEquipo, u.Nombre FROM solicitudes AS s JOIN tecnicos AS t ON s.TecnicoAsignado = t.IdTecnico JOIN vales AS v ON s.FolioSolicitud = v.FolioSolicitud JOIN usuarios AS u ON s.IdUsuario = u.IdUsuario WHERE t.IdUsuario = ${usuario}`);
+    console.log(asignaciones);
+    res.render('panelTecnicos',{
+        login: req.session.loggedin,
+        name: req.session.name,
+        asignaciones: asignaciones
+    });
+});
+app.get('/panelUsuario',authPage(["Usuario","Admin","Tecnico"]), async (req, res) => {
 
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
@@ -92,13 +161,17 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             ruta: 'login'
         });
     }
+    const tecnicos = await query('SELECT * FROM tecnicos');
     const edificios = await query('SELECT * FROM edificios');
-    const folios = await query('SELECT FolioSolicitud FROM solicitudes WHERE NOT EXISTS ( SELECT 1 FROM vales WHERE vales.FolioSolicitud = solicitudes.FolioSolicitud )');
-    const usuarios = await query('SELECT IdUsuario,Nombre from usuarios');
+    const folios = await query('SELECT solicitudes.FolioSolicitud, solicitudes.IdUsuario, usuarios.Correo FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE NOT EXISTS ( SELECT 1 FROM vales WHERE vales.FolioSolicitud = solicitudes.FolioSolicitud )');
+    const usuarios = await query('SELECT * from usuarios');
+    const usuariosTecnicos = await query('SELECT * FROM usuarios WHERE rol = "Tecnico" AND NOT EXISTS ( SELECT 1 FROM tecnicos WHERE tecnicos.IdUsuario = usuarios.IdUsuario )');
     const historialSoli = await query(`SELECT s.FolioSolicitud AS FolioSolicitud,s.Fecha AS Fecha,s.Hora AS Hora,u.Nombre AS NombreUsuario,s.Equipo AS Equipo,s.Estado AS Estado,CASE WHEN v.FolioSolicitud IS NOT NULL THEN 'Disponible' WHEN d.FolioSolicitud IS NOT NULL THEN 'No disponible' ELSE 'No Disponible' END AS Vale,CASE WHEN d.FolioSolicitud IS NOT NULL THEN 'Disponible' ELSE 'No Disponible' END AS Dictamen FROM solicitudes s LEFT JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario ORDER BY FolioSolicitud DESC; `);
-    const soloAbiertas = await query('SELECT * FROM solicitudes WHERE Estado = "Abierto"')
-    const soliPendiente = await query('SELECT * FROM solicitudes WHERE Estado = "Pendiente"')
-    const soliCerradas = await query('SELECT * FROM solicitudes WHERE Estado = "Cerrado"')
+    const soloAbiertas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Abierto"')
+    const soliPendiente = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Proceso"')
+    const soliCerradas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Cerrado"')
+    const soliEspera = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Espera"')
+    const soliAsignada = await query('SELECT s.*, u.Correo, u.Nombre as UsuarioNombre, t.Nombre as TecnicoNombre FROM solicitudes s JOIN usuarios u ON s.IdUsuario = u.IdUsuario JOIN tecnicos t ON s.TecnicoAsignado = t.IdTecnico WHERE s.Estado = "Asignada"')
     const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.folioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario ORDER BY v.idVale DESC;");
     res.render('panelAdmin', {
             login: req.session.loggedin,
@@ -109,8 +182,12 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             edificios: edificios,
             abierto: soloAbiertas,
             pendiente:  soliPendiente,
+            asignada: soliAsignada,
+            espera: soliEspera,
             cerrado: soliCerradas,
-            vales:inforVales
+            vales:inforVales,
+            tecnicos: tecnicos,
+            usuariosTecnicos: usuariosTecnicos
         });
         console.log(historialSoli);
 });
@@ -131,7 +208,7 @@ function query(sql) {
 app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, res) => {
     const folioSolicitud = req.params.folioSolicitud;
     req.session.folioSolicitudDictamen = folioSolicitud;
-    const query = 'SELECT idVale,Equipo,NoSerieEquipo,MarcaEquipo,ModeloEquipo FROM vales WHERE FolioSolicitud = ?';
+    const query = 'SELECT v.idVale, v.Equipo, v.NoSerieEquipo, v.MarcaEquipo, v.ModeloEquipo, u.Correo FROM vales v JOIN solicitudes s ON v.FolioSolicitud = s.FolioSolicitud JOIN usuarios u ON s.IdUsuario = u.IdUsuario WHERE v.FolioSolicitud = ?';
 
     connection.query(query, [folioSolicitud], (error, results) => {
         if (error) {
@@ -141,6 +218,7 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
             if (results.length > 0) {
                 // Si se encontraron resultados, devuelve la información como JSON al cliente
                 console.log(results);
+                req.session.correoDictamen = results[0].Correo;
                 req.session.idValeDictamen = results[0].idVale;
                 res.json(results[0]); // Suponiendo que solo necesitas el primer resultado
             } else {
@@ -189,6 +267,39 @@ app.post('/registerP',authPage('Admin'),async(req, res) => {
     });
 })
 
+app.post('/registerT',authPage('Admin'),async(req, res) => { ///SEPARAR EN OTRA PESTAÑA
+    const nombre = req.body.nombreT;
+    const apellidos = req.body.apellidos;
+    const numeroT = req.body.noTrabajador;
+    const email = req.body.email;
+    const telefono = req.body.telef;
+    const IdUsuario  = req.body.IdUsuario;
+    const fecha = obtenerFechaActual();  
+    connection.query('INSERT INTO tecnicos SET ?', { Nombre: nombre, Apellidos: apellidos, NoTrabajador: numeroT, Correo: email, Telefono: telefono, IdUsuario: IdUsuario,FechaRegistro: fecha }, (error, results) => {
+        if (error) {
+            console.log(error);
+        }
+             else {
+            res.render('alerta', {
+                alert: true,
+                alertTitle: "Registro",
+                alertMessage: "¡Registro Exitoso!",
+                alertIcon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                ruta: 'panelAdmin'
+            });
+        }
+    });
+    function obtenerFechaActual() {
+        const fecha = new Date();
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        return `${año}-${mes}-${dia}`;
+    }
+})
+
 //10 Hacer solicitud de soporte
 app.post('/solicitud', async(req, res) => {
     const usuario = req.session.idUsuario; //
@@ -210,6 +321,7 @@ app.post('/solicitud', async(req, res) => {
         if(error){
             console.log(error);
         }else{
+            enviarMail(1,req.session.correoUser);
             const idSolicitud = results.insertId;
             console.log(idSolicitud);
             const logQuery = `INSERT INTO solicitudes_log (IdUsuario, FolioSolicitud, NuevoEstado, Fecha, Hora) VALUES (${req.session.idUsuario},${idSolicitud},"Abierto","${fecha}","${hora}")`;
@@ -252,6 +364,7 @@ app.post('/solicitud', async(req, res) => {
 
 app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     const usuario = req.body.usuarios;
+    const [idUsuario, correoUsuario] = usuario.split('|');
     const fecha = obtenerFechaActual();
     const hora = obtenerHoraActual();
     const telefono = req.body.telefono;
@@ -265,13 +378,14 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
+            enviarMail(1,correoUsuario);
             const idSolicitud = results.insertId;
             console.log(idSolicitud);
-            const logQuery = `INSERT INTO solicitudes_log (IdUsuario, FolioSolicitud, NuevoEstado, Fecha, Hora) VALUES (${usuario},${idSolicitud},"Abierto","${fecha}","${hora}")`;
+            const logQuery = `INSERT INTO solicitudes_log (IdUsuario, FolioSolicitud, NuevoEstado, Fecha, Hora) VALUES (${idUsuario},${idSolicitud},"Abierto","${fecha}","${hora}")`;
 
             connection.query(logQuery, (error, cambioResults) => {
                 if (error) {
@@ -329,6 +443,7 @@ app.post('/auth', async (req,res)=> {
                 });
             }else{
                 req.session.loggedin = true;
+                req.session.correoUser = results[0].Correo;
                 req.session.idUsuario = results[0].IdUsuario;
                 req.session.name = results[0].Nombre;
                 req.session.rol = results[0].Rol;
@@ -341,6 +456,16 @@ app.post('/auth', async (req,res)=> {
                         showConfirmButton: false,
                         timer: 1500,
                         ruta: 'panelAdmin'  // Redirigir a la página de panelAdmin
+                    });
+                } else if (results[0].Rol === 'Tecnico') {
+                    res.render('login', {
+                        alert: true,
+                        alertTitle: "Conexión exitosa",
+                        alertMessage: "¡LOGIN CORRECTO!",
+                        alertIcon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        ruta: 'panelTecnicos'  // Redirigir a la página de panelTecnico
                     });
                 } else {
                     res.render('login', {
@@ -371,7 +496,8 @@ app.post('/auth', async (req,res)=> {
 app.post('/vales', async(req, res) => {
     const usuario = req.session.name;
     const fecha = obtenerFechaHoraActual();
-    const folioSolicitud = req.body.folios;
+    const folioS = req.body.folios;
+    const [folioSolicitud, correoUsuarioFolio] = folioS.split('|');
     let equipo = req.body.listaEquiposCheck || '';
     const otroInput = req.body.otroInput2 || '';  
     const noSerie = req.body.serie;
@@ -379,16 +505,19 @@ app.post('/vales', async(req, res) => {
     const modelo = req.body.modelo;
     const estado = req.body.estatus;
     const caracteris = req.body.caracteristicas;
-    
+    const [idTecnico, correoTecnico] = req.body.tecnico.split('|');
+    console.log('ABAJO DEBE APARECER EL ID DEL TECNICO')
+    console.log(idTecnico) 
+    console.log(correoTecnico)
     // Añadir el valor de otroInput a la cadena de equipos
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    console.log("EYYYYY"+req.body.listaEquiposCheck);
-    
-    const { folios, equipos, serie, marcaE, modeloE, caracteristicas, estatus, revision } = req.body;
+    const cambioEstado = 'Asignada';
+    await query(`UPDATE solicitudes SET Estado = ${cambioEstado} WHERE FolioSolicitud = ${folioSolicitud}`);
+    const { foli, equipos, serie, marcaE, modeloE, caracteristicas, estatus, revision } = req.body;
     const fechaHoraActual = new Date().toLocaleString();
-    const folioSeleccionado = folios;
+    const folioSeleccionado = folioSolicitud;
     const templatePath = path.join(__dirname, 'views', 'generarVale.ejs');
     fs.readFile(templatePath, 'utf8', async (err, data) => {
         if (err) {
@@ -426,7 +555,7 @@ app.post('/vales', async(req, res) => {
                     res.render('vales', {
                         folioSolicitudes: [{ folioSeleccionado }],
                         alert: {
-                            alertTitle: 'Ã‰xito',
+                            alertTitle: 'Éxito',
                             alertMessage: 'PDF generado y descargado correctamente',
                             alertIcon: 'success',
                             showConfirmButton: true,
@@ -438,20 +567,26 @@ app.post('/vales', async(req, res) => {
             });
         })
     })
+    const asignado = ` 
+    UPDATE solicitudes SET TecnicoAsignado = ${idTecnico} WHERE FolioSolicitud = ${folioSolicitud};
+    `;//Actualizar el tecnico asignado a una solicitud
+    const asignadoQ = await query(asignado);
     console.log(caracteris);
     connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
-            res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
-                alert: true,
-                alertTitle: "Vale",
-                alertMessage: "¡Vale y PDF creado corractamente!",
-                alertIcon: "success",
-                showConfirmButton: false,
-                timer: 1500,
-                ruta: 'panelAdmin'
-            })
+            enviarMail(3,correoUsuarioFolio);
+            enviarMail(5,correoTecnico);
+                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
+                    alert: true,
+                    alertTitle: "Vale",
+                    alertMessage: "¡Vale y PDF creado corractamente!",
+                    alertIcon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    ruta: 'panelAdmin'
+                })         
         }
     })
     // Función para obtener la fecha y hora actual en formato MySQL
@@ -548,13 +683,15 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
             await browser.close();
 
             console.log('Archivo PDF generado y guardado correctamente');
+            console.log(req.session.correoDictamen)
+            enviarMail(4,req.session.correoDictamen);
             res.render('alerta', {
                 alert: true,
                 alertTitle: 'Éxito',
                 alertMessage: 'PDF generado y guardado correctamente',
                 alertIcon: 'success',
                 showConfirmButton: false,
-                timer: 5000,
+                timer: 1500,
                 ruta: 'panelAdmin'
             });
         }
@@ -580,13 +717,16 @@ app.post('/actualizar-estado', async (req, res) => {
     // Consulta para insertar el cambio en el log, solo si hay un cambio en el estado
     const logQuery = 'INSERT INTO solicitudes_log (IdUsuario, FolioSolicitud, NuevoEstado, Fecha, Hora) VALUES (?, ?, ?, ?, ?)';
     // Consulta para obtener el estado original antes de la actualización
-    const obtenerEstadoOriginal = 'SELECT Estado FROM solicitudes WHERE FolioSolicitud = ?';
+    const obtenerEstadoOriginal = 'SELECT s.Estado, s.IdUsuario, u.Correo FROM solicitudes s INNER JOIN usuarios u ON s.IdUsuario = u.IdUsuario WHERE s.FolioSolicitud = ?';
 
     connection.query(obtenerEstadoOriginal, [folio], async (error, results) => {
         if (error) {
             console.error('Error al obtener el estado original:', error);
             res.status(500).json({ error: 'Error al obtener el estado original' });
         } else {
+            const usuarioEmail = results[0].Correo;
+            console.log(usuarioEmail);
+            console.log('ARRRIBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
             const estadoOriginal = results[0].Estado;
             // Ejecuta la consulta para cambiar el estado
             connection.query(cambiarEstado, [nuevoEstado, folio], (updateError, updateResults) => {
@@ -601,6 +741,7 @@ app.post('/actualizar-estado', async (req, res) => {
                             if (logError) {
                                 console.error('Error al insertar en el log:', logError);
                             } else {
+                                enviarMail(2,usuarioEmail);
                                 console.log('Cambio registrado en el log:', logResults);
                             }
                         });
@@ -684,4 +825,3 @@ app.get('/logout', (req, res)=>{
 app.listen(3000, (req, res)=> {
     console.log('SERVER RUNNING IN http://localhost:3000');
 });
-
