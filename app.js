@@ -112,7 +112,7 @@ app.get('/panelTecnicos',authPage(["Tecnico","Admin"]), async (req, res) => {
         });
     }
     const usuario = req.session.idUsuario;
-    const asignaciones = await query(`SELECT s.FolioSolicitud,s.Equipo,s.Descripcion,S.Fecha, v.ModeloEquipo,v.NoSerieEquipo,v.MarcaEquipo, u.Nombre FROM solicitudes AS s JOIN tecnicos AS t ON s.TecnicoAsignado = t.IdTecnico JOIN vales AS v ON s.FolioSolicitud = v.FolioSolicitud JOIN usuarios AS u ON s.IdUsuario = u.IdUsuario WHERE t.IdUsuario = ${usuario}`);
+    const asignaciones = await query(`SELECT DISTINCT s.FolioSolicitud,S.Fecha,S.Descripcion, v.Equipo,V.NoSerieEquipo,V.MarcaEquipo,V.ModeloEquipo, u.IdUsuario as IdUsuarioTecnico, us.IdUsuario as IdUsuarioSolicitante, us.Nombre as NombreSolicitante FROM solicitudes s JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud JOIN tecnicos t ON a.IdTecnico = t.IdTecnico JOIN usuarios u ON t.IdUsuario = u.IdUsuario JOIN usuarios us ON s.IdUsuario = us.IdUsuario WHERE u.IdUsuario = ${usuario}`);
     console.log(asignaciones);
     res.render('panelTecnicos',{
         login: req.session.loggedin,
@@ -171,7 +171,7 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
     const soliPendiente = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Proceso"')
     const soliCerradas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Cerrado"')
     const soliEspera = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Espera"')
-    const soliAsignada = await query('SELECT s.*, u.Correo, u.Nombre as UsuarioNombre, t.Nombre as TecnicoNombre FROM solicitudes s JOIN usuarios u ON s.IdUsuario = u.IdUsuario JOIN tecnicos t ON s.TecnicoAsignado = t.IdTecnico WHERE s.Estado = "Asignada"')
+    const soliAsignada = await query('SELECT solicitudes.*,u.Correo, u.Nombre as UsuarioNombre, tecnicos.Nombre, tecnicos.IdTecnico FROM solicitudes LEFT JOIN usuarios u ON solicitudes.IdUsuario = u.IdUsuario LEFT JOIN asignaciones ON solicitudes.IdAsignacion = asignaciones.IdAsignacion LEFT JOIN tecnicos ON asignaciones.IdTecnico = tecnicos.IdTecnico LEFT JOIN usuarios ON tecnicos.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Asignada"')
     const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.folioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario ORDER BY v.idVale DESC;");
     res.render('panelAdmin', {
             login: req.session.loggedin,
@@ -513,8 +513,7 @@ app.post('/vales', async(req, res) => {
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    const cambioEstado = 'Asignada';
-    await query(`UPDATE solicitudes SET Estado = ${cambioEstado} WHERE FolioSolicitud = ${folioSolicitud}`);
+    
     const { foli, equipos, serie, marcaE, modeloE, caracteristicas, estatus, revision } = req.body;
     const fechaHoraActual = new Date().toLocaleString();
     const folioSeleccionado = folioSolicitud;
@@ -567,28 +566,40 @@ app.post('/vales', async(req, res) => {
             });
         })
     })
-    const asignado = ` 
-    UPDATE solicitudes SET TecnicoAsignado = ${idTecnico} WHERE FolioSolicitud = ${folioSolicitud};
-    `;//Actualizar el tecnico asignado a una solicitud
-    const asignadoQ = await query(asignado);
-    console.log(caracteris);
-    connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
-        if(error){
+    const cambioEstado = "Asignada";
+    connection.query('UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ? ',[cambioEstado,folioSolicitud], async(error, results)=> {
+        if (error) {
             console.log(error);
-        }else{
-            enviarMail(3,correoUsuarioFolio);
-            enviarMail(5,correoTecnico);
-                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
-                    alert: true,
-                    alertTitle: "Vale",
-                    alertMessage: "¡Vale y PDF creado corractamente!",
-                    alertIcon: "success",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    ruta: 'panelAdmin'
-                })         
+        }else {
+            connection.query('INSERT INTO asignaciones SET ?',{IdSolicitud:folioSolicitud,IdTecnico:idTecnico}, async(error, results)=> {
+                if(error){
+                    console.log(error);
+                }else{
+                    const IdAsignacion = results.insertId;
+                    await query(`UPDATE solicitudes SET IdAsignacion = ${IdAsignacion} WHERE FolioSolicitud = ${folioSolicitud}`);
+                    connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
+                        if(error){
+                            console.log(error);
+                        }else{
+                            enviarMail(3,correoUsuarioFolio);
+                            enviarMail(5,correoTecnico);
+                                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
+                                    alert: true,
+                                    alertTitle: "Vale",
+                                    alertMessage: "¡Vale y PDF creado corractamente!",
+                                    alertIcon: "success",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    ruta: 'panelAdmin'
+                                })         
+                        }
+                    })
+                }
+            });
         }
-    })
+    
+    });
+   
     // Función para obtener la fecha y hora actual en formato MySQL
     function obtenerFechaHoraActual() {
         const fecha = new Date();

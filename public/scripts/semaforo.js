@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function obtenerColorEstado(estado, callback) {
       var colores = {
         'Proceso': '#FFDA6A', 
-        'Espera': '#f59622',
+        'Asignada': '#3498db',
+        'Espera': '#87CEEB',
         'Abierto': '#3AE261', 
         'Cerrado': '#F53D4F'    // Rojo
       };

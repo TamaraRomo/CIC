@@ -850,7 +850,7 @@
                                 <% if (i < asignada.length) { %>
                                     <td class="bg-primary"><%= asignada[i].FolioSolicitud %></td>
                                     <td class="bg-primary"><%= asignada[i].UsuarioNombre %></td>
-                                    <td class="bg-primary" id="equipoEstado<%= i %>"><%= asignada[i].TecnicoNombre %></td>
+                                    <td class="bg-primary" id="equipoEstado<%= i %>"><%= asignada[i].Nombre %></td>
                                     <td class="seleccion bg-primary" id="ladoDerecho<%= i %>" >
                                         <select class="form-select cambiarEstado" data-folio="<%= asignada[i].FolioSolicitud %>">
                                             <option value="Asignada" selected>Asignada</option>
