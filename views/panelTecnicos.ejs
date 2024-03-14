@@ -23,7 +23,7 @@
 <% } %>
 <nav class="menu">
     <div class="opcion-menu" onclick="mostrarContenido('asignaciones')">Asignaciones</div>
-    <div class="opcion-menu" onclick="mostrarContenido('#')">Generar diagnosticos</div>
+    <div class="opcion-menu" onclick="mostrarContenido('diagnosticos')">Generar diagnosticos</div>
 </nav>
 
 <main class="contenido">
@@ -85,7 +85,7 @@
                                     <td><%= asignacion.NoSerieEquipo %></td>
                                     <td><%= asignacion.MarcaEquipo %></td>
                                     <td>
-                                        <select class="form-select">
+                                        <select class="form-select" id="estadoSelect" data-folio="<%= asignacion.FolioSolicitud %>">
                                             <option value="Asignada" selected>Asignada</option>
                                             <option value="Proceso">En proceso</option>
                                         </select>
@@ -96,7 +96,69 @@
                 </div>
                 </form>
             </div>
+            <script src="resources/scripts/cambiarEstadoAsignacion.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        </body>
+    </div>
+    <div id="diagnosticos" class="contenido-individual">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Diagnóstico Técnico</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <link rel="stylesheet" href="resources/css/diagnostico.css">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        </head>
+        <body class="bodyHistorial">
+            <div class="contenedor-principal">
+                
+                <div class="historialSolicitudes" id="contenedorDiagnostico">
+                    <h2 >Generación de diagnósticos técnicos</h2>
+                    <br>
+                    <p>Fecha: </p>
+                    <form action="crearDiagnostico" method="post">
+                        <div class="mb-3 row">
+                            <label for="folios" class="col-sm-2 col-form-label labelMayor">Solicitudes asignadas</label>
+                            <div class="col-sm-10">
+                                <select name="folios" id="folios" class="form-select form-select-sm">
+                                    <% asignaciones.forEach(asignacion => { %>
+                                        <option value="<%= asignacion.FolioSolicitud %>"><%= asignacion.FolioSolicitud %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Agregar campo oculto para el folio seleccionado -->
+                        <input type="hidden" name="folioSeleccionado" id="folioSeleccionado">
+                        <div class="mb-3 row">
+                            <label for="diagnosticoT" class="col-sm-2 col-form-label labelMayor">Diagnóstico Técnico:</label>
+                            <textarea class="form-control" name="diagnosticoT" id="diagnosticoT" rows="8" required></textarea>
+                            <label for="solucion" class="col-sm-2 col-form-label labelMayor">Solución aplicada:</label>
+                            <textarea class="form-control" name="solucion" id="solucion" rows="8" required></textarea>
+                        </div>
+                        <div class="enviarDiagnostico">
+                            <button type="submit" class="btn btn-outline-dark" id="enviarDiagnostico" value="Submit">Enviar</button>
+                        </div>
+                    </form>     
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+        <% if(typeof alert != "undefined"){ %>
+            <script>
+                Swal.fire({
+                    title: '<%= alert.alertTitle %>',
+                    text: '<%= alert.alertMessage %>',
+                    icon: '<%= alert.alertIcon %>',
+                    showConfirmButton: <%= alert.showConfirmButton %>,
+                    timer: <%= alert.timer %>
+                }).then((result) =>{
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location ='/<%= alert.ruta %>'; // redirige solo si se cierra automáticamente
+                    }
+                });
+            </script>
+            <% } %>
+            
         </body>
     </div>  
 

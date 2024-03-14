@@ -97,8 +97,9 @@ app.get('/generarDictamen',authPage('Admin'), (req, res) => {
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
-app.get('/panelTecnicos',authPage(["Tecnico","Admin"]), async (req, res) => {
 
+//Panel de técnicos
+app.get('/panelTecnicos', authPage(["Tecnico", "Admin"]), async (req, res) => {
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
         return res.render('login', {
@@ -107,19 +108,27 @@ app.get('/panelTecnicos',authPage(["Tecnico","Admin"]), async (req, res) => {
             alertMessage: "Debes iniciar sesión antes de llenar el formulario.",
             alertIcon: "warning",
             showConfirmButton: true,
-            timer: 3000,  
+            timer: 3000,
             ruta: 'login'
         });
     }
-    const usuario = req.session.idUsuario;
-    const asignaciones = await query(`SELECT DISTINCT s.FolioSolicitud,S.Fecha,S.Descripcion, v.Equipo,V.NoSerieEquipo,V.MarcaEquipo,V.ModeloEquipo, u.IdUsuario as IdUsuarioTecnico, us.IdUsuario as IdUsuarioSolicitante, us.Nombre as NombreSolicitante FROM solicitudes s JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud JOIN tecnicos t ON a.IdTecnico = t.IdTecnico JOIN usuarios u ON t.IdUsuario = u.IdUsuario JOIN usuarios us ON s.IdUsuario = us.IdUsuario WHERE u.IdUsuario = ${usuario}`);
-    console.log(asignaciones);
-    res.render('panelTecnicos',{
-        login: req.session.loggedin,
-        name: req.session.name,
-        asignaciones: asignaciones
-    });
+
+    try {
+        const usuario = req.session.idUsuario;
+        const asignaciones = await query(`SELECT DISTINCT s.FolioSolicitud,S.Fecha,S.Descripcion, v.Equipo,V.NoSerieEquipo,V.MarcaEquipo,V.ModeloEquipo, u.IdUsuario as IdUsuarioTecnico, us.IdUsuario as IdUsuarioSolicitante, us.Nombre as NombreSolicitante FROM solicitudes s JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud JOIN tecnicos t ON a.IdTecnico = t.IdTecnico JOIN usuarios u ON t.IdUsuario = u.IdUsuario JOIN usuarios us ON s.IdUsuario = us.IdUsuario WHERE u.IdUsuario = ${usuario}`);
+        
+        res.render('panelTecnicos', {
+            login: req.session.loggedin,
+            name: req.session.name,
+            asignaciones: asignaciones // Pasando las asignaciones como variable local
+        });
+    } catch (error) {
+        console.error("Error al obtener las asignaciones:", error);
+        res.status(500).send('Error interno del servidor');
+    }
 });
+
+// Panel de usuarios
 app.get('/panelUsuario',authPage(["Usuario","Admin","Tecnico"]), async (req, res) => {
 
     if (!req.session.loggedin) {
@@ -148,6 +157,9 @@ app.get('/panelUsuario',authPage(["Usuario","Admin","Tecnico"]), async (req, res
         historial: historial,
     });
 });
+
+
+//Panel de administradores
 app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
@@ -172,7 +184,8 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
     const soliCerradas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Cerrado"')
     const soliEspera = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Espera"')
     const soliAsignada = await query('SELECT solicitudes.*,u.Correo, u.Nombre as UsuarioNombre, tecnicos.Nombre, tecnicos.IdTecnico FROM solicitudes LEFT JOIN usuarios u ON solicitudes.IdUsuario = u.IdUsuario LEFT JOIN asignaciones ON solicitudes.IdAsignacion = asignaciones.IdAsignacion LEFT JOIN tecnicos ON asignaciones.IdTecnico = tecnicos.IdTecnico LEFT JOIN usuarios ON tecnicos.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Asignada"')
-    const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.folioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario ORDER BY v.idVale DESC;");
+    const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario, COALESCE(a.Diagnostico, 'No disponible') AS Diagnostico, COALESCE(a.Solucion, 'No disponible') AS Solucion FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario LEFT JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud ORDER BY v.idVale DESC;");
+    
     res.render('panelAdmin', {
             login: req.session.loggedin,
             name: req.session.name,
@@ -187,7 +200,8 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             cerrado: soliCerradas,
             vales:inforVales,
             tecnicos: tecnicos,
-            usuariosTecnicos: usuariosTecnicos
+            usuariosTecnicos: usuariosTecnicos,
+            
         });
         console.log(historialSoli);
 });
@@ -202,6 +216,7 @@ function query(sql) {
         });
     });
 }
+
 
 
 // BUSQUEDA DE FOLIO PARA RELLENO AUTOMATICO DE INFO EN DICTAMENES
@@ -611,6 +626,7 @@ app.post('/vales', async(req, res) => {
     }
 });
 
+
 // DICTAMENES
 app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
     const usuario = req.session.name;
@@ -809,6 +825,123 @@ app.get('/descargarPDFdictamen', (req, res) => {
     });
 });
 
+//Actualizar el estado de las asignaciones
+app.post('/actualizarEstadoSolicitud', async (req, res) => {
+    const folioSolicitud = req.body.folioSolicitud;
+    const nuevoEstado = req.body.nuevoEstado;
+
+    // Actualiza el estado de la solicitud en la base de datos
+    connection.query('UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ?', [nuevoEstado, folioSolicitud], (error, results) => {
+        if (error) {
+            console.error('Error al actualizar el estado de la solicitud:', error);
+            res.status(500).send('Error interno del servidor');
+        } else {
+            // Si se actualizó correctamente, muestra un mensaje de éxito con SweetAlert2
+            res.status(200).send('Estado actualizado correctamente');
+        }
+    });
+});
+
+// Creación de diagnósticos técnicos y soluciones aplicadas
+app.post('/crearDiagnostico', async (req, res) => {
+    const folioSeleccionado = req.body.folios; // Obtener el folio seleccionado del cuerpo de la solicitud
+    const diagnosticoT = req.body.diagnosticoT;
+    const solucion = req.body.solucion;
+    const fecha = obtenerFechaActual();
+    const hora = obtenerHoraActual();
+
+    // Consulta para obtener el IdTecnico de la tabla asignaciones
+    connection.query('SELECT IdTecnico FROM asignaciones WHERE IdSolicitud = ?', [folioSeleccionado], (error, results) => {
+        if (error) {
+            console.error('Error al obtener el IdTecnico:', error);
+            // Mostrar un mensaje de error utilizando SweetAlert2
+            res.render('panelTecnicos', {
+                alert: {
+                    alertTitle: 'Error',
+                    alertMessage: 'Error interno del servidor',
+                    alertIcon: 'error',
+                    showConfirmButton: true,
+                    timer: null,
+                    ruta: 'panelTecnicos' // Redirige a la misma página
+                }
+            });
+        } else {
+            const idTecnico = results[0].IdTecnico; // Se obtiene el IdTecnico de los resultados de la consulta
+            console.log('IdTecnico obtenido:', idTecnico);
+
+            // Inserción del diagnóstico y solución en la tabla asignaciones
+            connection.query('UPDATE asignaciones SET Diagnostico = ?, Solucion = ? WHERE IdSolicitud = ?',
+                [diagnosticoT, solucion, folioSeleccionado], (error, results) => {
+                    if (error) {
+                        console.error('Error al actualizar la tabla de asignaciones:', error);
+                        // Mostrar un mensaje de error utilizando SweetAlert2
+                        res.render('panelTecnicos', {
+                            alert: {
+                                alertTitle: 'Error',
+                                alertMessage: 'Error al actualizar la tabla de asignaciones',
+                                alertIcon: 'error',
+                                showConfirmButton: false,
+                                timer: 1500,
+                                ruta: 'panelTecnicos' // Redirige a la misma página
+                            }
+                        });
+                    } else {
+                        console.log('Diagnóstico y solución actualizados correctamente');
+
+                        // Consulta para obtener las asignaciones actualizadas
+                        connection.query('SELECT * FROM asignaciones WHERE IdTecnico = ?', [idTecnico], (error, asignaciones) => {
+                            if (error) {
+                                console.error('Error al obtener las asignaciones:', error);
+                                // Mostrar un mensaje de error utilizando SweetAlert2
+                                res.render('panelTecnicos', {
+                                    alert: {
+                                        alertTitle: 'Error',
+                                        alertMessage: 'Error al obtener las asignaciones',
+                                        alertIcon: 'error',
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        ruta: 'panelTecnicos' // Redirige a la misma página
+                                    }
+                                });
+                            } else {
+                                console.log('Asignaciones obtenidas correctamente');
+                                // Mostrar un mensaje de éxito utilizando SweetAlert2
+                                res.render('panelTecnicos', {
+                                    alert: {
+                                        alertTitle: 'Éxito',
+                                        alertMessage: 'Diagnóstico y solución actualizados correctamente',
+                                        alertIcon: 'success',
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        ruta: 'panelTecnicos' // Redirige a la misma página
+                                    },
+                                    asignaciones: asignaciones // Pasar las asignaciones al archivo EJS
+                                });
+                            }
+                        });
+                    }
+                });
+        }
+    });
+
+    // Función para obtener la fecha actual en formato AAAA-MM-DD
+    function obtenerFechaActual() {
+        const fecha = new Date();
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        return `${año}-${mes}-${dia}`;
+    }
+
+    // Función para obtener la hora actual en formato HH:MM:SS
+    function obtenerHoraActual() {
+        const fecha = new Date();
+        const horas = String(fecha.getHours()).padStart(2, '0');
+        const minutos = String(fecha.getMinutes()).padStart(2, '0');
+        const segundos = String(fecha.getSeconds()).padStart(2, '0');
+        return `${horas}:${minutos}:${segundos}`;
+    }
+});
 
 //12 Auth page
 app.get('/', (req, res)=>{

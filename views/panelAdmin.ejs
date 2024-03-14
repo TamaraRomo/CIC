@@ -694,9 +694,6 @@
 </body>
 </div>
 
-
-
-
 <!-- HISTORIAL 2----------------------------------------------------------------------------------------------- -->
 <div id="Historial2" class="contenido-individual">
     <!-- Contenido de historial -->
@@ -711,14 +708,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Obtener todas las celdas de la columna IdDictamen
-            var celdasIdDictamen = document.querySelectorAll('.historialTablaContenedor .table td:nth-child(8)');
+            var celdasIdDictamen = document.querySelectorAll('.historialTablaContenedor .table td:nth-child(6)');
             
             // Iterar sobre cada celda
             celdasIdDictamen.forEach(function (celda) {
                 // Verificar el contenido de la celda
                 if (celda.textContent.trim() === 'No existe') {
                     // Obtener las celdas de las columnas "Dicta-PDF"
-                    var celdaDictaPDF = celda.parentElement.querySelector('td:nth-child(10)');
+                    var celdaDictaPDF = celda.parentElement.querySelector('td:nth-child(8)');
                     
                     // Cambiar el contenido por un espacio en blanco en ambas celdas
                     celdaDictaPDF.textContent = ' ';
@@ -739,13 +736,12 @@
                             <td>Vale</td>
                             <td>Usuario</td>
                             <td>Equipo</td>
-                            <td>Marca</td>
-                            <td>Modelo</td>
-                            <td>NoSerie</td>
                             <td>Estado</td>
                             <td>Dictamen</td>
                             <td>Vale-PDF</td>
                             <td>Dicta-PDF</td>
+                            <td>Diagnóstico Técnico</td>
+                            <td>Solución Aplicada</td>
                         </tr>
                     </thead>
                     
@@ -755,13 +751,12 @@
                             <td><%= variables.idVale %></td>
                             <td><%= variables.NombreUsuario %></td>
                             <td><%= variables.Equipo %></td>
-                            <td><%= variables.MarcaEquipo %></td>
-                            <td><%= variables.ModeloEquipo %></td>
-                            <td><%= variables.NoSerieEquipo %></td>
                             <td class="estado-td" data-estado="<%= variables.Estado %>"><%= variables.Estado %></td>
                             <td><%= variables.IdDictamen %></td>
                             <td><a href="/descargarPDFvale?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
                             <td><a href="/descargarPDFdictamen?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
+                            <td><%= variables.Diagnostico %></td>
+                            <td><%= variables.Solucion %></td>
                             
                         </tr>
                     <% }); %>
