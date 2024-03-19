@@ -112,3 +112,15 @@ body {
         margin: 5px; /* Ajusta el margen de los elementos del menú en dispositivos móviles */
     }
 }
+
+#TablaHistorialSolicitudes, #TablaHistorialVales{
+    width: 100%!important;
+}
+
+thead{
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+th{
+    color: white!important;
+}

@@ -99,6 +99,10 @@ body {
     color: #333;
 }
 
+.btnFiltrar{
+    padding: 10px;
+}
+
 /* Reglas específicas para dispositivos móviles utilizando media queries */
 @media only screen and (max-width: 600px) {
     /* Estilos para dispositivos móviles */
@@ -110,4 +114,17 @@ body {
     .opcion-menu {
         margin: 5px; /* Ajusta el margen de los elementos del menú en dispositivos móviles */
     }
+}
+
+
+#TablaHistorialSolicitudes, #TablaHistorialAsignaciones{
+    width: 100%!important;
+}
+
+thead{
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+th{
+    color: white!important;
 }
