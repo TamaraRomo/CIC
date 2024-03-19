@@ -36,6 +36,7 @@ app.use(session({
 
 //8.- Invocar conexion a DB
 const connection = require('./database/db');
+const { assign } = require('nodemailer/lib/shared');
 console.log(__dirname);
 
 //FUNCION PARA ENVIAR NOTIFICACIONES POR EMAIL
@@ -97,6 +98,7 @@ app.get('/generarDictamen',authPage('Admin'), (req, res) => {
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
+
 
 //Panel de técnicos
 app.get('/panelTecnicos', authPage(["Tecnico", "Admin"]), async (req, res) => {
@@ -507,6 +509,7 @@ app.post('/auth', async (req,res)=> {
         });
     }
 });
+
 //VALES
 app.post('/vales', async(req, res) => {
     const usuario = req.session.name;
@@ -529,103 +532,81 @@ app.post('/vales', async(req, res) => {
         equipo += (equipo ? ':' : '') + otroInput;
     }
     
-    const { foli, equipos, serie, marcaE, modeloE, caracteristicas, estatus, revision } = req.body;
     const fechaHoraActual = new Date().toLocaleString();
     const folioSeleccionado = folioSolicitud;
     const templatePath = path.join(__dirname, 'views', 'generarVale.ejs');
-    fs.readFile(templatePath, 'utf8', async (err, data) => {
-        if (err) {
-            console.error('Error al leer la plantilla HTML:', err);
-            return res.status(500).send('Error interno del servidor');
-        }
-    const htmlContent = ejs.render(data, {
-            folio: folioSeleccionado,
-            equipos,
-            serie,
-            marca,
-            modelo,
-            caracteristicas,
-            estatus,
-            revision,
-            fechaHoraActual
-        });
-                // Crear una instancia de Puppeteer
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        
-        const pdfPath = path.join(__dirname, 'docs', `ValeST24-${folioSeleccionado}.pdf`);
-        await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
-        await page.pdf({ path: pdfPath, format: 'A4' });
-        await browser.close();
-        app.get('/:filename', (req, res) => {
-            const { filename } = req.params;
-            const filePath = path.join(__dirname,'docs',filename);
-            res.download(filePath, (err) => {
-                if (err) {
-                    console.error('Error al descargar el archivo PDF:', err);
-                    return res.status(500).send('Error interno del servidor');
+    
+    // Renderizar la plantilla HTML
+    const htmlContent = await ejs.renderFile(templatePath, {
+        folio: folioSeleccionado,
+        equipos: req.body.equipos,
+        serie: req.body.serie,
+        marca: req.body.marca,
+        modelo: req.body.modelo,
+        caracteristicas: req.body.caracteristicas,
+        estatus: req.body.estatus,
+        revision: req.body.revision,
+        fechaHoraActual: fechaHoraActual
+    });
+
+    // Crear una instancia de Puppeteer y generar el PDF
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const pdfPath = path.join(__dirname, 'docs', `ValeST24-${folioSeleccionado}.pdf`);
+
+    await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+    await page.pdf({ path: pdfPath, format: 'A4' });
+    await browser.close();
+
+    // Enviar respuesta al cliente
+
+    res.render('alerta', {
+        alert: true,
+        alertTitle: 'Éxito',
+        alertMessage: 'PDF generado y guardado correctamente',
+        alertIcon: 'success',
+        showConfirmButton: false,
+        timer: 1500,
+        ruta: 'panelAdmin'
+    });   
+
+    // Actualizar el estado de la solicitud en la base de datos
+    const cambioEstado = "Asignada";
+    connection.query('UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ? ', [cambioEstado, folioSolicitud], async(error, results)=> {
+        if (error) {
+            console.log(error);
+        } else {
+            // Insertar registros en la base de datos
+            connection.query('INSERT INTO asignaciones SET ?', { IdSolicitud: folioSolicitud, IdTecnico: idTecnico }, async(error, results)=> {
+                if (error) {
+                    console.log(error);
                 } else {
-                    console.log('Archivo PDF descargado correctamente');
-                    res.render('vales', {
-                        folioSolicitudes: [{ folioSeleccionado }],
-                        alert: {
-                            alertTitle: 'Éxito',
-                            alertMessage: 'PDF generado y descargado correctamente',
-                            alertIcon: 'success',
-                            showConfirmButton: true,
-                            timer: 5000,
-                            ruta: 'panelAdmin'
+                    const IdAsignacion = results.insertId;
+                    await query(`UPDATE solicitudes SET IdAsignacion = ${IdAsignacion} WHERE FolioSolicitud = ${folioSolicitud}`);
+                    connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            enviarMail(3,correoUsuarioFolio);
+                            enviarMail(5,correoTecnico);
                         }
                     });
                 }
             });
-        })
-    })
-    const cambioEstado = "Asignada";
-    connection.query('UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ? ',[cambioEstado,folioSolicitud], async(error, results)=> {
-        if (error) {
-            console.log(error);
-        }else {
-            connection.query('INSERT INTO asignaciones SET ?',{IdSolicitud:folioSolicitud,IdTecnico:idTecnico}, async(error, results)=> {
-                if(error){
-                    console.log(error);
-                }else{
-                    const IdAsignacion = results.insertId;
-                    await query(`UPDATE solicitudes SET IdAsignacion = ${IdAsignacion} WHERE FolioSolicitud = ${folioSolicitud}`);
-                    connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
-                        if(error){
-                            console.log(error);
-                        }else{
-                            enviarMail(3,correoUsuarioFolio);
-                            enviarMail(5,correoTecnico);
-                                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
-                                    alert: true,
-                                    alertTitle: "Vale",
-                                    alertMessage: "¡Vale y PDF creado corractamente!",
-                                    alertIcon: "success",
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                    ruta: 'panelAdmin'
-                                })         
-                        }
-                    })
-                }
-            });
         }
-    
     });
-   
-    // Función para obtener la fecha y hora actual en formato MySQL
-    function obtenerFechaHoraActual() {
-        const fecha = new Date();
-        const año = fecha.getFullYear();
-        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-        const dia = String(fecha.getDate()).padStart(2, '0');
 
-        return `${año}-${mes}-${dia}`;
-    }
 });
 
+// Función para obtener la fecha y hora actual en formato MySQL
+function obtenerFechaHoraActual() {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+
+    return `${año}-${mes}-${dia}`;
+}
 
 // DICTAMENES
 app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
@@ -944,7 +925,8 @@ app.post('/crearDiagnostico', async (req, res) => {
 });
 
 //12 Auth page
-app.get('/', (req, res)=>{
+app.get('/',(req, res)=>{
+
     if(req.session.loggedin){
         res.render('login',{
             login: true,
