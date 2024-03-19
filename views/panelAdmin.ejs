@@ -7,6 +7,8 @@
     <!-- Estilos CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="resources/css/style_menu_administrador.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.bootstrap5.css">
 </head>
 <body>
 <div class="logo-contenedor">
@@ -332,6 +334,7 @@
     </body>
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
+
 <!-- DICTAMENES------------------------------------------------------------------------------------------------ -->
 <div id="Dictamen" class="contenido-individual">
     <!-- Contenido de historial -->
@@ -440,7 +443,8 @@
 </body>
 </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
-<!-- SOLICITUD DE HISTORIAL DE SOLICITUDES -->
+
+<!-- SOLICITUD DE HISTORIAL DE SOLICITUDES -------------------------------------------------------------------------------------->
 <div id="Historial" class="contenido-individual">
     <head>
         <!-- Metadatos -->
@@ -456,35 +460,11 @@
     <!-- Contenedor principal para el historial de solicitudes -->
         <div class="historialSolicitudes">
             <!-- Título de la sección -->
-            <h2 id="tituloHistorialSoli">Historial de solicitudes</h2>
-            <!-- Formulario para filtrar el historial -->
-            <form action="#" method="post">
-                <!-- Contenedor para los campos de filtro -->
-                <div class="contenedorFiltro">
-                    <!-- Campo de búsqueda -->
-                    <div>
-                        <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
-                    </div>
-                    <!-- Campo de selección de estado -->
-                    <div>
-                        <select name="estado" id="estado">
-                            <option value="blanco">Filtro</option>
-                            <option value="folio">Folio</option>
-                            <option value="fecha">Fecha</option>
-                            <option value="usuario">Usuario</option>
-                            <option value="estado">Estado</option>
-                        </select>
-                    </div>
-                    <!-- Botón para aplicar el filtro -->
-                    <div class="btnFiltrar">
-                        <button  type="submit" id="btnFiltrar">Filtrar</button>
-                    </div>
-                </div>
-                
+            <h2 id="tituloHistorialSoli">Historial de Solicitudes</h2>
                 <!-- Contenedor para la tabla del historial -->
                 <div class="table-responsive">
-                    <table  class="table table-hover table-striped">
-                        <tr class="table-dark">
+                    <table  class="table table-hover table-striped" id="TablaHistorialSolicitudes">
+                        <thead>
                             <th>Folio</th>
                             <th>Fecha</th>
                             <th>Hora</th>
@@ -493,7 +473,7 @@
                             <th>Estado</th>
                             <th>Vale</th>
                             <th>Dictamen</th>
-                        </tr>
+                        </thead>
                         <% historial.forEach(solicitud => { %>
                             <!-- Fila de la tabla para cada solicitud en el historial -->
                             <tr>
@@ -509,9 +489,10 @@
                         <% }); %>
                     </table>
                 </div>
-            </form>
         </div>
         <script src="resources/scripts/semaforo.js"></script>
+            <script src="resources/scripts/paneles.js"></script>
+
     </body>
 </div>
 
@@ -729,20 +710,18 @@
         <h2 id="tituloBitacora">Historial Vales</h2>   
         <div class="historialTablaContenedor">
             <div class="table-responsive">
-                <table  class="table table-hover table-striped">
+                <table  class="table table-hover table-striped" id="TablaHistorialVales">
                     <thead>
-                        <tr class="table-dark">
-                            <td>Folio</td>
-                            <td>Vale</td>
-                            <td>Usuario</td>
-                            <td>Equipo</td>
-                            <td>Estado</td>
-                            <td>Dictamen</td>
-                            <td>Vale-PDF</td>
-                            <td>Dicta-PDF</td>
-                            <td>Diagnóstico Técnico</td>
-                            <td>Solución Aplicada</td>
-                        </tr>
+                            <th>Folio</th>
+                            <th>Vale</th>
+                            <th>Usuario</th>
+                            <th>Equipo</th>
+                            <th>Estado</th>
+                            <th>Dictamen</th>
+                            <th>Vale-PDF</th>
+                            <th>Dicta-PDF</th>
+                            <th>Diagnóstico Técnico</th>
+                            <th>Solución Aplicada</th>
                     </thead>
                     
                     <% vales.forEach((variables) => { %>
@@ -930,6 +909,40 @@
 </footer>
 
 <script src="resources/scripts/paneles.js"></script>
+    
+
+<!-- SCRIPTS PARA GENERAR LOS FILTROS FUNCIONALES ------------------------------------------------------------------------->
+<script src="resources/scripts/paneles.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.bootstrap5.js"></script>
+<script>
+
+
+new DataTable('#TablaHistorialSolicitudes', {
+    language: {
+        info: 'Mostrando _PAGE_ de _PAGES_ paginas',
+        infoEmpty: 'No records available',
+        lengthMenu: '_MENU_ Entradas por pagina',
+        zeroRecords: 'No se encontro - Lo siento',
+        search: "Buscar:"
+    }
+    });
+
+    new DataTable('#TablaHistorialVales', {
+    language: {
+        info: 'Mostrando _PAGE_ de _PAGES_ paginas',
+        infoEmpty: 'No records available',
+        lengthMenu: '_MENU_ Entradas por pagina',
+        zeroRecords: 'No se encontro - Lo siento',
+        search: "Buscar:"
+    }
+    });
+
+</script>
+
 
 </body>
 </html>

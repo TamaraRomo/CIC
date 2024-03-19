@@ -6,6 +6,8 @@
     <title>Menú</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="resources/css/style_menu_usuario.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.bootstrap5.css">
 </head>
 <body>
     <div class="logo-contenedor">
@@ -23,7 +25,7 @@
 <% } %>
 <nav class="menu">
     <div class="opcion-menu" onclick="mostrarContenido('asignaciones')">Asignaciones</div>
-    <div class="opcion-menu" onclick="mostrarContenido('diagnosticos')">Generar diagnosticos</div>
+    <div class="opcion-menu" onclick="mostrarContenido('diagnosticos')">Generar Diagnosticos</div>
 </nav>
 
 <main class="contenido">
@@ -40,29 +42,17 @@
         </head>
         <body class="bodyHistorial">
             <div class="historialSolicitudes">
-                <h2 id="tituloHistorialSoli">Historial de asignaciones</h2>
-                <form action="#" method="post">
-                    <div class="contenedorFiltro">
-                        <div>
-                            <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
+                <h2 id="tituloHistorialSoli">Historial de Asignaciones</h2>
+                <!--     <div class="contenedorFiltro">
+                        <div class="btnFiltrar">    @@@@@@ ESTE ES EL BOTON DE ARRIBA LA CUAL FUE DESABILITADO POR CUESTIONES DE DISENO @@@@@@@
+                        <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
                         </div>
-                        <div>
-                            <select name="estado" id="estado">
-                                <option value="blanco">Filtro</option>
-                                <option value="str">Solicitud de Soporte</option>
-                                <option value="vale">Vale</option>
-                                <option value="dictamen">Dictamen</option>
-                            </select>
-                        </div>
-                        <div class="btnFiltrar">
-                            <button  type="submit" class="btn btn-outline-dark" id="btnFiltrar">Filtrar</button>
-                            <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
-                        </div>
-                        
                     </div>
+                    -->
+
                 <div class="table-responsive">
-                        <table  class="table table-hover table-striped">
-                            <tr class="table-dark">
+                        <table  class="table table-hover table-striped" id="TablaHistorialAsignaciones">
+                            <thead>
                                 <th>Folio</th>
                                 <th>Nombre</th>
                                 <th>Fecha solicitud</th>
@@ -72,8 +62,7 @@
                                 <th>Serie</th>
                                 <th>Marca</th>
                                 <th>Estado</th>
-
-                            </tr>
+                            </thead>
                             <% asignaciones.forEach((asignacion) => { %>
                                 <tr>
                                     <td><%= asignacion.FolioSolicitud %></td>
@@ -94,7 +83,9 @@
                                 <% }); %>
                         </table>
                 </div>
-                </form>
+                <div class="btnFiltrar">
+                    <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
+                    </div>
             </div>
             <script src="resources/scripts/cambiarEstadoAsignacion.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -169,6 +160,28 @@
 </footer>
 
 <script src="resources/scripts/panelTecnico.js"></script>
+
+<!-- SCRIPTS PARA GENERAR LOS FILTROS FUNCIONALES ------------------------------------------------------------------------->
+<script src="resources/scripts/paneles.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.bootstrap5.js"></script>
+<script>
+
+
+new DataTable('#TablaHistorialAsignaciones', {
+    language: {
+        info: 'Mostrando _PAGE_ de _PAGES_ paginas',
+        infoEmpty: 'No records available',
+        lengthMenu: '_MENU_ Entradas por pagina',
+        zeroRecords: 'No se encontro - Lo siento',
+        search: "Buscar:"
+    }
+    });
+
+</script>
 
 </body>
 </html>
