@@ -98,6 +98,9 @@ app.get('/generarDictamen',authPage('Admin'), (req, res) => {
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
+app.get('/alertaUsuario', (req, res) => {
+    res.render('alertaUsuario');
+});
 
 
 //Panel de técnicos
@@ -347,7 +350,7 @@ app.post('/solicitud', async(req, res) => {
                 if (error) {
                     console.log(error);
                 } else {
-                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
+                res.render('alertaUsuario',{ //pasar parametros para el mensaje AlertSweet
                 alert: true,
                 alertTitle: "Solicitud",
                 alertMessage: "¡Solicitud de Soporte Técnico Enviada!",
