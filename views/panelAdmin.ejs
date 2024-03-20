@@ -556,42 +556,7 @@
                 </div>
             </form>
         </div>
-        <div class="contenedor" id="contenedorTecnicos">
-            <h3 class="titulosLogin">Registrar Tecnico</h3>
-            <form action="registerT" method="post" onsubmit="return validar();" id="formRegistro">
-                <div class="registroCampos">
-                    <label for="nombreT" class="lblRegistro">Nombres:</label>
-                    <input type="text" class="form-control" name="nombreT" placeholder="Nombre(s)" required>
-                </div>
-                <div class="registroCampos">
-                    <label for="apellidos" class="lblRegistro">Apellidos</label>
-                    <input type="text" class="form-control" name="apellidos" placeholder="Apellido paterno y materno" required>
-                </div>
-                <div class="registroCampos">
-                    <label for="noTrabajador" class="lblRegistro">Numero de trabajador</label>
-                    <input type="text" class="form-control" name="noTrabajador" placeholder="Numero de trabajador" required>
-                </div>
-                <div class="registroCampos">
-                    <label for="email" class="lblRegistro">Correo institucional</label>
-                    <input type="text" class="form-control" name="email" placeholder="correo@uacam.mx" required>
-                </div>
-                <div class="registroCampos">
-                    <label for="telef" class="lblRegistro">Telefono</label>
-                    <input type="text" class="form-control" name="telef" placeholder="xxx-xxx-xxxx" required>
-                </div>
-                <div class="selects_registro" id="registroTecnico">
-                        <label for="idUsuario" class="col-sm-2 col-form-label" id="lblTec">Id de usuario en CIC Assistance:</label>
-                            <select name="IdUsuario" id="tecnicoId" class="form-select form-select-sm" required>
-                                <% usuariosTecnicos.forEach(usuario => { %>
-                                    <option value="<%= usuario.IdUsuario %>"><%= usuario.IdUsuario %>-<%= usuario.Nombre %></option>
-                                <% }); %>
-                            </select>
-                </div>
-                <div id="enviarRegistro">
-                    <input type="submit" value="Registrar" class="btn btn-outline-dark" onclick="validar()">
-                </div>
-            </form>
-        </div>
+       
         <script src="resources/scripts/validacion.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
         <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
