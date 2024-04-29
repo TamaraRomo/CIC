@@ -12,7 +12,7 @@ RUN npm install
 
 # Copia el contenido actual del directorio de trabajo al directorio /app del contenedor
 COPY . .
-
+COPY --from=build /app .
 # Expone el puerto 3000 (o cualquier puerto que tu aplicación Node.js utilice)
 EXPOSE 3000
 
