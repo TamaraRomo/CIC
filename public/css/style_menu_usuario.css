@@ -26,7 +26,7 @@ body {
 .menu {
     display: flex;
     justify-content: center;
-    background-color: #333;
+    background-color: #1E2943;
     padding: 1px 0;
 }
 
@@ -39,8 +39,9 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.opcion-menu:hover {
-    background-color: #555;
+.opcion-menu:hover, .opcion-menu.seleccionada {
+    background-color: #FBA834;
+    color: #000;
 }
 
 .contenido {
@@ -122,7 +123,7 @@ body {
 }
 
 thead{
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: #1E2943;
 }
 
 th{

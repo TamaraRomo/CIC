@@ -1,9 +1,10 @@
 {
   "dependencies": {
+    "ajax": "^0.0.4",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.1",
     "ejs": "^3.1.9",
-    "express": "^4.18.2",
+    "express": "^4.18.3",
     "express-session": "^1.18.0",
     "fs": "^0.0.1-security",
     "mysql": "^2.18.1",
@@ -11,6 +12,6 @@
     "nodemon": "^3.0.3",
     "path": "^0.12.7",
     "pupeteer": "^0.0.1",
-    "puppeteer": "^22.3.0"
+    "puppeteer": "^22.5.0"
   }
 }

@@ -23,10 +23,13 @@
         </div>
     </div>
 <% } %>
+
 <nav class="menu">
-    <div class="opcion-menu" onclick="mostrarContenido('asignaciones')">Asignaciones</div>
-    <div class="opcion-menu" onclick="mostrarContenido('diagnosticos')">Generar Diagnosticos</div>
+    <div class="opcion-menu" data-id="asignaciones" onclick="mostrarContenido('asignaciones')">Asignaciones</div>
+    <div class="opcion-menu" data-id="diagnosticos" onclick="mostrarContenido('diagnosticos')">Generar Diagnósticos</div>
 </nav>
+
+
 
 <main class="contenido">
 	
@@ -92,6 +95,7 @@
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
         </body>
     </div>
+
     <div id="diagnosticos" class="contenido-individual">
         <head>
             <meta charset="UTF-8">
@@ -162,7 +166,7 @@
 <script src="resources/scripts/panelTecnico.js"></script>
 
 <!-- SCRIPTS PARA GENERAR LOS FILTROS FUNCIONALES ------------------------------------------------------------------------->
-<script src="resources/scripts/paneles.js"></script>
+<script src="resources/scripts/panelTecnico.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

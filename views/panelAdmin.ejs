@@ -29,14 +29,14 @@
 
 <!-- Menú de opciones -->
 <nav class="menu">
-    <div class="opcion-menu" onclick="mostrarContenido('solicitud-de-reportes')">Solicitud de Reportes</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Vales')">Vales</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Dictamen')">Dictamen</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Historial')">Historial Solicitudes</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Historial2')">Historial Vales</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Estatus')">Estatus</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Registro')">Registro</div>
-    <div class="opcion-menu" onclick="mostrarContenido('RegistroT')">Tecnicos</div>
+    <div class="opcion-menu" data-id="solicitud-de-reportes" onclick="mostrarContenido(this)">Solicitud de Reportes</div>
+    <div class="opcion-menu" data-id="Vales" onclick="mostrarContenido(this)">Vales</div>
+    <div class="opcion-menu" data-id="Dictamen" onclick="mostrarContenido(this)">Dictamen</div>
+    <div class="opcion-menu" data-id="Historial" onclick="mostrarContenido(this)">Historial Solicitudes</div>
+    <div class="opcion-menu" data-id="Historial2" onclick="mostrarContenido(this)">Historial Vales</div>
+    <div class="opcion-menu" data-id="Estatus" onclick="mostrarContenido(this)">Estatus</div>
+    <div class="opcion-menu" data-id="Registro" onclick="mostrarContenido(this)">Registro</div>
+    <div class="opcion-menu" data-id="RegistroT" onclick="mostrarContenido(this)">Tecnicos</div>
 </nav>
 
 
@@ -556,7 +556,6 @@
                 </div>
             </form>
         </div>
-       
         <script src="resources/scripts/validacion.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
         <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
@@ -729,15 +728,14 @@
                 <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
             </div>
             <div class="table-responsive">
-                <table  class="table  table-light" id="estatusTabla">
-                    <tr class="table-dark">
+                <table  class="table" id="estatusTabla">
+                    <tr class="tableEstatus">
                         <th colspan="5" class="tablaTitulos">Abierto</th>
                         <th colspan="4" class="tablaTitulos">Asignadas</th>
                         <th colspan="4" class="tablaTitulos">En Proceso</th>
                         <th colspan="4" class="tablaTitulos">En Espera</th>
                         <th colspan="3" class="tablaTitulos">Cerrado</th>
                     </tr>
-                </thead>
                 <tbody>
                     <tr class="table-secondary">
                         <td>Folio</td>
