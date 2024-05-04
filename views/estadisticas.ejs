@@ -13,6 +13,9 @@
         <p>Desde: <%= desdeFecha %></p>
         <p>Hasta: <%= hastaFecha %></p>
         <p>El tipo de solicitud es: <%= tipo %></p>
+        <% objetos.forEach(objeto => { %>
+            <p>Hasta: <%= objeto.FolioSolicitud %></p>
+        <% }); %>
         <!-- Agrega aquí cualquier otra información estadística que desees mostrar -->
     </div>
 </body>

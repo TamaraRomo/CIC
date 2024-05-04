@@ -98,11 +98,24 @@ app.get('/generarDictamen',authPage('Admin'), (req, res) => {
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
-
-// Ruta GET para renderizar la vista de estadísticas
-app.get('/estadisticas', (req, res) => {
+// Ruta GET para renderizar la vista de estadísticas ESTADISTICAS
+app.get('/estadisticas', async (req, res) => {
     const { tipo, desdeFecha, hastaFecha } = req.session.estadisticas || {};
-    res.render('estadisticas', { tipo, desdeFecha, hastaFecha });
+    try {
+        // Realizar la consulta SQL para obtener las solicitudes con la fecha desdeFecha
+        const fecha = desdeFecha
+        const fechaFinal = hastaFecha
+        console.log(fecha);
+        const fechaInicio = await query(`SELECT * FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+        console.log("-----------------aaaaaaaaaaaaaaaaaaa--------------------");
+        console.log(fechaInicio);
+        // Renderizar la vista de estadísticas y pasar los datos
+        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: fechaInicio });
+    } catch (error) {
+        console.error('Error al ejecutar la consulta SQL:', error);
+        // Manejar el error adecuadamente, por ejemplo, renderizando una página de error
+        res.render('error', { message: 'Error al obtener las solicitudes', error });
+    }
 });
 
 //Panel de técnicos
@@ -251,7 +264,7 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
     });
 });
 
-
+//estadisticas
 app.post('/generarEstadisticas', (req, res, next) => {
     const { tipo, desdeFecha, hastaFecha } = req.body;
     req.session.estadisticas = { tipo, desdeFecha, hastaFecha };
