@@ -37,6 +37,7 @@
     <div class="opcion-menu" data-id="Estatus" onclick="mostrarContenido(this)">Estatus</div>
     <div class="opcion-menu" data-id="Registro" onclick="mostrarContenido(this)">Registro</div>
     <div class="opcion-menu" data-id="RegistroT" onclick="mostrarContenido(this)">Tecnicos</div>
+    <div class="opcion-menu" data-id="Estadisticas" onclick="mostrarContenido(this)">Estadisticas</div>
 </nav>
 
 
@@ -864,7 +865,132 @@
         </body>
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
+<!-- Sección de estadisticas -->
 
+    <div id="Estadisticas" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="#">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <title>Reportes de uso</title>
+    </head>
+    <body>
+        <div class="container" style="max-width: 100%;">
+            <h2 id="estadoSolicitudes">Reportes de uso</h2>
+            <div class="container-xl px-4 mt-4">
+                <div class="row">
+                    <div class="col">
+                        <div class="card mb-4">
+                            <div class="card-header">Detalles del reporte</div>
+                            <div class="card-body">
+                                <form method="post" action="#">
+                                    <!-- Form Row-->
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col md-6">
+                                            <label class="small mb-1 is-required" for="input_tipo">
+                                                Tipo de solicitudes:
+                                            </label>
+                                            <select class="form-select form-select-mb mb-1" id="input_tipo" autocomplete="off"
+                                                    name="tipo">
+                                                    <option value="Solicitudes" selected>Solicitudes</option>
+                                                    <option value="Vales">Vales</option>
+                                                    <option value="Dictámenes">Dictámenes</option>
+                                            </select>
+                                        </div>
+                                    <div class="row gx-3 mb-3 ">
+                                        <p class="text-justify mt-2 mb-0">Seleccione el periodo de tiempo que desea incluir en el reporte</p>
+
+                                        <div class="col-md-6">
+                                            <label class="small mb-1 is-required" for="input_desde">
+                                                Desde:
+                                            </label>
+                                            <input class="form-control" id="input_desde" type="date" required
+                                                   autocomplete="off" name="desdeFecha"
+                                                   placeholder="Ingrese desde que fecha"/>
+                                        </div>
+        
+                                        <div class="col-md-6 ">
+                                            <label class="small mb-1 is-required" for="input_hasta">
+                                                Hasta:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" name="hastaFecha" required autocomplete="off"
+                                                       placeholder="Ingrese hasta que fecha" id="input_hasta">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row gx-3 mb-3 ">
+                                        <p class="text-justify">Introduzca los datos complementarios del reporte</p>
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_titulo">
+                                                Título:
+                                            </label>
+                                            <select class="form-select form-select-mb mb-1" id="input_titulo" autocomplete="off"
+                                                    name="titulo">
+                                                    <option value="Ing.">Ing.</option>
+                                                    <option value="Lic.">Lic.</option>
+                                                    <option value="Dr.">Dr.</option>
+                                            </select>
+                                        </div>
+        
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_nombre">
+                                                Nombre:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="nombre" required autocomplete="off"
+                                                       placeholder="Ingrese su nombre" id="input_nombre">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_oficio">
+                                                Núm. de oficio:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="oficio" required autocomplete="off"
+                                                       placeholder="P.E. 10/15" id="input_oficio">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_expediente">
+                                                Expediente:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="expediente" required autocomplete="off"
+                                                       placeholder="P.E. MR-15" id="input_expediente">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_area">
+                                                Área:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="area" required autocomplete="off"
+                                                       placeholder="P.E. 10/15" id="input_area">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-around">
+                                        <button type="button" class="btn text-light" style="background-color: #0D1642;">Generar reporte</button>
+                                        <button type="button" id="generarEstadisticasBtn" class="btn text-light" style="background-color: #0D1642;">Generar estadisticas</button>
+                                        <button type="button" class="btn text-light" style="background-color: #0D1642;">Generar oficios de entrega</button>
+                                    </div>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </body>
+    </div>
+    <script src="resources/scripts/estadisticas.js"></script>
 </main>
 
 <footer class="pie-pagina">

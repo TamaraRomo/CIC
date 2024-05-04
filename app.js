@@ -99,6 +99,11 @@ app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
 
+// Ruta GET para renderizar la vista de estadísticas
+app.get('/estadisticas', (req, res) => {
+    const { tipo, desdeFecha, hastaFecha } = req.session.estadisticas || {};
+    res.render('estadisticas', { tipo, desdeFecha, hastaFecha });
+});
 
 //Panel de técnicos
 app.get('/panelTecnicos', authPage(["Tecnico", "Admin"]), async (req, res) => {
@@ -245,6 +250,15 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
         }
     });
 });
+
+
+app.post('/generarEstadisticas', (req, res, next) => {
+    const { tipo, desdeFecha, hastaFecha } = req.body;
+    req.session.estadisticas = { tipo, desdeFecha, hastaFecha };
+    res.redirect('/estadisticas');
+});
+
+
 
 //10 Hacer registro
 app.post('/registerP',authPage('Admin'),async(req, res) => {
