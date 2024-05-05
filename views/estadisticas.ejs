@@ -4,16 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas</title>
-    <link rel="stylesheet" href="estilos.css"> <!-- Agrega tus estilos aquí si es necesario -->
+    <link rel="stylesheet" href="resources/css/style_menu_usuario.css">
 </head>
 <body>
+    <div class="logo-contenedor">
+        <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+        <h1 class="titulo-sitio">CIC Assistance</h1>
+        <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+    </div>
     <h1>Estadísticas</h1>
     <div>
         <p>Las fechas seleccionadas son:</p>
         <p>Desde: <%= desdeFecha %></p>
         <p>Hasta: <%= hastaFecha %></p>
         <p>El tipo de solicitud es: <%= tipo %></p>
+        <% objetos.forEach(objeto => { %>
+            <p>Hasta: <%= objeto.FolioSolicitud %></p>
+        <% }); %>
         <!-- Agrega aquí cualquier otra información estadística que desees mostrar -->
     </div>
+    <div>
+        <canvas id="myChart"></canvas>
+      </div>
+      
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      
+      <script>
+        const ctx = document.getElementById('myChart');
+      
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+              label: '# of Votes',
+              data: [12, 19, 3, 5, 2, 3],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      </script>
 </body>
 </html>
