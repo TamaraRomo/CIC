@@ -125,6 +125,25 @@ app.get('/estadisticas', async (req, res) => {
     }
 });
 
+app.get('/reportes', async (req, res) => {
+    const { tipo, desdeFecha, hastaFecha, titulo, nombre, oficio, exp, area } = req.session.estadisticas || {};
+    try {
+        // Realizar la consulta SQL para obtener las solicitudes con la fecha desdeFecha
+        const fecha = desdeFecha
+        const fechaFinal = hastaFecha
+        console.log(fecha);
+        const queryParaReportes = await query(`SELECT * FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`)
+        console.log("-----------------aaaaaaaaaaaaaaaaaaa--------------------");
+        console.log(queryParaReportes)
+        // Renderizar la vista de estadísticas y pasar los datos
+        res.render('reportes', { tipo, desdeFecha, hastaFecha, objetos: queryParaReportes, titulo, nombre, oficio, exp, area });
+    } catch (error) {
+        console.error('Error al ejecutar la consulta SQL:', error);
+        // Manejar el error adecuadamente, por ejemplo, renderizando una página de error
+        res.render('error', { message: 'Error al obtener las solicitudes', error });
+    }
+});
+
 //Panel de técnicos
 app.get('/panelTecnicos', authPage(["Tecnico", "Admin"]), async (req, res) => {
     if (!req.session.loggedin) {
@@ -278,7 +297,12 @@ app.post('/generarEstadisticas', (req, res, next) => {
     res.redirect('/estadisticas');
 });
 
-
+//reportes
+app.post('/generarReportes', (req, res, next) => {
+    const { tipo, desdeFecha, hastaFecha, titulo, nombre, oficio, exp, area } = req.body;
+    req.session.estadisticas = { tipo, desdeFecha, hastaFecha, titulo, nombre, oficio, exp, area };
+    res.redirect('/reportes');
+});
 
 //10 Hacer registro
 app.post('/registerP',authPage('Admin'),async(req, res) => {
