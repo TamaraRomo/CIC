@@ -304,6 +304,29 @@ app.post('/generarReportes', (req, res, next) => {
     res.redirect('/reportes');
 });
 
+app.post('/generarPDF', async (req, res, next) => {
+    const { htmlContent } = req.body;
+
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    // Establecer el tamaño de la página
+    await page.setViewport({ width: 1200, height: 800 });
+
+    // Cargar el contenido HTML en la página
+    await page.setContent(htmlContent);
+
+    const pdf = await page.pdf({ 
+        format: 'A4',
+        landscape: true // Establecer la orientación horizontal
+    });
+
+    await browser.close();
+
+    res.contentType('application/pdf');
+    res.send(pdf);
+});
+
 //10 Hacer registro
 app.post('/registerP',authPage('Admin'),async(req, res) => {
     const user = req.body.username;
