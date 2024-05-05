@@ -42,19 +42,7 @@
     <div class="opcion-menu" data-id="Registro" onclick="mostrarContenido(this)">Registro</div>
     <div class="opcion-menu" data-id="RegistroT" onclick="mostrarContenido(this)">Tecnicos</div>
     <div class="opcion-menu" data-id="Estadisticas" onclick="mostrarContenido(this)">Estadisticas</div>
-    <!-- Sección de sesión -->
-    <div class="opcion-menu-usuario">
-        <% if (typeof login !== 'undefined' && login) { %>
-        <div class="contenedorMostrarSesion">
-            <div class="mostrarSesion">
-                <p class="sesion" id="sesion"><%= name %> ⇩</p>
-                <div id="logoutMenu">
-                    <a href="logout">Logout</a>
-                </div>
-            </div>
-        </div>
-        <% } %>
-    </div>
+
 </nav>
 
 
