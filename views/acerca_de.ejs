@@ -1,77 +1,65 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipo de Desarrollo</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .contenedor {
-            text-align: center;
-            max-width: 800px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .foto-equipo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-
-        .persona {
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            color: #555;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        p {
-            color: #777;
-            font-size: 18px;
-            margin: 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personas</title>
+  <link rel="stylesheet" href="resources/css/style_acercade.css">
 </head>
 <body>
-    <div class="contenedor">
-        <h1>Equipo de Desarrollo</h1>
-        <!-- Persona 1 -->
-        <div class="persona">
-            <img src="ruta/a/la/foto1.jpg" alt="Foto de Persona 1" class="foto-equipo">
-            <h2>Nombre de la Persona 1</h2>
-            <p>Rango de la Persona 1</p>
-        </div>
-        <!-- Persona 2 -->
-        <div class="persona">
-            <img src="ruta/a/la/foto2.jpg" alt="Foto de Persona 2" class="foto-equipo">
-            <h2>Nombre de la Persona 2</h2>
-            <p>Rango de la Persona 2</p>
-        </div>
-        <!-- Agregar más personas según sea necesario -->
+    <div class="logo-contenedor">
+        <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+        <h1 class="titulo-sitio">Equipo de Desarrollo</h1>
+        <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
     </div>
+    <main class="contenido">
+      <div class="personas">
+        <!-- Aquí van tus elementos de personas -->
+        <div class="persona">
+          <img src="resources/images/Madi.png" alt="Persona 1" class="avatar">
+          <div class="info">
+            <h2>Madinson Omar Lugo Robledo</h2>
+            <p>Project Manager</p>
+          </div>
+        </div>
+
+        <div class="persona">
+          <div class="info">
+            <h2>Adrian Enrique Palma Sosa</h2>
+            <p>Programador Full Stack</p>
+          </div>
+          <img src="resources/images/Adrian.png" alt="Persona 2" class="avatar">
+        </div>
+
+        <div class="persona">
+          <img src="resources/images/Tamy.png" alt="Persona 3" class="avatar">
+          <div class="info">
+            <h2>Tamara Rodriguez Romo</h2>
+            <p>Programadora Full Stack</p>
+          </div>
+        </div>
+
+        <div class="persona">
+          <div class="info">
+            <h2>Rene Antonio del Agua y Culebro Calnderon</h2>
+            <p>Seguridad Informática/Cibernetica</p>
+          </div>
+          <img src="resources/images/Rene.png" alt="Persona 4" class="avatar">
+        </div>
+
+        <div class="persona">
+          <img src="resources/images/Scar.png" alt="Persona 5" class="avatar">
+          <div class="info">
+            <h2>Scarlet Yuliana Rangel Rodriguez</h2>
+            <p>Desarrolladora Front</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="pie-pagina">
+        <p>&copy; 2024 CIC Assistance. Todos los derechos reservados.</p>
+    </footer>
+
+  <script src="resources/scripts/acercade.js"></script>
 </body>
 </html>
