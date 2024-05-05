@@ -19,10 +19,14 @@
 
     <!-- Sección de sesión -->
 <% if (typeof login !== 'undefined' && login) { %>
-    <div class="mostrarSesion">
-        <p class="sesion" id="sesion">Usuario: <%= name %></p>
-        <div id="logoutMenu">
-            <a href="logout">Logout</a>
+    <div class="d-flex flex-row-reverse bd-highlight">
+        <div class="btn-group  p-2 bd-highlight justify-content-end">
+            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Usuario: <%= name %>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="logout">Logout</a>
+            </div>
         </div>
     </div>
 <% } %>
