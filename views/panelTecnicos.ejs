@@ -15,18 +15,23 @@
         <h1 class="titulo-sitio">CIC Assistance</h1>
         <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
     </div>
-<% if (typeof login !== 'undefined' && login) { %>
-    <div class="mostrarSesion">
-        <p class="sesion" id="sesion">Usuario: <%= name %></p>
-        <div id="logoutMenu">
-            <a href="logout">Logout</a>
-        </div>
-    </div>
-<% } %>
 
 <nav class="menu">
     <div class="opcion-menu" data-id="asignaciones" onclick="mostrarContenido('asignaciones')">Asignaciones</div>
     <div class="opcion-menu" data-id="diagnosticos" onclick="mostrarContenido('diagnosticos')">Generar Diagnósticos</div>
+    <!-- Sección de sesión -->
+    <div class="opcion-menu-usuario">
+        <% if (typeof login !== 'undefined' && login) { %>
+        <div class="contenedorMostrarSesion">
+            <div class="mostrarSesion">
+                <p class="sesion" id="sesion"><%= name %> ⇩</p>
+                <div id="logoutMenu">
+                    <a href="logout">Logout</a>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
 </nav>
 
 
@@ -174,7 +179,6 @@
 <script src="https://cdn.datatables.net/2.0.2/js/dataTables.bootstrap5.js"></script>
 <script>
 
-
 new DataTable('#TablaHistorialAsignaciones', {
     language: {
         info: 'Mostrando _PAGE_ de _PAGES_ paginas',
@@ -183,6 +187,23 @@ new DataTable('#TablaHistorialAsignaciones', {
         zeroRecords: 'No se encontro - Lo siento',
         search: "Buscar:"
     }
+    });
+</script>
+
+<!--Script para mostrar el div logout-->
+<script>
+    const contenedorMostrarSesion = document.querySelector('.contenedorMostrarSesion');
+    const logoutMenu = document.querySelector('#logoutMenu');
+
+    contenedorMostrarSesion.addEventListener('click', function(event) {
+        logoutMenu.style.display = (logoutMenu.style.display === 'block') ? 'none' : 'block';
+        event.stopPropagation();
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!logoutMenu.contains(event.target) && event.target !== logoutMenu) {
+            logoutMenu.style.display = 'none';
+        }
     });
 
 </script>

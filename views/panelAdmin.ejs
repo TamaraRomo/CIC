@@ -17,16 +17,6 @@
     <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
 </div>
 
-<!-- Sección de sesión -->
-<% if (typeof login !== 'undefined' && login) { %>
-<div class="mostrarSesion">
-    <p class="sesion" id="sesion">Usuario: <%= name %></p>
-    <div id="logoutMenu">
-        <a href="logout">Logout</a>
-    </div>
-</div>
-<% } %>
-
 <!-- Menú de opciones -->
 <nav class="menu">
     <div class="opcion-menu" data-id="solicitud-de-reportes" onclick="mostrarContenido(this)">Solicitud de Reportes</div>
@@ -38,6 +28,19 @@
     <div class="opcion-menu" data-id="Registro" onclick="mostrarContenido(this)">Registro</div>
     <div class="opcion-menu" data-id="RegistroT" onclick="mostrarContenido(this)">Tecnicos</div>
     <div class="opcion-menu" data-id="Estadisticas" onclick="mostrarContenido(this)">Estadisticas</div>
+    <!-- Sección de sesión -->
+    <div class="opcion-menu-usuario">
+        <% if (typeof login !== 'undefined' && login) { %>
+        <div class="contenedorMostrarSesion">
+            <div class="mostrarSesion">
+                <p class="sesion" id="sesion"><%= name %> ⇩</p>
+                <div id="logoutMenu">
+                    <a href="logout">Logout</a>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
 </nav>
 
 
@@ -1009,7 +1012,6 @@
 <script src="https://cdn.datatables.net/2.0.2/js/dataTables.bootstrap5.js"></script>
 <script>
 
-
 new DataTable('#TablaHistorialSolicitudes', {
     language: {
         info: 'Mostrando _PAGE_ de _PAGES_ paginas',
@@ -1031,7 +1033,23 @@ new DataTable('#TablaHistorialSolicitudes', {
     });
 
 </script>
+<!--Script para mostrar el div logout-->
+<script>
+    const contenedorMostrarSesion = document.querySelector('.contenedorMostrarSesion');
+    const logoutMenu = document.querySelector('#logoutMenu');
 
+    contenedorMostrarSesion.addEventListener('click', function(event) {
+        logoutMenu.style.display = (logoutMenu.style.display === 'block') ? 'none' : 'block';
+        event.stopPropagation();
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!logoutMenu.contains(event.target) && event.target !== logoutMenu) {
+            logoutMenu.style.display = 'none';
+        }
+    });
+
+</script>
 
 </body>
 </html>
