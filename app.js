@@ -135,7 +135,7 @@ app.get('/panelTecnicos', authPage(["Tecnico", "Admin"]), async (req, res) => {
 
     try {
         const usuario = req.session.idUsuario;
-        const asignaciones = await query(`SELECT DISTINCT s.FolioSolicitud,S.Fecha,S.Descripcion, v.Equipo,V.NoSerieEquipo,V.MarcaEquipo,V.ModeloEquipo, u.IdUsuario as IdUsuarioTecnico, us.IdUsuario as IdUsuarioSolicitante, us.Nombre as NombreSolicitante FROM solicitudes s JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud JOIN tecnicos t ON a.IdTecnico = t.IdTecnico JOIN usuarios u ON t.IdUsuario = u.IdUsuario JOIN usuarios us ON s.IdUsuario = us.IdUsuario WHERE u.IdUsuario = ${usuario}`);
+        const asignaciones = await query(`SELECT DISTINCT s.FolioSolicitud,s.Fecha,s.Descripcion, v.Equipo,v.NoSerieEquipo,v.MarcaEquipo,v.ModeloEquipo, u.IdUsuario as IdUsuarioTecnico, us.IdUsuario as IdUsuarioSolicitante, us.Nombre as NombreSolicitante FROM solicitudes s JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud JOIN tecnicos t ON a.IdTecnico = t.IdTecnico JOIN usuarios u ON t.IdUsuario = u.IdUsuario JOIN usuarios us ON s.IdUsuario = us.IdUsuario WHERE u.IdUsuario = ${usuario}`);
         
         res.render('panelTecnicos', {
             login: req.session.loggedin,
