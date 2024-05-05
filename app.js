@@ -111,11 +111,13 @@ app.get('/estadisticas', async (req, res) => {
         const fecha = desdeFecha
         const fechaFinal = hastaFecha
         console.log(fecha);
-        const fechaInicio = await query(`SELECT * FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+        const folios = await query(`SELECT solicitudes.FolioSolicitud FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+        const conteoEstados = await query(`SELECT Estado AS estado, COUNT(*) AS total FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}' GROUP BY Estado`);
         console.log("-----------------aaaaaaaaaaaaaaaaaaa--------------------");
-        console.log(fechaInicio);
+        console.log(folios);
+        console.log(conteoEstados);
         // Renderizar la vista de estadísticas y pasar los datos
-        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: fechaInicio });
+        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: folios, conteo:conteoEstados });
     } catch (error) {
         console.error('Error al ejecutar la consulta SQL:', error);
         // Manejar el error adecuadamente, por ejemplo, renderizando una página de error

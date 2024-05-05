@@ -15,41 +15,110 @@
     <h1>Estadísticas</h1>
     <div>
         <p>Las fechas seleccionadas son:</p>
-        <p>Desde: <%= desdeFecha %></p>
-        <p>Hasta: <%= hastaFecha %></p>
-        <p>El tipo de solicitud es: <%= tipo %></p>
-        <% objetos.forEach(objeto => { %>
-            <p>Hasta: <%= objeto.FolioSolicitud %></p>
-        <% }); %>
+            <p>Desde: <%= desdeFecha %></p>
+            <p>Hasta: <%= hastaFecha %></p>
+            <p>El tipo de solicitud es: <%= tipo %></p>
+
+            <% const datos = objetos.map(objeto => objeto.FolioSolicitud); %>
+            <% const datos2 = conteo.map(contado => contado.total); %>
+            <% const labelsEstado = conteo.map(contado => contado.estado) %>
         <!-- Agrega aquí cualquier otra información estadística que desees mostrar -->
     </div>
     <div>
-        <canvas id="myChart"></canvas>
-      </div>
+        <canvas id="myChart" width="200" height="200"></canvas>
+    </div>
+
+    <div>
+            <canvas id="myChart2" width="200" height="200"></canvas>
+    </div>
       
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       
       <script>
-        const ctx = document.getElementById('myChart');
-      
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-              label: '# of Votes',
-              data: [12, 19, 3, 5, 2, 3],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
+          document.addEventListener('DOMContentLoaded', function () {
+              // Obtén el contexto del lienzo donde se dibujará la gráfica
+              const ctx = document.getElementById('myChart').getContext('2d');
+
+              // Configura los datos de la gráfica utilizando los datos procesados
+              const data = {
+                  labels: ['Objeto 1', 'Objeto 2', 'Objeto 3', 'Objeto 4', 'Objeto 5'], // Puedes cambiar las etiquetas según tus necesidades
+                  datasets: [{
+                      label: 'Folio de Solicitud', // Etiqueta de los datos
+                      data: [<%= datos.join(',') %>], // Utiliza los datos procesados aquí
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              };
+
+              // Configura la instancia de la gráfica
+              const myChart = new Chart(ctx, {
+                  type: 'doughnut', // Tipo de gráfico
+                  data: data, // Configuración de los datos de la gráfica
+                  options: {
+                      maintainAspectRatio: false, // Desactiva el mantenimiento del aspecto
+                      aspectRatio: 2,
+                      scales: {
+                          y: {
+                              beginAtZero: true
+                          }
+                      }
+                  }
+              });
+              // Obtén el contexto del lienzo donde se dibujará la segunda gráfica
+              const ctx2 = document.getElementById('myChart2').getContext('2d');
+
+              // Configura los datos de la segunda gráfica
+              const data2 = {
+                  labels: ['Espera', 'Abierto', 'Cerrado', 'En proceso', 'Asignada'],
+                  datasets: [{
+                      label: 'Total',
+                      data: [<%= datos2 %>], // Aquí deberías agregar tus datos para la segunda gráfica
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              };
+
+              // Configura la instancia de la segunda gráfica
+              const myChart2 = new Chart(ctx2, {
+                  type: 'bar',
+                  data: data2,
+                  options: {
+                      maintainAspectRatio: false,
+                      aspectRatio: 2,
+                      scales: {
+                          y: {
+                              beginAtZero: true
+                          }
+                      }
+                  }
+              });
+          });
       </script>
 </body>
 </html>
