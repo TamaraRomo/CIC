@@ -111,13 +111,32 @@ app.get('/estadisticas', async (req, res) => {
         const fecha = desdeFecha
         const fechaFinal = hastaFecha
         console.log(fecha);
-        const folios = await query(`SELECT solicitudes.FolioSolicitud FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+        const folios = await query(`SELECT * FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
         const conteoEstados = await query(`SELECT Estado AS estado, COUNT(*) AS total FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}' GROUP BY Estado`);
-        console.log("-----------------aaaaaaaaaaaaaaaaaaa--------------------");
+
+        const usuariosPorSoli = await query(`SELECT u.Nombre AS NombreUsuario, COUNT(a.FolioSolicitud) AS NumeroSolicitudes
+                                                FROM usuarios u
+                                                JOIN solicitudes s ON u.IdUsuario = s.IdUsuario
+                                                JOIN ${tipo} a ON s.FolioSolicitud = a.FolioSolicitud
+                                                WHERE s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'
+                                                GROUP BY u.NombreUsuario`);
+        const asignacionesTecnicos = await query(`SELECT t.Nombre AS Tecnico, COUNT(a.IdSolicitud) AS NumeroSolicitudesTecnico
+                                                FROM tecnicos t
+                                                JOIN asignaciones a ON t.IdTecnico = a.IdTecnico 
+                                                JOIN solicitudes s ON s.FolioSolicitud = a.IdSolicitud WHERE s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'
+                                                GROUP BY t.Nombre`);
+        const solucionesDictamen = await query(`SELECT d.DictamenFinal AS DictamenFinal, COUNT(a.FolioSolicitud) AS NumeroSolicitudesDictamen
+                                                FROM dictamenes d
+                                                JOIN ${tipo} a ON d.FolioSolicitud = a.FolioSolicitud
+                                                WHERE d.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'
+                                                GROUP BY d.DictamenFinal`);
         console.log(folios);
         console.log(conteoEstados);
+        console.log(usuariosPorSoli);
+        console.log(asignacionesTecnicos);
+        console.log(solucionesDictamen);
         // Renderizar la vista de estadísticas y pasar los datos
-        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: folios, conteo:conteoEstados });
+        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: folios, conteo:conteoEstados, usuariosPorSoli:usuariosPorSoli, asignacionesTecnicos:asignacionesTecnicos, solucionesDictamen:solucionesDictamen });
     } catch (error) {
         console.error('Error al ejecutar la consulta SQL:', error);
         // Manejar el error adecuadamente, por ejemplo, renderizando una página de error
@@ -728,7 +747,7 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
     const marcaEquipo = req.body.marcaEquipo;
     const modeloEquipo = req.body.modeloEquipo;
     const noSerieEquipo = req.body.noSerieEquipo;
-    const estadoDictamen = req.body.estadoDictamen;
+    const estado = req.body.estado;
     const tipoDictamen = req.body.tipoDictamen;
     const caracDictamen = req.body.caracDictamen;
     const observacionesDictamen = req.body.observacionesDictamen;
@@ -736,14 +755,14 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
 
     connection.query('INSERT INTO dictamenes SET ?', {
         Encargado: usuario,
-        FechaDictamen: fecha,
+        Fecha: fecha,
         FolioSolicitud: folioSolicitudDictamen,
         idVale: vale,
         Equipo: equipoDictamen,
         MarcaEquipo: marcaEquipo,
         ModeloEquipo: modeloEquipo,
         NoSerieEquipo: noSerieEquipo,
-        EstadoDictamen: estadoDictamen,
+        Estado: estado,
         DictamenFinal: tipoDictamen,
         caracDictamen: caracDictamen,
         Observaciones: observacionesDictamen,
@@ -766,12 +785,12 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
                 dictamenes: [{
                     idDictamen,
                     FolioSolicitud: folioSolicitudDictamen,
-                    FechaDictamen: fecha,
+                    Fecha: fecha,
                     Equipo: equipoDictamen,
                     MarcaEquipo: marcaEquipo,
                     ModeloEquipo: modeloEquipo,
                     NoSerieEquipo: noSerieEquipo,
-                    EstadoDictamen: estadoDictamen,
+                    Estado: estado,
                     DictamenFinal: tipoDictamen,
                     caracDictamen: caracDictamen,
                     Observaciones: observacionesDictamen,
