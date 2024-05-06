@@ -1,5 +1,6 @@
 //Invocamos express
 const express = require('express');
+const rateLimit = require('express-rate-limit');//Para proteger ataques ddos o limitar la cantidad de solicitudes
 const app = express();
 const path = require('path');
 const ejs = require('ejs');
@@ -33,6 +34,15 @@ app.use(session({
     resave: true,
     saveUninitialized:true
 }));
+
+//Invocar a rate-limit para proteger contra ataques de muchas solicitudes al mismo tiempo
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  });
+app.use(limiter);
 
 //8.- Invocar conexion a DB
 const connection = require('./database/db');
