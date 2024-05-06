@@ -472,7 +472,7 @@ app.post('/solicitud', async(req, res) => {
         equipo += (equipo ? ':' : '') + otroInput;
     }
     console.log(otroInput);
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion,IdAsignacion:0}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -533,7 +533,7 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion,IdAsignacion:0}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -715,7 +715,7 @@ app.post('/vales', async(req, res) => {
             console.log(error);
         } else {
             // Insertar registros en la base de datos
-            connection.query('INSERT INTO asignaciones SET ?', { IdSolicitud: folioSolicitud, IdTecnico: idTecnico }, async(error, results)=> {
+            connection.query('INSERT INTO asignaciones SET ?', { IdSolicitud: folioSolicitud, IdTecnico: idTecnico,DIagnostico:"", Solucion:"", Mensaje:"" }, async(error, results)=> {
                 if (error) {
                     console.log(error);
                 } else {
