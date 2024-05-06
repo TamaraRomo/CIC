@@ -304,27 +304,55 @@ app.post('/generarReportes', (req, res, next) => {
     res.redirect('/reportes');
 });
 
+// Define la ruta de la plantilla
+const plantillaPath = path.join(__dirname, 'views', 'plantillaReportes.ejs');
+
+// Ruta para generar el PDF
 app.post('/generarPDF', async (req, res, next) => {
-    const { htmlContent } = req.body;
+    try {
+        // Obtén los datos de la sesión
+        const { tipo, desdeFecha, hastaFecha, titulo, nombre, oficio, exp, area } = req.session.estadisticas;
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+        // Realizar la consulta SQL para obtener los datos de la base de datos
+        const fecha = desdeFecha;
+        const fechaFinal = hastaFecha;
+        const queryParaReportes = await query(`SELECT * FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
 
-    // Establecer el tamaño de la página
-    await page.setViewport({ width: 1200, height: 800 });
+        // Renderiza la plantilla con los datos de la sesión y los datos de la base de datos
+        const htmlContent = await ejs.renderFile(plantillaPath, {
+            tipo,
+            desdeFecha,
+            hastaFecha,
+            titulo,
+            nombre,
+            oficio,
+            exp,
+            area,
+            objetos: queryParaReportes
+        });
 
-    // Cargar el contenido HTML en la página
-    await page.setContent(htmlContent);
+        // Crea una instancia de Puppeteer
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
 
-    const pdf = await page.pdf({ 
-        format: 'A4',
-        landscape: true // Establecer la orientación horizontal
-    });
+        // Establece el tamaño de la página y carga el contenido HTML
+        await page.setViewport({ width: 1200, height: 800 });
+        await page.setContent(htmlContent);
 
-    await browser.close();
+        // Genera el PDF
+        const pdf = await page.pdf({ format: 'A4', landscape: true });
 
-    res.contentType('application/pdf');
-    res.send(pdf);
+        // Cierra el navegador de Puppeteer
+        await browser.close();
+
+        // Envía el PDF como respuesta
+        res.contentType('application/pdf');
+        res.send(pdf);
+    } catch (error) {
+        // Maneja cualquier error que ocurra
+        console.error('Error al generar el PDF:', error);
+        res.status(500).send('Error al generar el PDF');
+    }
 });
 
 //10 Hacer registro

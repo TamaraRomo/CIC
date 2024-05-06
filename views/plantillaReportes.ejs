@@ -3,22 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="resources/css/style_reportes.css">
+    <style>
+        body, h1, h2, h3, h4, p{
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+.contenedorDetalles{
+    color: black;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+button{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+table, th, td{
+    text-align: center;
+    border-spacing: 0px;
+    border: 1px solid black;
+}
+
+th, td{
+    padding: 5px;
+}
+
+.contenedorInfo{
+    display: inline-block;
+    margin: 40px;
+}
+
+.deliniador{
+    background-color: black;
+    padding: 2px;
+}
+
+.aviso{
+    font-size: 16px;
+}
+
+.imprimirReporte{
+    padding: 20px;
+}
+
+thead{
+    color: white;
+    background-color: #1E2943;
+}
+    </style>
     <title>Reportes</title>
 </head>
 <body>
-    <div class="contenedorDetalles">
-        <p class="aviso">Vista previa del reporte. De clic en "imprimir reporte" si esta correcto. De lo contrario, presione "Atras" en su navegador para modificarlo</p>
-        <h2>Reportes de <%= tipo %></h2>
-        <p>Del: <%= desdeFecha %> Hasta: <%= hastaFecha %></p>
-        <button onclick="imprimirDoc()">Imprimir reporte</button>
-    </div>
     <div class="deliniador"></div>
     <div class="imprimirReporte">
-        <h2>Universidad Autónoma de Campeche</h2>
-        <h3>Facultad de Ingeniería</h3>
-        <h4>Reporte de <%= tipo %></h4>
+        <h1>Universidad Autónoma de Campeche</h1>
+        <h2>Facultad de Ingeniería</h2>
         <div class="contenedorInfo">
+            <div class="contenedorDetalles">
+                <h3>Reporte de <%= tipo %></h3>
+                <h4>Del: <%= desdeFecha %> Hasta: <%= hastaFecha %></h4>
+            </div>
             <% if (tipo === 'solicitudes') { %>
                 <!-- Código para mostrar la tabla de solicitudes -->
                 <table>
@@ -147,32 +198,6 @@
         <p><%= oficio %></p>
         <p><%= exp %></p>
         <p><%= area %></p>
-    </div>    
-<script>
-    async function imprimirDoc() {
-        // Recopilar los datos del formulario (si es necesario)
-        const formData = {
-            // Obtén los datos del formulario según tu estructura
-        };
-
-        // Realizar una solicitud POST al servidor para generar el PDF
-        const response = await fetch('/generarPDF', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData) // Pasa los datos del formulario si es necesario
-        });
-
-        // Manejar la respuesta para descargar el PDF generado
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'reporte.pdf');
-        document.body.appendChild(link);
-        link.click();
-    }
-</script>
+    </div>   
 </body>
 </html>
