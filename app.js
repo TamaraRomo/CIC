@@ -778,7 +778,8 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
     const caracDictamen = req.body.caracDictamen;
     const observacionesDictamen = req.body.observacionesDictamen;
     const descripcionDictamen = req.body.descripcionDictamen;
-
+    const dirigidoA = req.body.dirigidoA;
+    console.log(dirigidoA);
     connection.query('INSERT INTO dictamenes SET ?', {
         Encargado: usuario,
         Fecha: fecha,
@@ -820,9 +821,12 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
                     DictamenFinal: tipoDictamen,
                     caracDictamen: caracDictamen,
                     Observaciones: observacionesDictamen,
-                    Descripcion: descripcionDictamen
+                    Descripcion: descripcionDictamen,
+                    dirigidoA: dirigidoA
                 }],
                 fecha: fecha
+
+
             });
 
             await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });

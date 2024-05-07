@@ -380,30 +380,30 @@
             <div class="contenedorDictamen">
                 <div>
                     <label for="valeId" class="labelMayor">Vale:</label>
-                    <input type="text" id="identificadorVale" name="valeId" class="form-control form-control-sm" required>
+                    <input type="text" id="identificadorVale" name="valeId" class="form-control form-control-sm" readonly>
                 </div>
                 <div>
                     <label for="equipoDictamen" class="labelMayor">Equipo:</label>
-                    <input type="text" id="equipoDictamen" name="equipoDictamen" class="form-control form-control-sm" required>
+                    <input type="text" id="equipoDictamen" name="equipoDictamen" class="form-control form-control-sm" readonly>
                 </div>
                 <div>
-                    <label for="marcaEquipo" class="labelMayor">Marca:</label>
+                    <label for="marcaEquipo" class="labelMayor required">Marca:</label>
                     <input type="text" name="marcaEquipo" id="marcaEquipo" class="form-control form-control-sm" required> 
                 </div>
                 <div>
-                    <label for="modeloEquipo" class="labelMayor">Modelo:</label>
-                    <input type="text" name="modeloEquipo" id="modeloEquipo" class="form-control form-control-sm" required> 
+                    <label for="modeloEquipo" class="labelMayor required">Modelo:</label>
+                    <input type="text" name="modeloEquipo" id="modeloEquipo" class="form-control form-control-sm" required>
                 </div>
                 <div>
-                    <label for="noSerieEquipo" class="labelMayor">N° de serie:</label>
-                    <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required> 
+                    <label for="noSerieEquipo" class="labelMayor required">N° de serie:</label>
+                    <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required>
                 </div>
                 <div>
                     <label for="estado" class="labelMayor required">Estado:</label>
                     <select name="estado" id="estado" class="form-select form-select-sm" required>
                         <option value="blanco">&nbsp;</option>
-                        <option value="vigente">Vigente</option>
-                        <option value="obsoleto">Obsoleto</option>
+                        <option value="Vigente">Vigente</option>
+                        <option value="Obsoleto">Obsoleto</option>
                     </select>
                 </div>
                 <div>
@@ -414,7 +414,11 @@
                         <option value="No Funciona">Obsoleto</option>
                         <option value="Baja">Tramitar Baja</option>
                     </select>
-                </div>   
+                </div>
+                <div>
+                   <label for="dirigidoA" class="labelMayor required">Dirigido a:</label>
+                   <input type="text" name="dirigidoA" id="dirigidoA" class="form-control form-control-sm" required>
+                </div>
             
             </div>
             <div class="contenedorSecundario">

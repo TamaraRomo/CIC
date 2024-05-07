@@ -73,7 +73,7 @@
                         <td><%= dictamen.Descripcion %></td>
                         <!-- Agrega otras celdas según tus campos -->
                     </tr>
-                <% }); %>
+
         </table>
         <table class="dictamen">
             <thead>
@@ -117,9 +117,10 @@
             <tr>
                 <td> </td>
                 <td>Mtro. Adrían E. Pacheco Zapata</td>
-                <td>MAC. Francisco Javier Barrera Lao</td>
+                <td><%= dictamen.dirigidoA %></td>
             </tr>
         </table>
+        <% }); %>
     </div>
 </body>
 </html>
