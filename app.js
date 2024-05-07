@@ -715,7 +715,7 @@ app.post('/vales', async(req, res) => {
             console.log(error);
         } else {
             // Insertar registros en la base de datos
-            connection.query('INSERT INTO asignaciones SET ?', { IdSolicitud: folioSolicitud, IdTecnico: idTecnico }, async(error, results)=> {
+            connection.query('INSERT INTO asignaciones SET ?', { IdSolicitud: folioSolicitud, IdTecnico: idTecnico,DIagnostico:"", Solucion:"", Mensaje:"" }, async(error, results)=> {
                 if (error) {
                     console.log(error);
                 } else {
