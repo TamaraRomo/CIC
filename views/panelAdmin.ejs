@@ -574,6 +574,7 @@
             <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#exampleModalLong">
                 Ver listado de usuarios registrados
             </button>
+            <br>
             <!-- Modal -->
             <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -680,6 +681,52 @@
             <input type="submit" value="Registrar" class="btn btn-outline-dark">
         </div>
     </form>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#exampleModalLong2">
+        Ver listado de técnicos registrados
+    </button>
+    <br>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalLong2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle2" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle2">Técnicos</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                Enlistado de todos los técnicos registrados en CIC Assistance
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                              <th scope="col">Id técnico</th>
+                              <th scope="col">Nombre</th>
+                              <th scope="col">Apellidos</th>
+                              <th scope="col">Correo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% tecnicos.forEach(tecnico => { %>
+                            <tr>
+                              <td><%= tecnico.IdTecnico %></td>
+                              <td><%= tecnico.Nombre%></td>
+                              <td><%= tecnico.Apellidos %></td>
+                              <td><%= tecnico.Correo%></td>
+                            </tr>
+                            <% }); %>
+                          </tbody>
+                    </table>
+                  </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
 <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
