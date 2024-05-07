@@ -62,7 +62,7 @@ console.log(__dirname);
 
      let textoCorreo;
      let textAsunto;
-     var htmlCorreo;
+     let htmlCorreo;
     if (opcion === 1) {
          textAsunto = 'Solicitud de soporte creada'
          textoCorreo = 'Ha realizado una solicitud de soporte técnico al sistema CIC Assistance, puede checar el estatus de su solicitud en su historial de solicitudes a traves de la misma página donde realizó la solicitud';
