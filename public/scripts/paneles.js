@@ -1,9 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Activar la primera opción por defecto
-    var primeraOpcion = document.querySelector('.opcion-menu');
-    if (primeraOpcion) {
-        mostrarContenido(primeraOpcion);
-    }
+    mostrarContenido(document.querySelector('.opcion-menu'));
 });
 
 function mostrarContenido(opcionSeleccionada) {
@@ -14,14 +11,14 @@ function mostrarContenido(opcionSeleccionada) {
     });
 
     // Muestra el contenido seleccionado
-    var id = opcionSeleccionada.getAttribute('data-id');
+    const id = opcionSeleccionada.getAttribute('data-id');
     var contenidoSeleccionado = document.getElementById(id);
     if (contenidoSeleccionado) {
         contenidoSeleccionado.style.display = 'block';
     }
 
     // Elimina la clase 'seleccionada' de todas las opciones del menú
-    var opcionesMenu = document.querySelectorAll('.opcion-menu');
+    const opcionesMenu = document.querySelectorAll('.opcion-menu');
     opcionesMenu.forEach(function(opcion) {
         opcion.classList.remove('seleccionada');
     });
