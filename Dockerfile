@@ -1,8 +1,6 @@
 # Usa la imagen base de Node.js versión 14
 FROM node:20.12-alpine
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-
 # Establece el directorio de trabajo en /app
 WORKDIR /app
 
@@ -15,7 +13,7 @@ USER node
 RUN npm install
 
 # Copia el contenido actual del directorio de trabajo al directorio /app del contenedor
-COPY --chown=node:node . .
+COPY . .
 # Expone el puerto 3000 (o cualquier puerto que tu aplicación Node.js utilice)
 EXPOSE 3000
 
