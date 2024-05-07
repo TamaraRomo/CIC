@@ -966,8 +966,6 @@ app.post('/crearDiagnostico', async (req, res) => {
     const folioSeleccionado = req.body.folios; // Obtener el folio seleccionado del cuerpo de la solicitud
     const diagnosticoT = req.body.diagnosticoT;
     const solucion = req.body.solucion;
-    const fecha = obtenerFechaActual();
-    const hora = obtenerHoraActual();
 
     // Consulta para obtener el IdTecnico de la tabla asignaciones
     connection.query('SELECT IdTecnico FROM asignaciones WHERE IdSolicitud = ?', [folioSeleccionado], (error, results) => {
@@ -1043,23 +1041,6 @@ app.post('/crearDiagnostico', async (req, res) => {
         }
     });
 
-    // Función para obtener la fecha actual en formato AAAA-MM-DD
-    function obtenerFechaActual() {
-        const fecha = new Date();
-        const año = fecha.getFullYear();
-        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-        const dia = String(fecha.getDate()).padStart(2, '0');
-        return `${año}-${mes}-${dia}`;
-    }
-
-    // Función para obtener la hora actual en formato HH:MM:SS
-    function obtenerHoraActual() {
-        const fecha = new Date();
-        const horas = String(fecha.getHours()).padStart(2, '0');
-        const minutos = String(fecha.getMinutes()).padStart(2, '0');
-        const segundos = String(fecha.getSeconds()).padStart(2, '0');
-        return `${horas}:${minutos}:${segundos}`;
-    }
 });
 
 //12 Auth page
