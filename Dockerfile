@@ -7,8 +7,7 @@ WORKDIR /app
 # Copia el archivo package.json y package-lock.json al directorio de trabajo
 COPY package*.json ./
 
-# application files are owned by the non-root node user
-USER node
+
 # Instala las dependencias
 RUN npm install
 
