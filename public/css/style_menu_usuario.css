@@ -17,15 +17,9 @@ body {
     max-width: 80px; /* Ajusta el ancho máximo de la imagen según sea necesario */
 }
 
-.required::after{
-    content: ' *';
-    color: red;    
-    font-size: 0.85em;
-}
 .titulo-sitio {
     margin: 0;
     font-size: 18px; /* Ajusta el tamaño del texto según sea necesario */
-    cursor: pointer;
 }
 
 
@@ -67,7 +61,7 @@ body {
 }
 
 .pie-pagina {
-    background-color: #333;
+    background-color: #1E2943;
     color: #fff;
     text-align: center;
     padding: 1px 0; /* Reducir el relleno del pie de página */

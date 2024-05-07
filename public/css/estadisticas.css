@@ -5,6 +5,13 @@ body{
 }
 
 
+button{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .logo-contenedor {
     display: flex;
     align-items: center;

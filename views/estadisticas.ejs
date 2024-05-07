@@ -16,6 +16,7 @@
 
         <br>
         <h2>Estadísticas</h2>
+        <button onclick="regresar()">Atrás</button>
         <div>
             <div>
                 <p class="labelMayor">El tipo de solicitud es: </p><p><%= tipo %></p>
@@ -221,6 +222,12 @@
                 }
             });
           });
+
+          
+        // Función para regresar a la página anterior
+        function regresar() {
+        window.history.back();
+    }
       </script>
 </body>
 </html>
