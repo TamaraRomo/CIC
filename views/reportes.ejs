@@ -12,6 +12,7 @@
         <h2>Reportes de <%= tipo %></h2>
         <p>Del: <%= desdeFecha %> Hasta: <%= hastaFecha %></p>
         <button onclick="imprimirDoc()">Imprimir reporte</button>
+        <button onclick="regresar()">Atrás</button>
     </div>
     <div class="deliniador"></div>
     <div class="imprimirReporte">
@@ -172,6 +173,11 @@
         link.setAttribute('download', 'reporte.pdf');
         document.body.appendChild(link);
         link.click();
+    }
+
+        // Función para regresar a la página anterior
+        function regresar() {
+        window.history.back();
     }
 </script>
 </body>

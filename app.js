@@ -36,12 +36,12 @@ app.use(session({
 }));
 
 //Invocar a rate-limit para proteger contra ataques de muchas solicitudes al mismo tiempo
- const limiter = rateLimit({
- windowMs: 15 * 60 * 1000, // 15 minutes
- max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-});
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  });
 app.use(limiter);
 
 //8.- Invocar conexion a DB
@@ -140,27 +140,13 @@ app.get('/estadisticas', async (req, res) => {
                                                 JOIN ${tipo} a ON d.FolioSolicitud = a.FolioSolicitud
                                                 WHERE d.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'
                                                 GROUP BY d.DictamenFinal`);
-        const solicitudesSinDictamen = await query(`SELECT COUNT(s.FolioSolicitud) AS NumSolicitudesCerradasSinDictamen
-                                                        FROM solicitudes s
-                                                        LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud
-                                                        JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud
-                                                        WHERE s.Estado = 'Cerrado' AND d.FolioSolicitud IS NULL 
-                                                        AND s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
-        const solicitudesConDictamen = await query(`SELECT COUNT(s.FolioSolicitud) AS NumSolicitudesCerradasConDictamenYVales
-                                                    FROM solicitudes s
-                                                    JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud
-                                                    JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud
-                                                    WHERE s.Estado = 'Cerrado'
-                                                    AND s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
         console.log(folios);
         console.log(conteoEstados);
         console.log(usuariosPorSoli);
         console.log(asignacionesTecnicos);
         console.log(solucionesDictamen);
-        console.log(solicitudesSinDictamen);
-        console.log(solicitudesConDictamen);
         // Renderizar la vista de estadísticas y pasar los datos
-        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: folios, conteo:conteoEstados, usuariosPorSoli:usuariosPorSoli, asignacionesTecnicos:asignacionesTecnicos, solucionesDictamen:solucionesDictamen, solicitudesSinDictamen:solicitudesSinDictamen, solicitudesConDictamen:solicitudesConDictamen});
+        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: folios, conteo:conteoEstados, usuariosPorSoli:usuariosPorSoli, asignacionesTecnicos:asignacionesTecnicos, solucionesDictamen:solucionesDictamen });
     } catch (error) {
         console.error('Error al ejecutar la consulta SQL:', error);
         // Manejar el error adecuadamente, por ejemplo, renderizando una página de error
@@ -293,8 +279,6 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             
         });
         console.log(historialSoli);
-        console.log('jfnarjfnarfiarnfgnrafgnajkrnjarnjkfnkarjnfjanr');
-        console.log(tecnicos);
 });
 function query(sql) {
     return new Promise((resolve, reject) => {
@@ -488,7 +472,7 @@ app.post('/solicitud', async(req, res) => {
         equipo += (equipo ? ':' : '') + otroInput;
     }
     console.log(otroInput);
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion,IdAsignacion:0}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -549,7 +533,7 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion,IdAsignacion:0}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -731,7 +715,7 @@ app.post('/vales', async(req, res) => {
             console.log(error);
         } else {
             // Insertar registros en la base de datos
-            connection.query('INSERT INTO asignaciones SET ?', { IdSolicitud: folioSolicitud, IdTecnico: idTecnico,DIagnostico:"", Solucion:"", Mensaje:"" }, async(error, results)=> {
+            connection.query('INSERT INTO asignaciones SET ?', { IdSolicitud: folioSolicitud, IdTecnico: idTecnico }, async(error, results)=> {
                 if (error) {
                     console.log(error);
                 } else {
@@ -982,6 +966,8 @@ app.post('/crearDiagnostico', async (req, res) => {
     const folioSeleccionado = req.body.folios; // Obtener el folio seleccionado del cuerpo de la solicitud
     const diagnosticoT = req.body.diagnosticoT;
     const solucion = req.body.solucion;
+    const fecha = obtenerFechaActual();
+    const hora = obtenerHoraActual();
 
     // Consulta para obtener el IdTecnico de la tabla asignaciones
     connection.query('SELECT IdTecnico FROM asignaciones WHERE IdSolicitud = ?', [folioSeleccionado], (error, results) => {
@@ -1057,6 +1043,23 @@ app.post('/crearDiagnostico', async (req, res) => {
         }
     });
 
+    // Función para obtener la fecha actual en formato AAAA-MM-DD
+    function obtenerFechaActual() {
+        const fecha = new Date();
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        return `${año}-${mes}-${dia}`;
+    }
+
+    // Función para obtener la hora actual en formato HH:MM:SS
+    function obtenerHoraActual() {
+        const fecha = new Date();
+        const horas = String(fecha.getHours()).padStart(2, '0');
+        const minutos = String(fecha.getMinutes()).padStart(2, '0');
+        const segundos = String(fecha.getSeconds()).padStart(2, '0');
+        return `${horas}:${minutos}:${segundos}`;
+    }
 });
 
 //12 Auth page

@@ -5,6 +5,13 @@ body{
 }
 
 
+button{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .logo-contenedor {
     display: flex;
     align-items: center;
@@ -47,14 +54,6 @@ body{
     color: #0D1642;
     margin-bottom: 1em;
     margin-top: .4em;
-}
-
-.labelGrafica {
-    font-weight: bold;
-    color: #0D1642;
-    margin-bottom: 1em;
-    margin-top: .4em;
-    text-align: center;
 }
 
 .fechas p{

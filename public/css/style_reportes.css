@@ -8,6 +8,7 @@ body, h1, h2, h3, h4, p{
 .contenedorDetalles{
     color: white;
     padding: 10px;
+    /*background-color: rgba(0, 0, 139, 0.2);*/
     background-color: #1E2943;
     text-align: center;
     font-size: 18px;
