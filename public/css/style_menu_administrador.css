@@ -20,6 +20,7 @@ body {
 .titulo-sitio {
     margin: 0;
     font-size: 18px; /* Ajusta el tamaño del texto según sea necesario */
+    cursor: pointer;
 }
 
 .required::after{
