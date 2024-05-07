@@ -50,46 +50,53 @@ const { assign } = require('nodemailer/lib/shared');
 console.log(__dirname);
 
 //FUNCION PARA ENVIAR NOTIFICACIONES POR EMAIL
-enviarMail = async(opcion,correoObjetivo)=>{
+ enviarMail = async(opcion,correoObjetivo)=>{
     const config = {
-        host : 'smtp.gmail.com',
-        port : 587,
+         host : 'smtp.gmail.com',
+         port : 587,
         auth : {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS
-        }
-    }
+             user: process.env.SMTP_USER,
+             pass: process.env.SMTP_PASS
+         }
+     }
 
-    let textoCorreo;
-    let textAsunto;
+     let textoCorreo;
+     let textAsunto;
+     var htmlCorreo;
     if (opcion === 1) {
-        textAsunto = 'Solicitud de soporte creada'
-        textoCorreo = 'Ha realizado una solicitud de soporte técnico al sistema CIC Assistance, puede checar el estatus de su solicitud en su historial de solicitudes a traves de la misma página donde realizó la solicitud';
-    } else if (opcion === 2) {
-        textAsunto = 'Actualización estatus en solicitud'
-        textoCorreo = 'Ha cambiado el estatus de tu solicitud de soporte técnico, revisa tu portal cic assistance para obtener mas información';
-    } else if(opcion === 3){
-        textAsunto = 'Vale creado'
-        textoCorreo = 'Se ha creado el vale a su solicitud de soporte técnico puede descargarlo a traves del portal cic assistance en su navegador web';
-    }else if(opcion === 4){
-        textAsunto = 'Dictamen sobre solicitud'
-        textoCorreo = 'Se ha determinado el dictamen a su solicitud de soporte técnico, puede revisar mas detalles del dictamen en su portal cic assistance y puede pasar por su equipo al Centro de Computo';
-    }else if(opcion === 5){
-        textAsunto = 'Solicitud Asignada'
-        textoCorreo = 'Se le ha asignado una nueva solicitud de soporte técnico porfavor entre a su portal CIC Assitance para poder ver mas información';
-   
-    }
-    const mensaje = {
-        from: 'cic.assistance2024@gmail.com',
-        to: correoObjetivo,
-        subject: textAsunto,
-        text: textoCorreo
-    }
-    const transport = nodemailer.createTransport(config);
-    const info = await transport.sendMail(mensaje);
-}
+         textAsunto = 'Solicitud de soporte creada'
+         textoCorreo = 'Ha realizado una solicitud de soporte técnico al sistema CIC Assistance, puede checar el estatus de su solicitud en su historial de solicitudes a traves de la misma página donde realizó la solicitud';
+         htmlCorreo = "<div id='contenedor' style='margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;'><div id='Titulo' style='background-color: #1E2943;border-bottom: 1px solid white;color:white;'><h1>Hemos recibido su solicitud de sorporte</h1></div><p>Ha realizado una solicitud de soporte técnico al sistema CIC Assistance, puede checar el estatus de su solicitud en su historial de solicitudes a traves de la misma página donde realizó la solicitud</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 98238293<p></div>"
+        } else if (opcion === 2) {
+         textAsunto = 'Actualización estatus en solicitud'
+         textoCorreo = 'Ha cambiado el estatus de tu solicitud de soporte técnico, revisa tu portal cic assistance para obtener mas información';
+         htmlCorreo = '<div style="margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;"><div style="background-color: #1E2943;border-bottom: 1px solid white;color:white;"><h1>Hemos actualizado el estado de su solicitud de sorporte</h1></div><p>Ha cambiado el estatus de tu solicitud de soporte técnico, revisa tu portal cic assistance para obtener mas información</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 98238293<p></div>'
 
+        } else if(opcion === 3){
+         textAsunto = 'Vale creado'
+         textoCorreo = 'Se ha creado el vale a su solicitud de soporte técnico puede descargarlo a traves del portal cic assistance en su navegador web';
+         htmlCorreo = '<div style="margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;"><div style="background-color: #1E2943;border-bottom: 1px solid white;color:white;"><h1>Se ha creado un vale para su solicitud</h1></div><p>Se ha creado el vale a su solicitud de soporte técnico puede descargarlo a traves del portal cic assistance en su navegador web</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 98238293<p></div>'
 
+        }else if(opcion === 4){
+         textAsunto = 'Dictamen sobre solicitud'
+         textoCorreo = 'Se ha determinado el dictamen a su solicitud de soporte técnico, puede revisar mas detalles del dictamen en su portal cic assistance y puede pasar por su equipo al Centro de Computo';
+         htmlCorreo = '<div style="margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;"><div style="background-color: #1E2943;border-bottom: 1px solid white;color:white;"><h1>Hemos realizado un dictamen sobre su solicitud</h1></div><p>Se ha creado el dictamen a su solicitud de soporte técnico, puede revisar mas detalles del dictamen en su portal cic assistance y puede pasar por su equipo al Centro de Computo</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 98238293<p></div>'
+
+        }else if(opcion === 5){
+         textAsunto = 'Solicitud Asignada'
+         textoCorreo = 'Se le ha asignado una nueva solicitud de soporte técnico porfavor entre a su portal CIC Assitance para poder ver mas información';
+         htmlCorreo = '<div style="margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;"><div style="background-color: #1E2943;border-bottom: 1px solid white;color:white;"><h1>Tiene una nueva solicitud asignada</h1></div><p>Se le ha asignado una nueva solicitud de soporte técnico porfavor entre a su portal CIC Assitance para poder ver mas información sobre la nueva asignación</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 98238293<p></div>'
+     }
+     const mensaje = {
+         from: '"CIC Assistance 🤖" <cic.assistance2024@gmail.com>',
+         to: correoObjetivo,
+         subject: textAsunto,
+         texto: textoCorreo,
+         html: htmlCorreo
+     }
+     const transport = nodemailer.createTransport(config);
+     const info = await transport.sendMail(mensaje);
+ }
 
 //9.- Estableciendo las rutas
 app.get('/login', (req, res) => {
