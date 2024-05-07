@@ -22,6 +22,11 @@ body {
     font-size: 18px; /* Ajusta el tamaño del texto según sea necesario */
 }
 
+.required::after{
+    content: ' *';
+    color: red;    
+    font-size: 0.85em;
+}
 
 .menu {
     display: flex;

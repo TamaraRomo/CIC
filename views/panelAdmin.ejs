@@ -24,7 +24,7 @@
         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Usuario: <%= name %>
         </button>
-        <div class="dropdown-menu">
+        <div class="dropdown-menu animated--fade-in">
             <a class="dropdown-item" href="logout">Logout</a>
         </div>
     </div>
@@ -62,15 +62,15 @@
             <div class="solicitud">
                 <p id="fechaSolicitud"></p>
                 <h2>Solicitud de Servicio Técnico</h2>
-        
-                <form action="solicitudAdmin" method="post">
+                <div id="telefonoError" style="width: 50%;"></div> <!-- Aquí se mostrará el mensaje de error -->
+                <form action="solicitudAdmin" method="post" onsubmit="return validarFormulario();">
                     <div class="contenedorInicial">
                         <div>
-                            <label for="telefono" class="labelMayor">Teléfono</label>
+                            <label for="telefono" class="labelMayor required">Teléfono</label>
                             <input class="form-control form-control-sm" type="number" placeholder="Escribe tu telefono" aria-label=".form-control-sm example" name="telefono" id="telefono" required>    
                         </div>
                         <div>
-                            <label for="edificio" class="labelMayor">Edificio y nivel</label>
+                            <label for="edificio" class="labelMayor required">Edificio y nivel</label>
                             <select name="edificio" id="edificio" class="form-select form-select-sm" required>
                                 <% edificios.forEach(edificio => { %>
                                     <option value="<%= edificio.IdEdificio %>"><%= edificio.NombreEdificio %>-<%= edificio.Nivel %></option>
@@ -78,11 +78,11 @@
                             </select>                         
                         </div>
                         <div>
-                            <label for="area" class="labelMayor">Ubicación física</label>
+                            <label for="area" class="labelMayor required">Ubicación física</label>
                             <input class="form-control form-control-sm" type="text" placeholder="Escribe tu área" aria-label=".form-control-sm example" name="area" id="area" required>   
                         </div>
                         <div>
-                            <label for="usuarios" class="labelMayor">Usuario</label>
+                            <label for="usuarios" class="labelMayor required">Usuario</label>
                             <select name="usuarios" id="usuarios" class="form-select form-select-sm">
                                 <% usuarios.forEach(usuario => { %>
                                     <option value="<%= usuario.IdUsuario + '|' + usuario.Correo %>"><%= usuario.Nombre %></option>
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                     <fieldset>
-                        <legend class="labelMayor">Equipos</legend>
+                        <legend class="labelMayor required">Equipos</legend>
                         <div class="contenedor-checkbox">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" name="equipos" id="monitor1" value="Monitor" onchange="checboxListado(this)">
@@ -151,17 +151,18 @@
                         </div>
                     </fieldset>
         
-                    <label for="descripcion" class="labelMayor">Descripción del problema</label>
+                    <label for="descripcion" class="labelMayor required">Descripción del problema</label>
                     <textarea class="form-control" name="descripcion" id="descripcion" rows="8" placeholder="Escribe todos los detalles de tu problema" required></textarea>
 
                     <div class="enviarSoli">
-                        <button type="submit" class="btn btn-outline-dark" id="enviar" value="Submit">Enviar</button>
+                        <button type="submit" class="btn btn-outline-dark" id="enviar" value="Submit" onclick="validarFormulario()">Enviar</button>
                     </div>
                 </form>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
             <script src="resources/scripts/seleccionMultiple.js"></script>
             <script src="resources/scripts/solicitudSoporte.js"></script>
+            <script src="resources/scripts/validarTelefono.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
             <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
             <% if(typeof alert != "undefined"){ %>
@@ -207,7 +208,7 @@
                     </div>
                   </div>
                   <fieldset>
-                    <legend class="labelMayor">Equipos</legend>
+                    <legend class="labelMayor required">Equipos</legend>
                     <div class="contenedor-checkbox">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="equipos" id="monitor" value="Monitor" onchange="handleCheckboxChange(this)">
@@ -270,30 +271,30 @@
                     <legend class="labelMayor">Datos del equipo:</legend>
                     
                     <div class="mb-3 row">
-                        <label for="serie" class="col-sm-2 col-form-label">No. Serie:</label>
+                        <label for="serie" class="col-sm-2 col-form-label required">No. Serie:</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control datosEquipo" name="serie" id="serie" required>
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="marca" class="col-sm-2 col-form-label">Marca:</label>
+                        <label for="marca" class="col-sm-2 col-form-label required">Marca:</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control datosEquipo" name="marca" id="marca" required>
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="modelo" class="col-sm-2 col-form-label">Modelo:</label>
+                        <label for="modelo" class="col-sm-2 col-form-label required">Modelo:</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control datosEquipo"  name="modelo" id="modelo" required>
                         </div>
                     </div>
-                    <label for="caracteristicas">Características:</label>
+                    <label for="caracteristicas" class="required">Características:</label>
                     <textarea class="form-control" name="caracteristicas" id="caracteristicas" rows="8" required></textarea>
 
                 </fieldset>
                 <div class="contenedor-estatus">
                     <div>
-                        <label for="estatus" class="col-sm-2 col-form-label labelFolio" id="lblEstatus">Estatus:</label>
+                        <label for="estatus" class="col-sm-2 col-form-label labelFolio required" id="lblEstatus">Estatus:</label>
                             <select name="estatus" id="estatus" class="form-select form-select-sm" required>
                                 <option value="Funciona">Funciona</option>
                                 <option value="No funciona">No funciona</option>
@@ -301,7 +302,7 @@
                             </select>
                     </div>
                     <div>
-                        <label for="tecnico" class="col-sm-2 col-form-label labelFolio" id="lblAsignado">Asignar a técnico:</label>
+                        <label for="tecnico" class="col-sm-2 col-form-label labelFolio required" id="lblAsignado">Asignar a técnico:</label>
                         <select name="tecnico" id="tecnico" class="form-select form-select-sm">
                             <% tecnicos.forEach(tecnico => { %>
                             <option value="<%= tecnico.IdTecnico + '|' + tecnico.Correo%>"><%= tecnico.IdTecnico %>-<%= tecnico.Nombre %></option>
@@ -358,7 +359,7 @@
         <h2>Creación de Dictámenes</h2>
         <div class="row g-3">
             <div class="col-auto">
-                <label for="folioSolicitud" class="form-control-plaintext">Folio:</label>
+                <label for="folioSolicitud" class="form-control-plaintext required">Folio:</label>
             </div>
             <div class="col-auto">
                 <input type="text" name="folioSolicitud" id="folioSolicitudDictamen" class="form-control"  placeholder="Folio de la solicitud de soporte técnico">
@@ -390,7 +391,7 @@
                     <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required> 
                 </div>
                 <div>
-                    <label for="estado" class="labelMayor">Estado:</label>
+                    <label for="estado" class="labelMayor required">Estado:</label>
                     <select name="estado" id="estado" class="form-select form-select-sm" required>
                         <option value="blanco">&nbsp;</option>
                         <option value="vigente">Vigente</option>
@@ -398,7 +399,7 @@
                     </select>
                 </div>
                 <div>
-                    <label for="tipoDictamen" class="labelMayor">Dictamen:</label>
+                    <label for="tipoDictamen" class="labelMayor required">Dictamen:</label>
                     <select name="tipoDictamen" id="tipoDictamen" class="form-select form-select-sm" required>
                         <option value="blanco">&nbsp;</option>
                         <option value="Funciona">Funcional</option>
@@ -410,15 +411,15 @@
             </div>
             <div class="contenedorSecundario">
                 <div>
-                    <label for="caracDictamen" class="labelMayor">Características:</label>
+                    <label for="caracDictamen" class="labelMayor required">Características:</label>
                     <textarea class="form-control" name="caracDictamen" id="caracDictamen" cols="30" rows="5" required></textarea>
                 </div>
                 <div>
-                    <label for="observacionesDictamen" class="labelMayor">Observaciones:</label>
+                    <label for="observacionesDictamen" class="labelMayor required">Observaciones:</label>
                     <textarea class="form-control" name="observacionesDictamen" id="observacionesDictamen" cols="30" rows="5" required></textarea>
                 </div>
                 <div>
-                    <label for="descripcionDictamen" class="labelMayor">Descripción técnica de partes necesarias:</label>
+                    <label for="descripcionDictamen" class="labelMayor required">Descripción técnica de partes necesarias:</label>
                     <textarea class="form-control" name="descripcionDictamen" id="descripcionDictamen" cols="30" rows="5" required></textarea>
                 </div>
                 <div class="btnGuardarDatos">
@@ -517,28 +518,28 @@
             <h3 class="titulosLogin">Registrar Usuario</h3>
             <form action="registerP" method="post" onsubmit="return validar();" id="formRegistro">
                 <div class="registroCampos">
-                    <label for="username" class="lblRegistro">Nombre de Usuario</label>
+                    <label for="username" class="lblRegistro required">Nombre de Usuario</label>
                     <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de usuario unico" required>
                 </div>
                 <div class="registroCampos">
-                    <label for="password" class="lblRegistro">Contraseña</label>
+                    <label for="password" class="lblRegistro required">Contraseña</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="8 caracteres mínimo, sin espacios" required>
                 </div>
                 <div class="registroCampos">
-                    <label for="password2" class="lblRegistro">Repita su contraseña</label>
+                    <label for="password2" class="lblRegistro required">Repita su contraseña</label>
                     <input type="password" class="form-control" id="password2" name="password2" placeholder="8 caracteres mínimo, sin espacios" required>
                 </div>
                 <div class="registroCampos">
-                    <label for="name" class="lblRegistro">Nombre Completo</label>
+                    <label for="name" class="lblRegistro required">Nombre Completo</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Nombres y apellidos" required>
                 </div>
                 <div class="registroCampos">
-                    <label for="correo" class="lblRegistro">Correo institucional</label>
+                    <label for="correo" class="lblRegistro required">Correo institucional</label>
                     <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@uacam.mx" required>
                 </div>
                 <div class="selects_registro">
                     <div class="mb-3 row">
-                        <label for="rol" class="col-sm-2 col-form-label">Rol:</label>
+                        <label for="rol" class="col-sm-2 col-form-label required">Rol:</label>
                         <div class="col-sm-10">
                             <select name="rol" id="rol" class="form-select form-select-sm" required>
                                 <option value="Admin">Administrador</option>
@@ -595,27 +596,27 @@
     <h3 class="titulosLogin">Registrar Tecnico</h3>
     <form action="registerT" method="post" id="formRegistro">
         <div class="registroCampos">
-            <label for="nombreT" class="lblRegistro">Nombres:</label>
+            <label for="nombreT" class="lblRegistro required">Nombres:</label>
             <input type="text" class="form-control" name="nombreT" placeholder="Nombre(s)" required>
         </div>
         <div class="registroCampos">
-            <label for="apellidos" class="lblRegistro">Apellidos</label>
+            <label for="apellidos" class="lblRegistro required">Apellidos</label>
             <input type="text" class="form-control" name="apellidos" placeholder="Apellido paterno y materno" required>
         </div>
         <div class="registroCampos">
-            <label for="noTrabajador" class="lblRegistro">Numero de trabajador</label>
+            <label for="noTrabajador" class="lblRegistro required">Numero de trabajador</label>
             <input type="text" class="form-control" name="noTrabajador" placeholder="Numero de trabajador" required>
         </div>
         <div class="registroCampos">
-            <label for="email" class="lblRegistro">Correo institucional</label>
+            <label for="email" class="lblRegistro required">Correo institucional</label>
             <input type="text" class="form-control" name="email" placeholder="correo@uacam.mx" required>
         </div>
         <div class="registroCampos">
-            <label for="telef" class="lblRegistro">Telefono</label>
+            <label for="telef" class="lblRegistro required">Telefono</label>
             <input type="text" class="form-control" name="telef" placeholder="xxx-xxx-xxxx" required>
         </div>
         <div class="selects_registro" id="registroTecnico">
-                <label for="idUsuario" class="col-sm-2 col-form-label" id="lblTec">Id de usuario en CIC Assistance:</label>
+                <label for="idUsuario" class="col-sm-2 col-form-label required" id="lblTec">Id de usuario en CIC Assistance:</label>
                     <select name="IdUsuario" id="tecnicoId" class="form-select form-select-sm" required>
                         <% usuariosTecnicos.forEach(usuario => { %>
                             <option value="<%= usuario.IdUsuario %>"><%= usuario.IdUsuario %>-<%= usuario.Nombre %></option>

@@ -12,6 +12,11 @@
     width: 85%;
 
 }
+.required::after{
+    content: ' *';
+    color: red;    
+    font-size: 0.85em;
+}
 #fechaSolicitud{
     text-align: right;
     margin-right: 2em;

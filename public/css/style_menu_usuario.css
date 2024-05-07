@@ -17,6 +17,11 @@ body {
     max-width: 80px; /* Ajusta el ancho máximo de la imagen según sea necesario */
 }
 
+.required::after{
+    content: ' *';
+    color: red;    
+    font-size: 0.85em;
+}
 .titulo-sitio {
     margin: 0;
     font-size: 18px; /* Ajusta el tamaño del texto según sea necesario */
