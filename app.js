@@ -36,12 +36,12 @@ app.use(session({
 }));
 
 //Invocar a rate-limit para proteger contra ataques de muchas solicitudes al mismo tiempo
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  });
+ const limiter = rateLimit({
+ windowMs: 15 * 60 * 1000, // 15 minutes
+ max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 app.use(limiter);
 
 //8.- Invocar conexion a DB
@@ -472,7 +472,7 @@ app.post('/solicitud', async(req, res) => {
         equipo += (equipo ? ':' : '') + otroInput;
     }
     console.log(otroInput);
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion,IdAsignacion:0}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -533,7 +533,7 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion,IdAsignacion:0}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
