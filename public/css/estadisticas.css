@@ -49,6 +49,14 @@ body{
     margin-top: .4em;
 }
 
+.labelGrafica {
+    font-weight: bold;
+    color: #0D1642;
+    margin-bottom: 1em;
+    margin-top: .4em;
+    text-align: center;
+}
+
 .fechas p{
     display: inline;
 }

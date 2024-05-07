@@ -140,13 +140,27 @@ app.get('/estadisticas', async (req, res) => {
                                                 JOIN ${tipo} a ON d.FolioSolicitud = a.FolioSolicitud
                                                 WHERE d.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'
                                                 GROUP BY d.DictamenFinal`);
+        const solicitudesSinDictamen = await query(`SELECT COUNT(s.FolioSolicitud) AS NumSolicitudesCerradasSinDictamen
+                                                        FROM solicitudes s
+                                                        LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud
+                                                        JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud
+                                                        WHERE s.Estado = 'Cerrado' AND d.FolioSolicitud IS NULL 
+                                                        AND s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+        const solicitudesConDictamen = await query(`SELECT COUNT(s.FolioSolicitud) AS NumSolicitudesCerradasConDictamenYVales
+                                                    FROM solicitudes s
+                                                    JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud
+                                                    JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud
+                                                    WHERE s.Estado = 'Cerrado'
+                                                    AND s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
         console.log(folios);
         console.log(conteoEstados);
         console.log(usuariosPorSoli);
         console.log(asignacionesTecnicos);
         console.log(solucionesDictamen);
+        console.log(solicitudesSinDictamen);
+        console.log(solicitudesConDictamen);
         // Renderizar la vista de estadísticas y pasar los datos
-        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: folios, conteo:conteoEstados, usuariosPorSoli:usuariosPorSoli, asignacionesTecnicos:asignacionesTecnicos, solucionesDictamen:solucionesDictamen });
+        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: folios, conteo:conteoEstados, usuariosPorSoli:usuariosPorSoli, asignacionesTecnicos:asignacionesTecnicos, solucionesDictamen:solucionesDictamen, solicitudesSinDictamen:solicitudesSinDictamen, solicitudesConDictamen:solicitudesConDictamen});
     } catch (error) {
         console.error('Error al ejecutar la consulta SQL:', error);
         // Manejar el error adecuadamente, por ejemplo, renderizando una página de error
@@ -279,6 +293,8 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             
         });
         console.log(historialSoli);
+        console.log('jfnarjfnarfiarnfgnrafgnajkrnjarnjkfnkarjnfjanr');
+        console.log(tecnicos);
 });
 function query(sql) {
     return new Promise((resolve, reject) => {
