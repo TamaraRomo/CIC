@@ -95,6 +95,7 @@ body {
     display: flex;
     justify-content: flex-end; /* Alinea el contenido a la derecha */
     align-items: flex-start; /* Alinea el contenido arriba */
+
 }
 
 .mostrarSesion {
@@ -152,6 +153,7 @@ body {
     }
 }
 
+
 #TablaHistorialSolicitudes, #TablaHistorialVales{
     width: 100%!important;
 }
@@ -163,3 +165,4 @@ thead{
 th{
     color: white!important;
 }
+
