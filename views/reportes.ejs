@@ -25,35 +25,27 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>FolioSolicitud</th>
-                            <th>Usuario</th>
+                            <th>Folio</th>
+
                             <th>Fecha</th>
                             <th>Hora</th>
                             <th>Telefono</th>
-                            <th>IdEdificio</th>
-                            <th>UbicacionFisica</th>
                             <th>Equipo</th>
                             <th>Descripcion</th>
                             <th>Estado</th>
-                            <th>idAsignacion</th>
-                            <th>TecnicoAsignado</th>
+
                         </tr>
                     </thead>
                     <tbody>
                         <% objetos.forEach(objeto => { %>
                             <tr>
                                 <td><%= objeto.FolioSolicitud %></td>
-                                <td><%= objeto.idUsuario %></td>
                                 <td><%= objeto.Fecha %></td>
                                 <td><%= objeto.Hora %></td>
                                 <td><%= objeto.Telefono %></td>
-                                <td><%= objeto.IdEdificio %></td>
-                                <td><%= objeto.UbicacionFisica %></td>
                                 <td><%= objeto.Equipo %></td>
                                 <td><%= objeto.Descripcion %></td>
                                 <td><%= objeto.Estado %></td>
-                                <td><%= objeto.idAsignacion %></td>
-                                <td><%= objeto.TecnicoAsignado %></td>
                             </tr>
                         <% }); %>
                     </tbody>
@@ -64,14 +56,14 @@
                     <thead>
                         <tr>
                             <th>Vale</th>
-                            <th>FolioSolicitud</th>
+                            <th>Folio</th>
                             <th>Equipo</th>
-                            <th>NoSerieEquipo</th>
-                            <th>MarcaEquipo</th>
-                            <th>ModeloEquipo</th>
-                            <th>Caracteristicas</th>
+                            <th>Número de serie</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Características</th>
                             <th>Estado</th>
-                            <th>NombreUsuario</th>
+                            <th>Nombre del usuario</th>
                             <th>Fecha</th>
                             <th>Estatus</th>
                         </tr>
@@ -101,19 +93,19 @@
                     <thead>
                         <tr>
                             <th>Dictamen</th>
-                            <th>FolioSolicitud</th>
+                            <th>Folio</th>
                             <th>Vale</th>
-                            <th>FechaDictamen</th>
+                            <th>Fecha</th>
                             <th>Equipo</th>
-                            <th>NoSerieEquipo</th>
-                            <th>MarcaEquipo</th>
-                            <th>ModeloEquipo</th>
-                            <th>Descripcion</th>
+                            <th>Número de serie</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Descripción</th>
                             <th>Observaciones</th>
                             <th>Encargado</th>
-                            <th>EstadoDictamen</th>
-                            <th>DictamenFinal</th>
-                            <th>caracDictamen</th>
+                            <th>Estado</th>
+                            <th>Dictamen Final</th>
+                            <th>Características</th>
                         </tr>
                     </thead>
                     <tbody>
