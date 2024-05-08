@@ -60,3 +60,10 @@ body{
 .fechas p{
     display: inline;
 }
+
+button{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}

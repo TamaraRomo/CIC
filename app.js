@@ -103,7 +103,6 @@ app.get('/login', (req, res) => {
     res.render('login');
 });
 
-
 app.get('/acercaDe', (req, res) => {
     res.render('acerca_de');
 });

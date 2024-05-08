@@ -12,6 +12,7 @@
         <h2>Reportes de <%= tipo %></h2>
         <p>Del: <%= desdeFecha %> Hasta: <%= hastaFecha %></p>
         <button onclick="imprimirDoc()">Imprimir reporte</button>
+        <button onclick="regresar()">Atrás</button>
     </div>
     <div class="deliniador"></div>
     <div class="imprimirReporte">
@@ -25,7 +26,7 @@
                     <thead>
                         <tr>
                             <th>FolioSolicitud</th>
-                            <th>idUsuario</th>
+                            <th>Usuario</th>
                             <th>Fecha</th>
                             <th>Hora</th>
                             <th>Telefono</th>
@@ -62,7 +63,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>idVale</th>
+                            <th>Vale</th>
                             <th>FolioSolicitud</th>
                             <th>Equipo</th>
                             <th>NoSerieEquipo</th>
@@ -99,9 +100,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>idDictamen</th>
+                            <th>Dictamen</th>
                             <th>FolioSolicitud</th>
-                            <th>idVale</th>
+                            <th>Vale</th>
                             <th>FechaDictamen</th>
                             <th>Equipo</th>
                             <th>NoSerieEquipo</th>
@@ -172,6 +173,11 @@
         link.setAttribute('download', 'reporte.pdf');
         document.body.appendChild(link);
         link.click();
+    }
+
+        // Función para regresar a la página anterior
+        function regresar() {
+        window.history.back();
     }
 </script>
 </body>

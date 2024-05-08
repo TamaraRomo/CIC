@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para obtener el color correspondiente al estado
     function obtenerColorEstado(estado, callback) {
       var colores = {
-        'Proceso': '#FFDA6A', 
-        'Asignada': '#3498db',
-        'Espera': '#87CEEB',
-        'Abierto': '#3AE261', 
-        'Cerrado': '#F53D4F'    // Rojo
+        'Proceso': '#007BFF', //Azul
+        'Asignada': '#FFC107', //Amarillo
+        'Espera': '#87CEEB', //Azul claro
+        'Abierto': '#FF0000', //Rojo
+        'Cerrado': '#28A745' //Verde
       };
       // Llama al callback con el color correspondiente al estado
       callback(colores[estado] || ''); // Si el estado no tiene un color asignado, usa una cadena vacía
