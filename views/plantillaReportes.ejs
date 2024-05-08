@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, h1, h2, h3, h4, p{
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+.contenedorDetalles{
+    color: black;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+button{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+table, th, td{
+    text-align: center;
+    border-spacing: 0px;
+    border: 1px solid black;
+}
+
+th, td{
+    padding: 5px;
+}
+
+.contenedorInfo{
+    display: inline-block;
+    margin: 40px;
+}
+
+.deliniador{
+    background-color: black;
+    padding: 2px;
+}
+
+.aviso{
+    font-size: 16px;
+}
+
+.imprimirReporte{
+    padding: 20px;
+}
+
+thead{
+    color: white;
+    background-color: #1E2943;
+}
+    </style>
+    <title>Reportes</title>
+</head>
+<body>
+    <div class="deliniador"></div>
+    <div class="imprimirReporte">
+        <h1>Universidad Autónoma de Campeche</h1>
+        <h2>Facultad de Ingeniería</h2>
+        <div class="contenedorInfo">
+            <div class="contenedorDetalles">
+                <h3>Reporte de <%= tipo %></h3>
+                <h4>Del: <%= desdeFecha %> Hasta: <%= hastaFecha %></h4>
+            </div>
+            <% if (tipo === 'solicitudes') { %>
+                <!-- Código para mostrar la tabla de solicitudes -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>FolioSolicitud</th>
+                            <th>idUsuario</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Telefono</th>
+                            <th>IdEdificio</th>
+                            <th>UbicacionFisica</th>
+                            <th>Equipo</th>
+                            <th>Descripcion</th>
+                            <th>Estado</th>
+                            <th>idAsignacion</th>
+                            <th>TecnicoAsignado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% objetos.forEach(objeto => { %>
+                            <tr>
+                                <td><%= objeto.FolioSolicitud %></td>
+                                <td><%= objeto.idUsuario %></td>
+                                <td><%= objeto.Fecha %></td>
+                                <td><%= objeto.Hora %></td>
+                                <td><%= objeto.Telefono %></td>
+                                <td><%= objeto.IdEdificio %></td>
+                                <td><%= objeto.UbicacionFisica %></td>
+                                <td><%= objeto.Equipo %></td>
+                                <td><%= objeto.Descripcion %></td>
+                                <td><%= objeto.Estado %></td>
+                                <td><%= objeto.idAsignacion %></td>
+                                <td><%= objeto.TecnicoAsignado %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else if (tipo === 'vales') { %>
+                <!-- Código para mostrar la tabla de vales -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>idVale</th>
+                            <th>FolioSolicitud</th>
+                            <th>Equipo</th>
+                            <th>NoSerieEquipo</th>
+                            <th>MarcaEquipo</th>
+                            <th>ModeloEquipo</th>
+                            <th>Caracteristicas</th>
+                            <th>Estado</th>
+                            <th>NombreUsuario</th>
+                            <th>Fecha</th>
+                            <th>Estatus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% objetos.forEach(objeto => { %>
+                            <tr>
+                                <td><%= objeto.idVale %></td>
+                                <td><%= objeto.FolioSolicitud %></td>
+                                <td><%= objeto.Equipo %></td>
+                                <td><%= objeto.NoSerieEquipo %></td>
+                                <td><%= objeto.MarcaEquipo %></td>
+                                <td><%= objeto.ModeloEquipo %></td>
+                                <td><%= objeto.Caracteristicas %></td>
+                                <td><%= objeto.Estado %></td>
+                                <td><%= objeto.NombreUsuario %></td>
+                                <td><%= objeto.Fecha %></td>
+                                <td><%= objeto.Estatus %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+                <!--------------------------------------------->
+            <% } else if (tipo === 'dictamenes') { %>
+                <!-- Código para mostrar la tabla de dictámenes -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>idDictamen</th>
+                            <th>FolioSolicitud</th>
+                            <th>idVale</th>
+                            <th>FechaDictamen</th>
+                            <th>Equipo</th>
+                            <th>NoSerieEquipo</th>
+                            <th>MarcaEquipo</th>
+                            <th>ModeloEquipo</th>
+                            <th>Descripcion</th>
+                            <th>Observaciones</th>
+                            <th>Encargado</th>
+                            <th>EstadoDictamen</th>
+                            <th>DictamenFinal</th>
+                            <th>caracDictamen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% objetos.forEach(objeto => { %>
+                            <tr>
+                                <td><%= objeto.idDictamen %></td>
+                                <td><%= objeto.FolioSolicitud %></td>
+                                <td><%= objeto.idVale %></td>
+                                <td><%= objeto.FechaDictamen %></td>
+                                <td><%= objeto.Equipo %></td>
+                                <td><%= objeto.NoSerieEquipo %></td>
+                                <td><%= objeto.MarcaEquipo %></td>
+                                <td><%= objeto.ModeloEquipo %></td>
+                                <td><%= objeto.Descripcion %></td>
+                                <td><%= objeto.Observaciones %></td>
+                                <td><%= objeto.Encargado %></td>
+                                <td><%= objeto.EstadoDictamen %></td>
+                                <td><%= objeto.DictamenFinal %></td>
+                                <td><%= objeto.caracDictamen %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No se ha seleccionado este tipo de reporte.</p>
+            <% } %>
+        </div>
+        <h3>ATENTAMENTE</h3>
+        <p>―――――――――――――――</p>
+        <p><%= titulo %></p>
+        <p><%= nombre %></p>
+        <p><%= oficio %></p>
+        <p><%= exp %></p>
+        <p><%= area %></p>
+    </div>   
+</body>
+</html>

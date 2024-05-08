@@ -23,7 +23,6 @@ body {
 
 table {
     width: 100%;
-    
     border: 1px solid #311C6C; /* Cambiado el color */
 }
 #estatusTabla th,td{
@@ -49,6 +48,11 @@ table {
 .guardarCambios{
     text-align: center;
 }
+
+.tableEstatus {
+    background-color: #1E2943;
+}
+
 @media only screen and (max-width: 600px) {
     /* Estilos para dispositivos móviles */
     th, td {

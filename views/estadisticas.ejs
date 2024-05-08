@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas</title>
+    <link rel="stylesheet" href="resources/css/estadisticas.css">
+</head>
+<body>
+    <div class="logo-contenedor">
+                <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+                <h1 class="titulo-sitio">CIC Assistance</h1>
+                <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+    </div>
+
+    <div class="estadisticasContenedor">
+
+        <br>
+        <h2>Estadísticas</h2>
+        <button onclick="regresar()">Atrás</button>
+        <div>
+            <div>
+                <p class="labelMayor">El tipo de solicitud es: </p><p><%= tipo %></p>
+            </div>
+            <div class="fechas">
+                <p class="labelMayor">Las fechas seleccionadas son</p>
+                <p class="labelMayor">desde: </p><p><%= desdeFecha %></p>
+                <p class="labelMayor">hasta: </p><p><%= hastaFecha %></p>
+            </div>
+               <!--Variables recibidas de las querys del app.js -->
+                <% const datos = objetos.map(objeto => objeto.FolioSolicitud); %>
+                <% const datos2 = conteo.map(contado => contado.total); %>
+                <% const datosUsuarios = usuariosPorSoli.map(numSoli => numSoli.NumeroSolicitudes); %>
+                <% const asigTecnicos = asignacionesTecnicos.map(asignacion => asignacion.NumeroSolicitudesTecnico); %>
+                <% const dictamenSolucion = solucionesDictamen.map(solucion => solucion.NumeroSolicitudesDictamen); %>
+                <% const soliSinDic = solicitudesSinDictamen.map(solucionSin => solucionSin.NumSolicitudesCerradasSinDictamen); %>
+                <% const soliConDic = solicitudesConDictamen.map(solucionCon => solucionCon.NumSolicitudesCerradasConDictamenYVales); %>
+
+
+            <!-- Agrega aquí cualquier otra información estadística que desees mostrar -->
+        </div>
+        <p class="labelGrafica"><%= tipo %> por usuario</p>
+        <div>
+
+            <canvas id="myChart" width="200" height="200"></canvas>
+        </div>
+        <p class="labelGrafica"><%= tipo %> por estado</p>
+        <div>
+                <canvas id="myChart2" width="200" height="200"></canvas>
+        </div>
+        <p class="labelGrafica">Asignaciones por técnico</p>
+        <div>
+                <canvas id="myChart3" width="200" height="200"></canvas>
+        </div>
+        <p class="labelGrafica">Solicitudes que terminan con o sin dictamen</p>
+        <div>
+                <canvas id="myChart5" width="200" height="200"></canvas>
+        </div>
+        <p class="labelGrafica">Dictamen final de la solicitudes</p>
+        <div>
+                <canvas id="myChart4" width="200" height="200"></canvas>
+        </div>
+
+    </div>
+    <br>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+      <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              // Obtén el contexto del lienzo donde se dibujará la gráfica
+              const ctx = document.getElementById('myChart').getContext('2d');
+
+              // Configura los datos de la gráfica utilizando los datos procesados
+              const data = {
+                  labels: [<% usuariosPorSoli.forEach(usuariosPorSoli => { %> '<%= usuariosPorSoli.NombreUsuario %>', <% }); %>], // Puedes cambiar las etiquetas según tus necesidades
+                  datasets: [{
+                      label: 'Total de <%= tipo %>', // Etiqueta de los datos
+                      data: [<%= datosUsuarios.join(',') %>], // Utiliza los datos procesados aquí
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              };
+
+              // Configura la instancia de la gráfica
+              const myChart = new Chart(ctx, {
+                  type: 'pie', // Tipo de gráfico
+                  data: data, // Configuración de los datos de la gráfica
+                  options: {
+                      maintainAspectRatio: false, // Desactiva el mantenimiento del aspecto
+                      aspectRatio: 2,
+                      scales: {
+                          y: {
+                              beginAtZero: true
+                          }
+                      }
+                  }
+              });
+              // Obtén el contexto del lienzo donde se dibujará la segunda gráfica
+              const ctx2 = document.getElementById('myChart2').getContext('2d');
+
+              // Configura los datos de la segunda gráfica
+              const data2 = {
+                  labels: [<% conteo.forEach(conteo => { %> '<%= conteo.estado %>', <% }); %>],
+                  datasets: [{
+                      label: 'Total',
+                      data: [<%= datos2 %>], // Aquí deberías agregar tus datos para la segunda gráfica
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              };
+
+              // Configura la instancia de la segunda gráfica
+              const myChart2 = new Chart(ctx2, {
+                  type: 'bar',
+                  data: data2,
+                  options: {
+                      maintainAspectRatio: false,
+                      aspectRatio: 2,
+                      scales: {
+                          y: {
+                              beginAtZero: true
+                          }
+                      }
+                  }
+              });
+            // Obtén el contexto del lienzo donde se dibujará la tercera gráfica
+            const ctx3 = document.getElementById('myChart3').getContext('2d');
+
+            // Configura los datos de la tercera gráfica
+            const data3 = {
+                labels: [<% asignacionesTecnicos.forEach(asignacionesTecnicos => { %> '<%= asignacionesTecnicos.Tecnico %>', <% }); %>],
+                datasets: [{
+                    label: 'Total',
+                    data: [<%= asigTecnicos.join(',') %>], // Aquí deberías agregar tus datos para la segunda gráfica
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            // Configura la instancia de la segunda gráfica
+            const myChart3 = new Chart(ctx3, {
+                type: 'doughnut',
+                data: data3,
+                options: {
+                    maintainAspectRatio: false,
+                    aspectRatio: 2,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            // Obtén el contexto del lienzo donde se dibujará la tercera gráfica
+            const ctx4 = document.getElementById('myChart4').getContext('2d');
+
+            // Configura los datos de la tercera gráfica
+            const data4 = {
+                labels: [<% solucionesDictamen.forEach(solucionesDictamen => { %> '<%= solucionesDictamen.DictamenFinal %>', <% }); %>],
+                datasets: [{
+                    label: 'Total',
+                    data: [<%= dictamenSolucion.join(',') %>], // Aquí deberías agregar tus datos para la segunda gráfica
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            // Configura la instancia de la segunda gráfica
+            const myChart4 = new Chart(ctx4, {
+                type: 'bar',
+                data: data4,
+                options: {
+                    maintainAspectRatio: false,
+                    aspectRatio: 2,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            // Obtén el contexto del lienzo donde se dibujará la tercera gráfica
+            const ctx5 = document.getElementById('myChart5').getContext('2d');
+
+            // Configura los datos de la tercera gráfica
+            const data5 = {
+                labels: ['Solicitudes sin Dictamen', 'Solicitudes con Dictamen'],
+                datasets: [{
+                    label: 'Total',
+                    data: [<%= soliSinDic %>, <%= soliConDic %>], // Aquí deberías agregar tus datos para la segunda gráfica
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            // Configura la instancia de la segunda gráfica
+            const myChart5 = new Chart(ctx5, {
+                type: 'pie',
+                data: data5,
+                options: {
+                    maintainAspectRatio: false,
+                    aspectRatio: 2,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+          });
+
+            // Función para regresar a la página anterior
+    function regresar() {
+    window.history.back();
+    }
+    </script>
+</body>
+</html>

@@ -7,34 +7,49 @@
     <!-- Estilos CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="resources/css/style_menu_administrador.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-<div class="logo-contenedor">
-    <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
-    <h1 class="titulo-sitio">CIC Assistance</h1>
-    <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
-</div>
+    <div class="logo-contenedor">
+        <a href="https://www.uacam.mx/">
+            <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+        </a>
+        <h1 class="titulo-sitio" data-id="Estatus" onclick="mostrarContenido(this)">CIC Assistance</h1>
+        <a href="https://fi.uacam.mx/">
+            <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+        </a>
+    </div>
 
 <!-- Sección de sesión -->
 <% if (typeof login !== 'undefined' && login) { %>
-<div class="mostrarSesion">
-    <p class="sesion" id="sesion">Usuario: <%= name %></p>
-    <div id="logoutMenu">
-        <a href="logout">Logout</a>
+
+<div class="d-flex flex-row-reverse bd-highlight" >
+    <div class="btn-group  p-2 bd-highlight justify-content-end">
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Usuario: <%= name %>
+        </button>
+        <div class="dropdown-menu animated--fade-in">
+            <a class="dropdown-item" href="resources/manuales/manual_Admin.pdf" target="_blank">Manual de uso</a>
+            <a class="dropdown-item" href="logout">Logout <i class="bi bi-box-arrow-right"></i></a>
+        </div>
     </div>
-</div>
+</div> 
+
 <% } %>
 
 <!-- Menú de opciones -->
 <nav class="menu">
-    <div class="opcion-menu" onclick="mostrarContenido('solicitud-de-reportes')">Solicitud de Reportes</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Vales')">Vales</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Dictamen')">Dictamen</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Historial')">Historial Solicitudes</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Historial2')">Historial Vales</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Estatus')">Estatus</div>
-    <div class="opcion-menu" onclick="mostrarContenido('Registro')">Registro</div>
-    <div class="opcion-menu" onclick="mostrarContenido('RegistroT')">Tecnicos</div>
+    <div class="opcion-menu" data-id="Estatus" onclick="mostrarContenido(this)">Estatus</div>
+    <div class="opcion-menu" data-id="solicitud-de-reportes" onclick="mostrarContenido(this)">Solicitud de Reportes</div>
+    <div class="opcion-menu" data-id="Vales" onclick="mostrarContenido(this)">Vales</div>
+    <div class="opcion-menu" data-id="Dictamen" onclick="mostrarContenido(this)">Dictamen</div>
+    <div class="opcion-menu" data-id="Historial" onclick="mostrarContenido(this)">Historial de Solicitudes</div>
+    <div class="opcion-menu" data-id="Historial2" onclick="mostrarContenido(this)">Historial General</div>
+    <div class="opcion-menu" data-id="Registro" onclick="mostrarContenido(this)">Registro</div>
+    <div class="opcion-menu" data-id="RegistroT" onclick="mostrarContenido(this)">Tecnicos</div>
+    <div class="opcion-menu" data-id="Estadisticas" onclick="mostrarContenido(this)">Estadisticas</div>
 </nav>
 
 
@@ -54,15 +69,15 @@
             <div class="solicitud">
                 <p id="fechaSolicitud"></p>
                 <h2>Solicitud de Servicio Técnico</h2>
-        
-                <form action="solicitudAdmin" method="post">
+                <div id="telefonoError" style="width: 50%;"></div> <!-- Aquí se mostrará el mensaje de error -->
+                <form action="solicitudAdmin" method="post" onsubmit="return validarFormulario();">
                     <div class="contenedorInicial">
                         <div>
-                            <label for="telefono" class="labelMayor">Teléfono</label>
+                            <label for="telefono" class="labelMayor required">Teléfono</label>
                             <input class="form-control form-control-sm" type="number" placeholder="Escribe tu telefono" aria-label=".form-control-sm example" name="telefono" id="telefono" required>    
                         </div>
                         <div>
-                            <label for="edificio" class="labelMayor">Edificio y nivel</label>
+                            <label for="edificio" class="labelMayor required">Edificio y nivel</label>
                             <select name="edificio" id="edificio" class="form-select form-select-sm" required>
                                 <% edificios.forEach(edificio => { %>
                                     <option value="<%= edificio.IdEdificio %>"><%= edificio.NombreEdificio %>-<%= edificio.Nivel %></option>
@@ -70,11 +85,11 @@
                             </select>                         
                         </div>
                         <div>
-                            <label for="area" class="labelMayor">Ubicación física</label>
+                            <label for="area" class="labelMayor required">Ubicación física</label>
                             <input class="form-control form-control-sm" type="text" placeholder="Escribe tu área" aria-label=".form-control-sm example" name="area" id="area" required>   
                         </div>
                         <div>
-                            <label for="usuarios" class="labelMayor">Usuario</label>
+                            <label for="usuarios" class="labelMayor required">Usuario</label>
                             <select name="usuarios" id="usuarios" class="form-select form-select-sm">
                                 <% usuarios.forEach(usuario => { %>
                                     <option value="<%= usuario.IdUsuario + '|' + usuario.Correo %>"><%= usuario.Nombre %></option>
@@ -84,7 +99,7 @@
                         </div>
                     </div>
                     <fieldset>
-                        <legend class="labelMayor">Equipos</legend>
+                        <legend class="labelMayor required">Equipos</legend>
                         <div class="contenedor-checkbox">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" name="equipos" id="monitor1" value="Monitor" onchange="checboxListado(this)">
@@ -143,17 +158,18 @@
                         </div>
                     </fieldset>
         
-                    <label for="descripcion" class="labelMayor">Descripción del problema</label>
+                    <label for="descripcion" class="labelMayor required">Descripción del problema</label>
                     <textarea class="form-control" name="descripcion" id="descripcion" rows="8" placeholder="Escribe todos los detalles de tu problema" required></textarea>
 
                     <div class="enviarSoli">
-                        <button type="submit" class="btn btn-outline-dark" id="enviar" value="Submit">Enviar</button>
+                        <button type="submit" class="btn btn-outline-dark" id="enviar" value="Submit" onclick="validarFormulario()">Enviar</button>
                     </div>
                 </form>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
             <script src="resources/scripts/seleccionMultiple.js"></script>
             <script src="resources/scripts/solicitudSoporte.js"></script>
+            <script src="resources/scripts/validarTelefono.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
             <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
             <% if(typeof alert != "undefined"){ %>
@@ -199,7 +215,7 @@
                     </div>
                   </div>
                   <fieldset>
-                    <legend class="labelMayor">Equipos</legend>
+                    <legend class="labelMayor required">Equipos</legend>
                     <div class="contenedor-checkbox">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="equipos" id="monitor" value="Monitor" onchange="handleCheckboxChange(this)">
@@ -262,30 +278,30 @@
                     <legend class="labelMayor">Datos del equipo:</legend>
                     
                     <div class="mb-3 row">
-                        <label for="serie" class="col-sm-2 col-form-label">No. Serie:</label>
+                        <label for="serie" class="col-sm-2 col-form-label required">No. Serie:</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control datosEquipo" name="serie" id="serie" required>
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="marca" class="col-sm-2 col-form-label">Marca:</label>
+                        <label for="marca" class="col-sm-2 col-form-label required">Marca:</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control datosEquipo" name="marca" id="marca" required>
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="modelo" class="col-sm-2 col-form-label">Modelo:</label>
+                        <label for="modelo" class="col-sm-2 col-form-label required">Modelo:</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control datosEquipo"  name="modelo" id="modelo" required>
                         </div>
                     </div>
-                    <label for="caracteristicas">Características:</label>
+                    <label for="caracteristicas" class="required">Características:</label>
                     <textarea class="form-control" name="caracteristicas" id="caracteristicas" rows="8" required></textarea>
 
                 </fieldset>
                 <div class="contenedor-estatus">
                     <div>
-                        <label for="estatus" class="col-sm-2 col-form-label labelFolio" id="lblEstatus">Estatus:</label>
+                        <label for="estatus" class="col-sm-2 col-form-label labelFolio required" id="lblEstatus">Estatus:</label>
                             <select name="estatus" id="estatus" class="form-select form-select-sm" required>
                                 <option value="Funciona">Funciona</option>
                                 <option value="No funciona">No funciona</option>
@@ -293,7 +309,7 @@
                             </select>
                     </div>
                     <div>
-                        <label for="tecnico" class="col-sm-2 col-form-label labelFolio" id="lblAsignado">Asignar a técnico:</label>
+                        <label for="tecnico" class="col-sm-2 col-form-label labelFolio required" id="lblAsignado">Asignar a técnico:</label>
                         <select name="tecnico" id="tecnico" class="form-select form-select-sm">
                             <% tecnicos.forEach(tecnico => { %>
                             <option value="<%= tecnico.IdTecnico + '|' + tecnico.Correo%>"><%= tecnico.IdTecnico %>-<%= tecnico.Nombre %></option>
@@ -332,6 +348,7 @@
     </body>
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
+
 <!-- DICTAMENES------------------------------------------------------------------------------------------------ -->
 <div id="Dictamen" class="contenido-individual">
     <!-- Contenido de historial -->
@@ -349,7 +366,7 @@
         <h2>Creación de Dictámenes</h2>
         <div class="row g-3">
             <div class="col-auto">
-                <label for="folioSolicitud" class="form-control-plaintext">Folio:</label>
+                <label for="folioSolicitud" class="form-control-plaintext required">Folio:</label>
             </div>
             <div class="col-auto">
                 <input type="text" name="folioSolicitud" id="folioSolicitudDictamen" class="form-control"  placeholder="Folio de la solicitud de soporte técnico">
@@ -362,54 +379,58 @@
             <div class="contenedorDictamen">
                 <div>
                     <label for="valeId" class="labelMayor">Vale:</label>
-                    <input type="text" id="identificadorVale" name="valeId" class="form-control form-control-sm" required>
+                    <input type="text" id="identificadorVale" name="valeId" class="form-control form-control-sm" readonly>
                 </div>
                 <div>
                     <label for="equipoDictamen" class="labelMayor">Equipo:</label>
-                    <input type="text" id="equipoDictamen" name="equipoDictamen" class="form-control form-control-sm" required>
+                    <input type="text" id="equipoDictamen" name="equipoDictamen" class="form-control form-control-sm" readonly>
                 </div>
                 <div>
-                    <label for="marcaEquipo" class="labelMayor">Marca:</label>
+                    <label for="marcaEquipo" class="labelMayor required">Marca:</label>
                     <input type="text" name="marcaEquipo" id="marcaEquipo" class="form-control form-control-sm" required> 
                 </div>
                 <div>
-                    <label for="modeloEquipo" class="labelMayor">Modelo:</label>
-                    <input type="text" name="modeloEquipo" id="modeloEquipo" class="form-control form-control-sm" required> 
+                    <label for="modeloEquipo" class="labelMayor required">Modelo:</label>
+                    <input type="text" name="modeloEquipo" id="modeloEquipo" class="form-control form-control-sm" required>
                 </div>
                 <div>
-                    <label for="noSerieEquipo" class="labelMayor">N° de serie:</label>
-                    <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required> 
+                    <label for="noSerieEquipo" class="labelMayor required">N° de serie:</label>
+                    <input type="text" name="noSerieEquipo" id="noSerieEquipo" class="form-control form-control-sm" required>
                 </div>
                 <div>
-                    <label for="estadoDictamen" class="labelMayor">Estado:</label>
-                    <select name="estadoDictamen" id="estadoDictamen" class="form-select form-select-sm" required>
+                    <label for="estado" class="labelMayor required">Estado:</label>
+                    <select name="estado" id="estado" class="form-select form-select-sm" required>
                         <option value="blanco">&nbsp;</option>
-                        <option value="vigente">Vigente</option>
-                        <option value="obsoleto">Obsoleto</option>
+                        <option value="Vigente">Vigente</option>
+                        <option value="Obsoleto">Obsoleto</option>
                     </select>
                 </div>
                 <div>
-                    <label for="tipoDictamen" class="labelMayor">Dictamen:</label>
+                    <label for="tipoDictamen" class="labelMayor required">Dictamen:</label>
                     <select name="tipoDictamen" id="tipoDictamen" class="form-select form-select-sm" required>
                         <option value="blanco">&nbsp;</option>
                         <option value="Funciona">Funcional</option>
                         <option value="No Funciona">Obsoleto</option>
-                        <option value="'Baja">Tramitar Baja</option>
+                        <option value="Baja">Tramitar Baja</option>
                     </select>
-                </div>   
+                </div>
+                <div>
+                   <label for="dirigidoA" class="labelMayor required">Dirigido a:</label>
+                   <input type="text" name="dirigidoA" id="dirigidoA" class="form-control form-control-sm" required>
+                </div>
             
             </div>
             <div class="contenedorSecundario">
                 <div>
-                    <label for="caracDictamen" class="labelMayor">Características:</label>
+                    <label for="caracDictamen" class="labelMayor required">Características:</label>
                     <textarea class="form-control" name="caracDictamen" id="caracDictamen" cols="30" rows="5" required></textarea>
                 </div>
                 <div>
-                    <label for="observacionesDictamen" class="labelMayor">Observaciones:</label>
+                    <label for="observacionesDictamen" class="labelMayor required">Observaciones:</label>
                     <textarea class="form-control" name="observacionesDictamen" id="observacionesDictamen" cols="30" rows="5" required></textarea>
                 </div>
                 <div>
-                    <label for="descripcionDictamen" class="labelMayor">Descripción técnica de partes necesarias:</label>
+                    <label for="descripcionDictamen" class="labelMayor required">Descripción técnica de partes necesarias:</label>
                     <textarea class="form-control" name="descripcionDictamen" id="descripcionDictamen" cols="30" rows="5" required></textarea>
                 </div>
                 <div class="btnGuardarDatos">
@@ -440,7 +461,8 @@
 </body>
 </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
-<!-- SOLICITUD DE HISTORIAL DE SOLICITUDES -->
+
+<!-- SOLICITUD DE HISTORIAL DE SOLICITUDES -------------------------------------------------------------------------------------->
 <div id="Historial" class="contenido-individual">
     <head>
         <!-- Metadatos -->
@@ -456,35 +478,11 @@
     <!-- Contenedor principal para el historial de solicitudes -->
         <div class="historialSolicitudes">
             <!-- Título de la sección -->
-            <h2 id="tituloHistorialSoli">Historial de solicitudes</h2>
-            <!-- Formulario para filtrar el historial -->
-            <form action="#" method="post">
-                <!-- Contenedor para los campos de filtro -->
-                <div class="contenedorFiltro">
-                    <!-- Campo de búsqueda -->
-                    <div>
-                        <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
-                    </div>
-                    <!-- Campo de selección de estado -->
-                    <div>
-                        <select name="estado" id="estado">
-                            <option value="blanco">Filtro</option>
-                            <option value="folio">Folio</option>
-                            <option value="fecha">Fecha</option>
-                            <option value="usuario">Usuario</option>
-                            <option value="estado">Estado</option>
-                        </select>
-                    </div>
-                    <!-- Botón para aplicar el filtro -->
-                    <div class="btnFiltrar">
-                        <button  type="submit" id="btnFiltrar">Filtrar</button>
-                    </div>
-                </div>
-                
+            <h2 id="tituloHistorialSoli">Historial de Solicitudes</h2>
                 <!-- Contenedor para la tabla del historial -->
                 <div class="table-responsive">
-                    <table  class="table table-hover table-striped">
-                        <tr class="table-dark">
+                    <table  class="table table-hover table-striped" id="TablaHistorialSolicitudes">
+                        <thead>
                             <th>Folio</th>
                             <th>Fecha</th>
                             <th>Hora</th>
@@ -493,7 +491,7 @@
                             <th>Estado</th>
                             <th>Vale</th>
                             <th>Dictamen</th>
-                        </tr>
+                        </thead>
                         <% historial.forEach(solicitud => { %>
                             <!-- Fila de la tabla para cada solicitud en el historial -->
                             <tr>
@@ -509,9 +507,10 @@
                         <% }); %>
                     </table>
                 </div>
-            </form>
         </div>
         <script src="resources/scripts/semaforo.js"></script>
+            <script src="resources/scripts/paneles.js"></script>
+
     </body>
 </div>
 
@@ -530,28 +529,28 @@
             <h3 class="titulosLogin">Registrar Usuario</h3>
             <form action="registerP" method="post" onsubmit="return validar();" id="formRegistro">
                 <div class="registroCampos">
-                    <label for="username" class="lblRegistro">Nombre de Usuario</label>
+                    <label for="username" class="lblRegistro required">Nombre de Usuario</label>
                     <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de usuario unico" required>
                 </div>
                 <div class="registroCampos">
-                    <label for="password" class="lblRegistro">Contraseña</label>
+                    <label for="password" class="lblRegistro required">Contraseña</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="8 caracteres mínimo, sin espacios" required>
                 </div>
                 <div class="registroCampos">
-                    <label for="password2" class="lblRegistro">Repita su contraseña</label>
+                    <label for="password2" class="lblRegistro required">Repita su contraseña</label>
                     <input type="password" class="form-control" id="password2" name="password2" placeholder="8 caracteres mínimo, sin espacios" required>
                 </div>
                 <div class="registroCampos">
-                    <label for="name" class="lblRegistro">Nombre Completo</label>
+                    <label for="name" class="lblRegistro required">Nombre Completo</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Nombres y apellidos" required>
                 </div>
                 <div class="registroCampos">
-                    <label for="correo" class="lblRegistro">Correo institucional</label>
+                    <label for="correo" class="lblRegistro required">Correo institucional</label>
                     <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@uacam.mx" required>
                 </div>
                 <div class="selects_registro">
                     <div class="mb-3 row">
-                        <label for="rol" class="col-sm-2 col-form-label">Rol:</label>
+                        <label for="rol" class="col-sm-2 col-form-label required">Rol:</label>
                         <div class="col-sm-10">
                             <select name="rol" id="rol" class="form-select form-select-sm" required>
                                 <option value="Admin">Administrador</option>
@@ -574,42 +573,52 @@
                     <input type="submit" value="Registrar" class="btn btn-outline-dark" onclick="validar()">
                 </div>
             </form>
-        </div>
-        <div class="contenedor" id="contenedorTecnicos">
-            <h3 class="titulosLogin">Registrar Tecnico</h3>
-            <form action="registerT" method="post" onsubmit="return validar();" id="formRegistro">
-                <div class="registroCampos">
-                    <label for="nombreT" class="lblRegistro">Nombres:</label>
-                    <input type="text" class="form-control" name="nombreT" placeholder="Nombre(s)" required>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#exampleModalLong">
+                Ver listado de usuarios registrados
+            </button>
+            <br>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Usuarios</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        Enlistado de todos los usuarios registrados en CIC Assistance
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                      <th scope="col">Id</th>
+                                      <th scope="col">Nombre</th>
+                                      <th scope="col">Rol</th>
+                                      <th scope="col">Correo</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <% usuarios.forEach(usuario => { %>
+                                    <tr>
+                                      <td><%= usuario.IdUsuario %></td>
+                                      <td><%= usuario.Nombre%></td>
+                                      <td><%= usuario.Rol %></td>
+                                      <td><%= usuario.Correo%></td>
+                                    </tr>
+                                    <% }); %>
+                                  </tbody>
+                            </table>
+                          </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
                 </div>
-                <div class="registroCampos">
-                    <label for="apellidos" class="lblRegistro">Apellidos</label>
-                    <input type="text" class="form-control" name="apellidos" placeholder="Apellido paterno y materno" required>
                 </div>
-                <div class="registroCampos">
-                    <label for="noTrabajador" class="lblRegistro">Numero de trabajador</label>
-                    <input type="text" class="form-control" name="noTrabajador" placeholder="Numero de trabajador" required>
-                </div>
-                <div class="registroCampos">
-                    <label for="email" class="lblRegistro">Correo institucional</label>
-                    <input type="text" class="form-control" name="email" placeholder="correo@uacam.mx" required>
-                </div>
-                <div class="registroCampos">
-                    <label for="telef" class="lblRegistro">Telefono</label>
-                    <input type="text" class="form-control" name="telef" placeholder="xxx-xxx-xxxx" required>
-                </div>
-                <div class="selects_registro" id="registroTecnico">
-                        <label for="idUsuario" class="col-sm-2 col-form-label" id="lblTec">Id de usuario en CIC Assistance:</label>
-                            <select name="IdUsuario" id="tecnicoId" class="form-select form-select-sm" required>
-                                <% usuariosTecnicos.forEach(usuario => { %>
-                                    <option value="<%= usuario.IdUsuario %>"><%= usuario.IdUsuario %>-<%= usuario.Nombre %></option>
-                                <% }); %>
-                            </select>
-                </div>
-                <div id="enviarRegistro">
-                    <input type="submit" value="Registrar" class="btn btn-outline-dark" onclick="validar()">
-                </div>
-            </form>
+            </div>
         </div>
         <script src="resources/scripts/validacion.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
@@ -644,27 +653,27 @@
     <h3 class="titulosLogin">Registrar Tecnico</h3>
     <form action="registerT" method="post" id="formRegistro">
         <div class="registroCampos">
-            <label for="nombreT" class="lblRegistro">Nombres:</label>
+            <label for="nombreT" class="lblRegistro required">Nombres:</label>
             <input type="text" class="form-control" name="nombreT" placeholder="Nombre(s)" required>
         </div>
         <div class="registroCampos">
-            <label for="apellidos" class="lblRegistro">Apellidos</label>
+            <label for="apellidos" class="lblRegistro required">Apellidos</label>
             <input type="text" class="form-control" name="apellidos" placeholder="Apellido paterno y materno" required>
         </div>
         <div class="registroCampos">
-            <label for="noTrabajador" class="lblRegistro">Numero de trabajador</label>
+            <label for="noTrabajador" class="lblRegistro required">Numero de trabajador</label>
             <input type="text" class="form-control" name="noTrabajador" placeholder="Numero de trabajador" required>
         </div>
         <div class="registroCampos">
-            <label for="email" class="lblRegistro">Correo institucional</label>
+            <label for="email" class="lblRegistro required">Correo institucional</label>
             <input type="text" class="form-control" name="email" placeholder="correo@uacam.mx" required>
         </div>
         <div class="registroCampos">
-            <label for="telef" class="lblRegistro">Telefono</label>
+            <label for="telef" class="lblRegistro required">Telefono</label>
             <input type="text" class="form-control" name="telef" placeholder="xxx-xxx-xxxx" required>
         </div>
         <div class="selects_registro" id="registroTecnico">
-                <label for="idUsuario" class="col-sm-2 col-form-label" id="lblTec">Id de usuario en CIC Assistance:</label>
+                <label for="idUsuario" class="col-sm-2 col-form-label required" id="lblTec">Id de usuario en CIC Assistance:</label>
                     <select name="IdUsuario" id="tecnicoId" class="form-select form-select-sm" required>
                         <% usuariosTecnicos.forEach(usuario => { %>
                             <option value="<%= usuario.IdUsuario %>"><%= usuario.IdUsuario %>-<%= usuario.Nombre %></option>
@@ -675,6 +684,52 @@
             <input type="submit" value="Registrar" class="btn btn-outline-dark">
         </div>
     </form>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#exampleModalLong2">
+        Ver listado de técnicos registrados
+    </button>
+    <br>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalLong2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle2" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle2">Técnicos</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                Enlistado de todos los técnicos registrados en CIC Assistance
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                              <th scope="col">Id técnico</th>
+                              <th scope="col">Nombre</th>
+                              <th scope="col">Apellidos</th>
+                              <th scope="col">Correo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% tecnicos.forEach(tecnico => { %>
+                            <tr>
+                              <td><%= tecnico.IdTecnico %></td>
+                              <td><%= tecnico.Nombre%></td>
+                              <td><%= tecnico.Apellidos %></td>
+                              <td><%= tecnico.Correo%></td>
+                            </tr>
+                            <% }); %>
+                          </tbody>
+                    </table>
+                  </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
 <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
@@ -694,9 +749,6 @@
 </body>
 </div>
 
-
-
-
 <!-- HISTORIAL 2----------------------------------------------------------------------------------------------- -->
 <div id="Historial2" class="contenido-individual">
     <!-- Contenido de historial -->
@@ -711,14 +763,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Obtener todas las celdas de la columna IdDictamen
-            var celdasIdDictamen = document.querySelectorAll('.historialTablaContenedor .table td:nth-child(8)');
+            var celdasIdDictamen = document.querySelectorAll('.historialTablaContenedor .table td:nth-child(6)');
             
             // Iterar sobre cada celda
             celdasIdDictamen.forEach(function (celda) {
                 // Verificar el contenido de la celda
                 if (celda.textContent.trim() === 'No existe') {
                     // Obtener las celdas de las columnas "Dicta-PDF"
-                    var celdaDictaPDF = celda.parentElement.querySelector('td:nth-child(10)');
+                    var celdaDictaPDF = celda.parentElement.querySelector('td:nth-child(8)');
                     
                     // Cambiar el contenido por un espacio en blanco en ambas celdas
                     celdaDictaPDF.textContent = ' ';
@@ -729,24 +781,21 @@
 </head>
 <body class="historialBody">
     <div class="historialContenedor">
-        <h2 id="tituloBitacora">Historial Vales</h2>   
+        <h2 id="tituloBitacora">Historial General</h2>   
         <div class="historialTablaContenedor">
             <div class="table-responsive">
-                <table  class="table table-hover table-striped">
+                <table  class="table table-hover table-striped" id="TablaHistorialVales">
                     <thead>
-                        <tr class="table-dark">
-                            <td>Folio</td>
-                            <td>Vale</td>
-                            <td>Usuario</td>
-                            <td>Equipo</td>
-                            <td>Marca</td>
-                            <td>Modelo</td>
-                            <td>NoSerie</td>
-                            <td>Estado</td>
-                            <td>Dictamen</td>
-                            <td>Vale-PDF</td>
-                            <td>Dicta-PDF</td>
-                        </tr>
+                            <th>Folio</th>
+                            <th>Vale</th>
+                            <th>Usuario</th>
+                            <th>Equipo</th>
+                            <th>Estado</th>
+                            <th>Dictamen</th>
+                            <th>Vale-PDF</th>
+                            <th>Dicta-PDF</th>
+                            <th>Diagnóstico Técnico</th>
+                            <th>Solución Aplicada</th>
                     </thead>
                     
                     <% vales.forEach((variables) => { %>
@@ -755,13 +804,12 @@
                             <td><%= variables.idVale %></td>
                             <td><%= variables.NombreUsuario %></td>
                             <td><%= variables.Equipo %></td>
-                            <td><%= variables.MarcaEquipo %></td>
-                            <td><%= variables.ModeloEquipo %></td>
-                            <td><%= variables.NoSerieEquipo %></td>
                             <td class="estado-td" data-estado="<%= variables.Estado %>"><%= variables.Estado %></td>
                             <td><%= variables.IdDictamen %></td>
                             <td><a href="/descargarPDFvale?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
                             <td><a href="/descargarPDFdictamen?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
+                            <td><%= variables.Diagnostico %></td>
+                            <td><%= variables.Solucion %></td>
                             
                         </tr>
                     <% }); %>
@@ -790,15 +838,14 @@
                 <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
             </div>
             <div class="table-responsive">
-                <table  class="table  table-light" id="estatusTabla">
-                    <tr class="table-dark">
+                <table  class="table" id="estatusTabla">
+                    <tr class="tableEstatus">
                         <th colspan="5" class="tablaTitulos">Abierto</th>
                         <th colspan="4" class="tablaTitulos">Asignadas</th>
                         <th colspan="4" class="tablaTitulos">En Proceso</th>
                         <th colspan="4" class="tablaTitulos">En Espera</th>
                         <th colspan="3" class="tablaTitulos">Cerrado</th>
                     </tr>
-                </thead>
                 <tbody>
                     <tr class="table-secondary">
                         <td>Folio</td>
@@ -827,11 +874,11 @@
                             <tr>
                                 <!-- Abierto -->
                                 <% if (i < abierto.length) { %>
-                                    <td class="bg-success"><%= abierto[i].FolioSolicitud %></td>
-                                    <td class="bg-success"><%= abierto[i].Nombre %></td>
-                                    <td class="bg-success" id="equipoEstado<%= i %>"><%= abierto[i].Equipo %></td>
-                                    <td class="bg-success" id="fechaEstado<%= i %>"><%= abierto[i].Fecha %></td>
-                                    <td class="seleccion bg-success" id="bordeDerecho<%= i %>" >
+                                    <td class="bg-danger"><%= abierto[i].FolioSolicitud %></td>
+                                    <td class="bg-danger"><%= abierto[i].Nombre %></td>
+                                    <td class="bg-danger" id="equipoEstado<%= i %>"><%= abierto[i].Equipo %></td>
+                                    <td class="bg-danger" id="fechaEstado<%= i %>"><%= abierto[i].Fecha %></td>
+                                    <td class="seleccion bg-danger" id="bordeDerecho<%= i %>" >
                                         <select class="form-select cambiarEstado" data-folio="<%= abierto[i].FolioSolicitud %>">
                                             <option value="Abierto" selected>Abierto</option>
                                             <option value="Proceso">En Proceso</option>
@@ -848,10 +895,10 @@
                                 <% } %>
                                 <!----ASIGNADAS-->
                                 <% if (i < asignada.length) { %>
-                                    <td class="bg-primary"><%= asignada[i].FolioSolicitud %></td>
-                                    <td class="bg-primary"><%= asignada[i].UsuarioNombre %></td>
-                                    <td class="bg-primary" id="equipoEstado<%= i %>"><%= asignada[i].TecnicoNombre %></td>
-                                    <td class="seleccion bg-primary" id="ladoDerecho<%= i %>" >
+                                    <td class="bg-warning"><%= asignada[i].FolioSolicitud %></td>
+                                    <td class="bg-warning"><%= asignada[i].UsuarioNombre %></td>
+                                    <td class="bg-warning" id="equipoEstado<%= i %>"><%= asignada[i].Nombre %></td>
+                                    <td class="seleccion bg-warning" id="ladoDerecho<%= i %>" >
                                         <select class="form-select cambiarEstado" data-folio="<%= asignada[i].FolioSolicitud %>">
                                             <option value="Asignada" selected>Asignada</option>
                                             <option value="Proceso">En Proceso</option>
@@ -867,10 +914,10 @@
                                 <% } %>
                                 <!-- Pendiente -->
                                 <% if (i < pendiente.length) { %>
-                                    <td class="bg-warning"><%= pendiente[i].FolioSolicitud %></td>
-                                    <td class="bg-warning"><%= pendiente[i].Nombre %></td>
-                                    <td class="bg-warning"><%= pendiente[i].Equipo %></td>
-                                    <td class="seleccion bg-warning" id="pendienteDerecha<%= i %>">
+                                    <td class="bg-info"><%= pendiente[i].FolioSolicitud %></td>
+                                    <td class="bg-info"><%= pendiente[i].Nombre %></td>
+                                    <td class="bg-info"><%= pendiente[i].Equipo %></td>
+                                    <td class="seleccion bg-info" id="pendienteDerecha<%= i %>">
                                         <select class="form-select cambiarEstado" data-folio="<%= pendiente[i].FolioSolicitud %>">
                                             <option value="Proceso" selected>En Proceso</option>
                                             <option value="Abierto">Abierto</option>
@@ -887,10 +934,10 @@
                                 <% } %>
                                 <!-- En espera -->
                                 <% if (i < espera.length) { %>
-                                    <td class="bg-info"><%= espera[i].FolioSolicitud %></td>
-                                    <td class="bg-info"><%= espera[i].Nombre %></td>
-                                    <td class="bg-info"><%= espera[i].Equipo %></td>
-                                    <td class="seleccion bg-info" id="esperarDerecha<%= i %>">
+                                    <td class="bg-primary"><%= espera[i].FolioSolicitud %></td>
+                                    <td class="bg-primary"><%= espera[i].Nombre %></td>
+                                    <td class="bg-primary"><%= espera[i].Equipo %></td>
+                                    <td class="seleccion bg-primary" id="esperarDerecha<%= i %>">
                                         <select class="form-select cambiarEstado" data-folio="<%= espera[i].FolioSolicitud %>">
                                             <option value="Proceso">En Proceso</option>
                                             <option value="Abierto">Abierto</option>
@@ -907,9 +954,9 @@
                                 <% } %>
                                 <!-- Cerrado -->
                                 <% if (i < cerrado.length) { %>
-                                    <td class="bg-danger"><%= cerrado[i].FolioSolicitud %></td>
-                                    <td class="bg-danger"><%= cerrado[i].Nombre %></td>
-                                    <td class="bg-danger"><%= cerrado[i].Equipo %></td>
+                                    <td class="bg-success"><%= cerrado[i].FolioSolicitud %></td>
+                                    <td class="bg-success"><%= cerrado[i].Nombre %></td>
+                                    <td class="bg-success"><%= cerrado[i].Equipo %></td>
                                 <% } else { %>
                                     <td></td>
                                     <td></td>
@@ -927,14 +974,206 @@
         </body>
     </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
+<!-- Sección de estadisticas -->
 
+    <div id="Estadisticas" class="contenido-individual">
+        <!-- Contenido de historial -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="#">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <title>Reportes de uso</title>
+    </head>
+    <body>
+        <div class="container" style="max-width: 100%;">
+            <h2 id="estadoSolicitudes">Reportes de uso</h2>
+            <div class="container-xl px-4 mt-4">
+                <div class="row">
+                    <div class="col">
+                        <div class="card mb-4">
+                            <div class="card-header">Detalles del reporte</div>
+                            <div class="card-body">
+                                <form method="post" action="#">
+                                    <!-- Form Row-->
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col md-6">
+                                            <label class="small mb-1 is-required" for="input_tipo">
+                                                Tipo de solicitudes:
+                                            </label>
+                                            <select class="form-select form-select-mb mb-1" id="input_tipo" autocomplete="off"
+                                                    name="tipo">
+                                                    <option value="solicitudes" selected>Solicitudes</option>
+                                                    <option value="vales">Vales</option>
+                                                    <option value="dictamenes">Dictámenes</option>
+                                            </select>
+                                        </div>
+                                    <div class="row gx-3 mb-3 ">
+                                        <p class="text-justify mt-2 mb-0">Seleccione el periodo de tiempo que desea incluir en el reporte</p>
+
+                                        <div class="col-md-6">
+                                            <label class="small mb-1 is-required" for="input_desde">
+                                                Desde:
+                                            </label>
+                                            <input class="form-control" id="input_desde" type="date" required
+                                                   autocomplete="off" name="desdeFecha"
+                                                   placeholder="Ingrese desde que fecha"/>
+                                        </div>
+        
+                                        <div class="col-md-6 ">
+                                            <label class="small mb-1 is-required" for="input_hasta">
+                                                Hasta:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" name="hastaFecha" required autocomplete="off"
+                                                       placeholder="Ingrese hasta que fecha" id="input_hasta">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row gx-3 mb-3 ">
+                                        <p class="text-justify">Introduzca los datos complementarios del reporte</p>
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_titulo">
+                                                Título:
+                                            </label>
+                                            <select class="form-select form-select-mb mb-1" id="input_titulo" autocomplete="off"
+                                                    name="titulo">
+                                                    <option value="Ing.">Ing.</option>
+                                                    <option value="Lic.">Lic.</option>
+                                                    <option value="Dr.">Dr.</option>
+                                            </select>
+                                        </div>
+        
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_nombre">
+                                                Nombre:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="nombre" required autocomplete="off"
+                                                       placeholder="Ingrese su nombre" id="input_nombre">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_oficio">
+                                                Núm. de oficio:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="oficio" required autocomplete="off"
+                                                       placeholder="P.E. 10/15" id="input_oficio">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_expediente">
+                                                Expediente:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="expediente" required autocomplete="off"
+                                                       placeholder="P.E. MR-15" id="input_expediente">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="small mb-1 is-required" for="input_area">
+                                                Área:
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="area" required autocomplete="off"
+                                                       placeholder="P.E. 10/15" id="input_area">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-around">
+                                        <button type="button" id="generarReportesBtn" class="btn text-light" style="background-color: #0D1642;">Generar reporte</button>
+                                        <button type="button" id="generarEstadisticasBtn" class="btn text-light" style="background-color: #0D1642;">Generar estadisticas</button>
+                                    </div>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </body>
+    </div>
+    <script src="resources/scripts/estadisticas.js"></script>
 </main>
 
 <footer class="pie-pagina">
+    <div class="enlaces-sociales">
+        <a href="https://www.facebook.com/UACamOficial"><img src="resources/images/face_logo.png" alt="Facebook"></a>
+        <a href="https://twitter.com/UacamOficial"><img src="resources/images/twitter_logo.jpg" alt="Twitter"></a>
+    </div>
     <p>&copy; 2024 CIC Assistance. Todos los derechos reservados.</p>
 </footer>
 
 <script src="resources/scripts/paneles.js"></script>
+    
+
+<!-- SCRIPTS PARA GENERAR LOS FILTROS FUNCIONALES ------------------------------------------------------------------------->
+<script src="resources/scripts/paneles.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.bootstrap5.js"></script>
+
+<script>
+
+$(document).ready(function() {
+    // Inicializar las tablas DataTable
+    $('#TablaHistorialSolicitudes').DataTable({
+        language: {
+            info: 'Mostrando _PAGE_ de _PAGES_ paginas',
+            infoEmpty: 'No hay registros disponibles',
+            lengthMenu: '_MENU_ Entradas por página',
+            zeroRecords: 'No se encontraron registros - Lo siento',
+            search: "Buscar:"
+        }
+    });
+
+    $('#TablaHistorialVales').DataTable({
+        language: {
+            info: 'Mostrando _PAGE_ de _PAGES_ paginas',
+            infoEmpty: 'No hay registros disponibles',
+            lengthMenu: '_MENU_ Entradas por página',
+            zeroRecords: 'No se encontraron registros - Lo siento',
+            search: "Buscar:"
+        }
+    });
+
+    // Escuchar el evento draw.dt para cada tabla y recargar los estilos de Bootstrap
+    $('#TablaHistorialSolicitudes').on('draw.dt', function () {
+        $(this).closest('.dataTables_wrapper').find('button').removeClass('btn-secondary').addClass('btn-primary');
+    });
+
+    $('#TablaHistorialVales').on('draw.dt', function () {
+        $(this).closest('.dataTables_wrapper').find('button').removeClass('btn-secondary').addClass('btn-primary');
+    });
+});
+</script>
+<!--Script para mostrar el div logout-->
+<script>
+    const contenedorMostrarSesion = document.querySelector('.contenedorMostrarSesion');
+    const logoutMenu = document.querySelector('#logoutMenu');
+
+    contenedorMostrarSesion.addEventListener('click', function(event) {
+        logoutMenu.style.display = (logoutMenu.style.display === 'block') ? 'none' : 'block';
+        event.stopPropagation();
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!logoutMenu.contains(event.target) && event.target !== logoutMenu) {
+            logoutMenu.style.display = 'none';
+        }
+    });
+
+</script>
 
 </body>
 </html>

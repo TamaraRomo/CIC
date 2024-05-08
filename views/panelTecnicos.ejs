@@ -6,25 +6,40 @@
     <title>Menú</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="resources/css/style_menu_usuario.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 </head>
 <body>
     <div class="logo-contenedor">
-        <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
-        <h1 class="titulo-sitio">CIC Assistance</h1>
-        <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+        <a href="https://www.uacam.mx/">
+            <img src="resources/images/uac_logo.png" alt="Logo Izquierdo" class="logo-izquierdo">
+        </a>
+        <h1 class="titulo-sitio" data-id="Estatus" onclick="mostrarContenido(this)">CIC Assistance</h1>
+        <a href="https://fi.uacam.mx/">
+            <img src="resources/images/facu_logo.png" alt="Logo Derecho" class="logo-derecho">
+        </a>
     </div>
 <% if (typeof login !== 'undefined' && login) { %>
-    <div class="mostrarSesion">
-        <p class="sesion" id="sesion">Usuario: <%= name %></p>
-        <div id="logoutMenu">
-            <a href="logout">Logout</a>
+    <div class="d-flex flex-row-reverse bd-highlight">
+        <div class="btn-group  p-2 bd-highlight justify-content-end">
+            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Usuario: <%= name %>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="logout">Logout <i class="bi bi-box-arrow-right"></i></a>
+            </div>
         </div>
     </div>
 <% } %>
+
 <nav class="menu">
-    <div class="opcion-menu" onclick="mostrarContenido('asignaciones')">Asignaciones</div>
-    <div class="opcion-menu" onclick="mostrarContenido('#')">Generar diagnosticos</div>
+    <div class="opcion-menu" data-id="asignaciones" onclick="mostrarContenido('asignaciones')">Asignaciones</div>
+    <div class="opcion-menu" data-id="diagnosticos" onclick="mostrarContenido('diagnosticos')">Generar Diagnósticos</div>
 </nav>
+
+
 
 <main class="contenido">
 	
@@ -40,29 +55,17 @@
         </head>
         <body class="bodyHistorial">
             <div class="historialSolicitudes">
-                <h2 id="tituloHistorialSoli">Historial de asignaciones</h2>
-                <form action="#" method="post">
-                    <div class="contenedorFiltro">
-                        <div>
-                            <input type="text" name="buscar" id="buscar" placeholder="&#x1F50D;Buscar">
+                <h2 id="tituloHistorialSoli">Historial de Asignaciones</h2>
+                <!--     <div class="contenedorFiltro">
+                        <div class="btnFiltrar">    @@@@@@ ESTE ES EL BOTON DE ARRIBA LA CUAL FUE DESABILITADO POR CUESTIONES DE DISENO @@@@@@@
+                        <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
                         </div>
-                        <div>
-                            <select name="estado" id="estado">
-                                <option value="blanco">Filtro</option>
-                                <option value="str">Solicitud de Soporte</option>
-                                <option value="vale">Vale</option>
-                                <option value="dictamen">Dictamen</option>
-                            </select>
-                        </div>
-                        <div class="btnFiltrar">
-                            <button  type="submit" class="btn btn-outline-dark" id="btnFiltrar">Filtrar</button>
-                            <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
-                        </div>
-                        
                     </div>
+                    -->
+
                 <div class="table-responsive">
-                        <table  class="table table-hover table-striped">
-                            <tr class="table-dark">
+                        <table  class="table table-hover table-striped" id="TablaHistorialAsignaciones">
+                            <thead>
                                 <th>Folio</th>
                                 <th>Nombre</th>
                                 <th>Fecha solicitud</th>
@@ -72,12 +75,11 @@
                                 <th>Serie</th>
                                 <th>Marca</th>
                                 <th>Estado</th>
-
-                            </tr>
+                            </thead>
                             <% asignaciones.forEach((asignacion) => { %>
                                 <tr>
                                     <td><%= asignacion.FolioSolicitud %></td>
-                                    <td><%= asignacion.Nombre %></td>
+                                    <td><%= asignacion.NombreSolicitante %></td>
                                     <td><%= asignacion.Fecha %></td>
                                     <td><%= asignacion.Equipo %></td>
                                     <td><%= asignacion.Descripcion %></td>
@@ -85,7 +87,7 @@
                                     <td><%= asignacion.NoSerieEquipo %></td>
                                     <td><%= asignacion.MarcaEquipo %></td>
                                     <td>
-                                        <select class="form-select">
+                                        <select class="form-select" id="estadoSelect" data-folio="<%= asignacion.FolioSolicitud %>">
                                             <option value="Asignada" selected>Asignada</option>
                                             <option value="Proceso">En proceso</option>
                                         </select>
@@ -94,19 +96,129 @@
                                 <% }); %>
                         </table>
                 </div>
-                </form>
+                <div class="btnFiltrar">
+                    <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
+                    </div>
             </div>
+            <script src="resources/scripts/cambiarEstadoAsignacion.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        </body>
+    </div>
+
+    <div id="diagnosticos" class="contenido-individual">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Diagnóstico Técnico</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <link rel="stylesheet" href="resources/css/diagnostico.css">
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        </head>
+        <body class="bodyHistorial">
+            <div class="contenedor-principal">
+                
+                <div class="historialSolicitudes" id="contenedorDiagnostico">
+                    <h2 >Generación de diagnósticos técnicos</h2>
+                    <br>
+                    <form action="crearDiagnostico" method="post">
+                        <div class="mb-3 row">
+                            <label for="folios" class="col-sm-2 col-form-label labelMayor">Solicitudes asignadas</label>
+                            <div class="col-sm-10">
+                                <select name="folios" id="folios" class="form-select form-select-sm">
+                                    <% asignaciones.forEach(asignacion => { %>
+                                        <option value="<%= asignacion.FolioSolicitud %>"><%= asignacion.FolioSolicitud %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Agregar campo oculto para el folio seleccionado -->
+                        <input type="hidden" name="folioSeleccionado" id="folioSeleccionado">
+                        <div class="mb-3 row">
+                            <label for="diagnosticoT" class="col-sm-2 col-form-label labelMayor">Diagnóstico Técnico:</label>
+                            <textarea class="form-control" name="diagnosticoT" id="diagnosticoT" rows="8" required maxlength="250"></textarea>
+                            <label for="solucion" class="col-sm-2 col-form-label labelMayor">Solución aplicada:</label>
+                            <textarea class="form-control" name="solucion" id="solucion" rows="8" required maxlength="250"></textarea>
+                        </div>
+                        <div class="enviarDiagnostico">
+                            <button type="submit" class="btn btn-outline-dark" id="enviarDiagnostico" value="Submit">Enviar</button>
+                        </div>
+                    </form>     
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
+        <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
+        <% if(typeof alert != "undefined"){ %>
+            <script>
+                Swal.fire({
+                    title: '<%= alert.alertTitle %>',
+                    text: '<%= alert.alertMessage %>',
+                    icon: '<%= alert.alertIcon %>',
+                    showConfirmButton: <%= alert.showConfirmButton %>,
+                    timer: <%= alert.timer %>
+                }).then((result) =>{
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location ='/<%= alert.ruta %>'; // redirige solo si se cierra automáticamente
+                    }
+                });
+            </script>
+            <% } %>
+            
         </body>
     </div>  
 
 </main>
 
 <footer class="pie-pagina">
+    <div class="enlaces-sociales">
+        <a href="https://www.facebook.com/UACamOficial"><img src="resources/images/face_logo.png" alt="Facebook"></a>
+        <a href="https://twitter.com/UacamOficial"><img src="resources/images/twitter_logo.jpg" alt="Twitter"></a>
+    </div>
     <p>&copy; 2024 CIC Assistance. Todos los derechos reservados.</p>
 </footer>
 
 <script src="resources/scripts/panelTecnico.js"></script>
+
+<!-- SCRIPTS PARA GENERAR LOS FILTROS FUNCIONALES ------------------------------------------------------------------------->
+<script src="resources/scripts/panelTecnico.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.bootstrap5.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script>
+
+new DataTable('#TablaHistorialAsignaciones', {
+    language: {
+        info: 'Mostrando _PAGE_ de _PAGES_ paginas',
+        infoEmpty: 'No records available',
+        lengthMenu: '_MENU_ Entradas por pagina',
+        zeroRecords: 'No se encontro - Lo siento',
+        search: "Buscar:"
+    }
+    });
+</script>
+
+<!--Script para mostrar el div logout-->
+<script>
+    const contenedorMostrarSesion = document.querySelector('.contenedorMostrarSesion');
+    const logoutMenu = document.querySelector('#logoutMenu');
+
+    contenedorMostrarSesion.addEventListener('click', function(event) {
+        logoutMenu.style.display = (logoutMenu.style.display === 'block') ? 'none' : 'block';
+        event.stopPropagation();
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!logoutMenu.contains(event.target) && event.target !== logoutMenu) {
+            logoutMenu.style.display = 'none';
+        }
+    });
+
+</script>
 
 </body>
 </html>

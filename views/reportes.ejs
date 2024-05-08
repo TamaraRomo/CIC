@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resources/css/style_reportes.css">
+    <title>Reportes</title>
+</head>
+<body>
+    <div class="contenedorDetalles">
+        <p class="aviso">Vista previa del reporte. De clic en "imprimir reporte" si esta correcto. De lo contrario, presione "Atras" en su navegador para modificarlo</p>
+        <h2>Reportes de <%= tipo %></h2>
+        <p>Del: <%= desdeFecha %> Hasta: <%= hastaFecha %></p>
+        <button onclick="imprimirDoc()">Imprimir reporte</button>
+        <button onclick="regresar()">Atrás</button>
+    </div>
+    <div class="deliniador"></div>
+    <div class="imprimirReporte">
+        <h2>Universidad Autónoma de Campeche</h2>
+        <h3>Facultad de Ingeniería</h3>
+        <h4>Reporte de <%= tipo %></h4>
+        <div class="contenedorInfo">
+            <% if (tipo === 'solicitudes') { %>
+                <!-- Código para mostrar la tabla de solicitudes -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Folio</th>
+
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Telefono</th>
+                            <th>Equipo</th>
+                            <th>Descripcion</th>
+                            <th>Estado</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% objetos.forEach(objeto => { %>
+                            <tr>
+                                <td><%= objeto.FolioSolicitud %></td>
+                                <td><%= objeto.Fecha %></td>
+                                <td><%= objeto.Hora %></td>
+                                <td><%= objeto.Telefono %></td>
+                                <td><%= objeto.Equipo %></td>
+                                <td><%= objeto.Descripcion %></td>
+                                <td><%= objeto.Estado %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else if (tipo === 'vales') { %>
+                <!-- Código para mostrar la tabla de vales -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vale</th>
+                            <th>Folio</th>
+                            <th>Equipo</th>
+                            <th>Número de serie</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Características</th>
+                            <th>Estado</th>
+                            <th>Nombre del usuario</th>
+                            <th>Fecha</th>
+                            <th>Estatus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% objetos.forEach(objeto => { %>
+                            <tr>
+                                <td><%= objeto.idVale %></td>
+                                <td><%= objeto.FolioSolicitud %></td>
+                                <td><%= objeto.Equipo %></td>
+                                <td><%= objeto.NoSerieEquipo %></td>
+                                <td><%= objeto.MarcaEquipo %></td>
+                                <td><%= objeto.ModeloEquipo %></td>
+                                <td><%= objeto.Caracteristicas %></td>
+                                <td><%= objeto.Estado %></td>
+                                <td><%= objeto.NombreUsuario %></td>
+                                <td><%= objeto.Fecha %></td>
+                                <td><%= objeto.Estatus %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+                <!--------------------------------------------->
+            <% } else if (tipo === 'dictamenes') { %>
+                <!-- Código para mostrar la tabla de dictámenes -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dictamen</th>
+                            <th>Folio</th>
+                            <th>Vale</th>
+                            <th>Fecha</th>
+                            <th>Equipo</th>
+                            <th>Número de serie</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Descripción</th>
+                            <th>Observaciones</th>
+                            <th>Encargado</th>
+                            <th>Estado</th>
+                            <th>Dictamen Final</th>
+                            <th>Características</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% objetos.forEach(objeto => { %>
+                            <tr>
+                                <td><%= objeto.idDictamen %></td>
+                                <td><%= objeto.FolioSolicitud %></td>
+                                <td><%= objeto.idVale %></td>
+                                <td><%= objeto.FechaDictamen %></td>
+                                <td><%= objeto.Equipo %></td>
+                                <td><%= objeto.NoSerieEquipo %></td>
+                                <td><%= objeto.MarcaEquipo %></td>
+                                <td><%= objeto.ModeloEquipo %></td>
+                                <td><%= objeto.Descripcion %></td>
+                                <td><%= objeto.Observaciones %></td>
+                                <td><%= objeto.Encargado %></td>
+                                <td><%= objeto.EstadoDictamen %></td>
+                                <td><%= objeto.DictamenFinal %></td>
+                                <td><%= objeto.caracDictamen %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No se ha seleccionado este tipo de reporte.</p>
+            <% } %>
+        </div>
+        <h3>ATENTAMENTE</h3>
+        <p>―――――――――――――――</p>
+        <p><%= titulo %></p>
+        <p><%= nombre %></p>
+        <p><%= oficio %></p>
+        <p><%= exp %></p>
+        <p><%= area %></p>
+    </div>    
+<script>
+    async function imprimirDoc() {
+        // Recopilar los datos del formulario (si es necesario)
+        const formData = {
+            // Obtén los datos del formulario según tu estructura
+        };
+
+        // Realizar una solicitud POST al servidor para generar el PDF
+        const response = await fetch('/generarPDF', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData) // Pasa los datos del formulario si es necesario
+        });
+
+        // Manejar la respuesta para descargar el PDF generado
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'reporte.pdf');
+        document.body.appendChild(link);
+        link.click();
+    }
+
+        // Función para regresar a la página anterior
+        function regresar() {
+        window.history.back();
+    }
+</script>
+</body>
+</html>

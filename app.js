@@ -1,5 +1,6 @@
 //Invocamos express
 const express = require('express');
+const rateLimit = require('express-rate-limit');//Para proteger ataques ddos o limitar la cantidad de solicitudes
 const app = express();
 const path = require('path');
 const ejs = require('ejs');
@@ -34,55 +35,76 @@ app.use(session({
     saveUninitialized:true
 }));
 
+//Invocar a rate-limit para proteger contra ataques de muchas solicitudes al mismo tiempo
+ const limiter = rateLimit({
+ windowMs: 15 * 60 * 1000, // 15 minutes
+ max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+app.use(limiter);
+
 //8.- Invocar conexion a DB
 const connection = require('./database/db');
+const { assign } = require('nodemailer/lib/shared');
 console.log(__dirname);
 
 //FUNCION PARA ENVIAR NOTIFICACIONES POR EMAIL
-enviarMail = async(opcion,correoObjetivo)=>{
+ enviarMail = async(opcion,correoObjetivo)=>{
     const config = {
-        host : 'smtp.gmail.com',
-        port : 587,
+         host : 'smtp.gmail.com',
+         port : 587,
         auth : {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS
-        }
-    }
+             user: process.env.SMTP_USER,
+             pass: process.env.SMTP_PASS
+         }
+     }
 
-    let textoCorreo;
-    let textAsunto;
+     let textoCorreo;
+     let textAsunto;
+     let htmlCorreo;
     if (opcion === 1) {
-        textAsunto = 'Solicitud de soporte creada'
-        textoCorreo = 'Ha realizado una solicitud de soporte técnico al sistema CIC Assistance, puede checar el estatus de su solicitud en su historial de solicitudes a traves de la misma página donde realizó la solicitud';
-    } else if (opcion === 2) {
-        textAsunto = 'Actualización estatus en solicitud'
-        textoCorreo = 'Ha cambiado el estatus de tu solicitud de soporte técnico, revisa tu portal cic assistance para obtener mas información';
-    } else if(opcion === 3){
-        textAsunto = 'Vale creado'
-        textoCorreo = 'Se ha creado el vale a su solicitud de soporte técnico puede descargarlo a traves del portal cic assistance en su navegador web';
-    }else if(opcion === 4){
-        textAsunto = 'Dictamen sobre solicitud'
-        textoCorreo = 'Se ha determinado el dictamen a su solicitud de soporte técnico, puede revisar mas detalles del dictamen en su portal cic assistance y puede pasar por su equipo al Centro de Computo';
-    }else if(opcion === 5){
-        textAsunto = 'Solicitud Asignada'
-        textoCorreo = 'Se le ha asignado una nueva solicitud de soporte técnico porfavor entre a su portal CIC Assitance para poder ver mas información';
-   
-    }
-    const mensaje = {
-        from: 'cic.assistance2024@gmail.com',
-        to: correoObjetivo,
-        subject: textAsunto,
-        text: textoCorreo
-    }
-    const transport = nodemailer.createTransport(config);
-    const info = await transport.sendMail(mensaje);
-}
+         textAsunto = 'Solicitud de soporte creada'
+         textoCorreo = 'Ha realizado una solicitud de soporte técnico al sistema CIC Assistance, puede checar el estatus de su solicitud en su historial de solicitudes a traves de la misma página donde realizó la solicitud';
+         htmlCorreo = "<div id='contenedor' style='margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;'><div id='Titulo' style='background-color: #1E2943;border-bottom: 1px solid white;color:white;'><h1>Hemos recibido su solicitud de soporte</h1></div><p>Ha realizado una solicitud de soporte técnico al sistema CIC Assistance, puede checar el estatus de su solicitud en su historial de solicitudes a traves de la misma página donde realizó la solicitud</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 9818119800 con extensión: 3030107<p><p>Pagina web: [cicassistance.josapino.dev]</p></div>"
+        } else if (opcion === 2) {
+         textAsunto = 'Actualización estatus en solicitud'
+         textoCorreo = 'Ha cambiado el estatus de tu solicitud de soporte técnico, revisa tu portal cic assistance para obtener mas información';
+         htmlCorreo = '<div style="margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;"><div style="background-color: #1E2943;border-bottom: 1px solid white;color:white;"><h1>Hemos actualizado el estado de su solicitud de soporte</h1></div><p>Ha cambiado el estatus de tu solicitud de soporte técnico, revisa tu portal cic assistance para obtener mas información</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 9818119800 con extensión: 3030107<p><p>Pagina web: [cicassistance.josapino.dev]</p></div>'
 
+        } else if(opcion === 3){
+         textAsunto = 'Vale creado'
+         textoCorreo = 'Se ha creado el vale a su solicitud de soporte técnico puede descargarlo a traves del portal cic assistance en su navegador web';
+         htmlCorreo = '<div style="margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;"><div style="background-color: #1E2943;border-bottom: 1px solid white;color:white;"><h1>Se ha creado un vale para su solicitud</h1></div><p>Se ha creado el vale a su solicitud de soporte técnico puede descargarlo a traves del portal cic assistance en su navegador web</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 9818119800 con extensión: 3030107<p><p>Pagina web: [cicassistance.josapino.dev]</p></div>'
 
+        }else if(opcion === 4){
+         textAsunto = 'Dictamen sobre solicitud'
+         textoCorreo = 'Se ha determinado el dictamen a su solicitud de soporte técnico, puede revisar mas detalles del dictamen en su portal cic assistance y puede pasar por su equipo al Centro de Computo';
+         htmlCorreo = '<div style="margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;"><div style="background-color: #1E2943;border-bottom: 1px solid white;color:white;"><h1>Hemos realizado un dictamen sobre su solicitud</h1></div><p>Se ha creado el dictamen a su solicitud de soporte técnico, puede revisar mas detalles del dictamen en su portal cic assistance y puede pasar por su equipo al Centro de Computo</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 9818119800 con extensión: 3030107<p><p>Pagina web: [cicassistance.josapino.dev]</p></div>'
+
+        }else if(opcion === 5){
+         textAsunto = 'Solicitud Asignada'
+         textoCorreo = 'Se le ha asignado una nueva solicitud de soporte técnico porfavor entre a su portal CIC Assitance para poder ver mas información';
+         htmlCorreo = '<div style="margin:auto;background-color: #f0f0f0;;padding: 1em;text-align:center;"><div style="background-color: #1E2943;border-bottom: 1px solid white;color:white;"><h1>Tiene una nueva solicitud asignada</h1></div><p>Se le ha asignado una nueva solicitud de soporte técnico porfavor entre a su portal CIC Assitance para poder ver mas información sobre la nueva asignación</p><p>Cualquier duda o  inquitud puede ir al CIC o marcar al 9818119800 con extensión: 3030107<p><p>Pagina web: [cicassistance.josapino.dev]</p></div>'
+     }
+     const mensaje = {
+         from: '"CIC Assistance 🤖" <cic.assistance2024@gmail.com>',
+         to: correoObjetivo,
+         subject: textAsunto,
+         texto: textoCorreo,
+         html: htmlCorreo
+     }
+     const transport = nodemailer.createTransport(config);
+     const info = await transport.sendMail(mensaje);
+ }
 
 //9.- Estableciendo las rutas
 app.get('/login', (req, res) => {
     res.render('login');
+});
+
+app.get('/acercaDe', (req, res) => {
+    res.render('acerca_de');
 });
 
 app.get('/registerP',authPage('Admin'), (req, res) => {
@@ -97,8 +119,82 @@ app.get('/generarDictamen',authPage('Admin'), (req, res) => {
 app.get('/alerta', (req, res) => {
     res.render('alerta');
 });
-app.get('/panelTecnicos',authPage(["Tecnico","Admin"]), async (req, res) => {
+// Ruta GET para renderizar la vista de estadísticas ESTADISTICAS
+app.get('/estadisticas', async (req, res) => {
+    const { tipo, desdeFecha, hastaFecha } = req.session.estadisticas || {};
+    try {
+        // Realizar la consulta SQL para obtener las solicitudes con la fecha desdeFecha
+        const fecha = desdeFecha
+        const fechaFinal = hastaFecha
+        console.log(fecha);
+        const folios = await query(`SELECT * FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+        const conteoEstados = await query(`SELECT Estado AS estado, COUNT(*) AS total FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}' GROUP BY Estado`);
 
+        const usuariosPorSoli = await query(`SELECT u.Nombre AS NombreUsuario, COUNT(a.FolioSolicitud) AS NumeroSolicitudes
+                                                FROM usuarios u
+                                                JOIN solicitudes s ON u.IdUsuario = s.IdUsuario
+                                                JOIN ${tipo} a ON s.FolioSolicitud = a.FolioSolicitud
+                                                WHERE s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'
+                                                GROUP BY u.NombreUsuario`);
+        const asignacionesTecnicos = await query(`SELECT t.Nombre AS Tecnico, COUNT(a.IdSolicitud) AS NumeroSolicitudesTecnico
+                                                FROM tecnicos t
+                                                JOIN asignaciones a ON t.IdTecnico = a.IdTecnico 
+                                                JOIN solicitudes s ON s.FolioSolicitud = a.IdSolicitud WHERE s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'
+                                                GROUP BY t.Nombre`);
+        const solucionesDictamen = await query(`SELECT d.DictamenFinal AS DictamenFinal, COUNT(a.FolioSolicitud) AS NumeroSolicitudesDictamen
+                                                FROM dictamenes d
+                                                JOIN ${tipo} a ON d.FolioSolicitud = a.FolioSolicitud
+                                                WHERE d.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'
+                                                GROUP BY d.DictamenFinal`);
+        const solicitudesSinDictamen = await query(`SELECT COUNT(s.FolioSolicitud) AS NumSolicitudesCerradasSinDictamen
+                                                        FROM solicitudes s
+                                                        LEFT JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud
+                                                        JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud
+                                                        WHERE s.Estado = 'Cerrado' AND d.FolioSolicitud IS NULL 
+                                                        AND s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+        const solicitudesConDictamen = await query(`SELECT COUNT(s.FolioSolicitud) AS NumSolicitudesCerradasConDictamenYVales
+                                                    FROM solicitudes s
+                                                    JOIN dictamenes d ON s.FolioSolicitud = d.FolioSolicitud
+                                                    JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud
+                                                    WHERE s.Estado = 'Cerrado'
+                                                    AND s.Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+        console.log(folios);
+        console.log(conteoEstados);
+        console.log(usuariosPorSoli);
+        console.log(asignacionesTecnicos);
+        console.log(solucionesDictamen);
+        console.log(solicitudesSinDictamen);
+        console.log(solicitudesConDictamen);
+        // Renderizar la vista de estadísticas y pasar los datos
+        res.render('estadisticas', { tipo, desdeFecha, hastaFecha, objetos: folios, conteo:conteoEstados, usuariosPorSoli:usuariosPorSoli, asignacionesTecnicos:asignacionesTecnicos, solucionesDictamen:solucionesDictamen, solicitudesSinDictamen:solicitudesSinDictamen, solicitudesConDictamen:solicitudesConDictamen});
+    } catch (error) {
+        console.error('Error al ejecutar la consulta SQL:', error);
+        // Manejar el error adecuadamente, por ejemplo, renderizando una página de error
+        res.render('error', { message: 'Error al obtener las solicitudes', error });
+    }
+});
+
+app.get('/reportes', async (req, res) => {
+    const { tipo, desdeFecha, hastaFecha, titulo, nombre, oficio, exp, area } = req.session.estadisticas || {};
+    try {
+        // Realizar la consulta SQL para obtener las solicitudes con la fecha desdeFecha
+        const fecha = desdeFecha
+        const fechaFinal = hastaFecha
+        console.log(fecha);
+        const queryParaReportes = await query(`SELECT * FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`)
+        console.log("-----------------aaaaaaaaaaaaaaaaaaa--------------------");
+        console.log(queryParaReportes)
+        // Renderizar la vista de estadísticas y pasar los datos
+        res.render('reportes', { tipo, desdeFecha, hastaFecha, objetos: queryParaReportes, titulo, nombre, oficio, exp, area });
+    } catch (error) {
+        console.error('Error al ejecutar la consulta SQL:', error);
+        // Manejar el error adecuadamente, por ejemplo, renderizando una página de error
+        res.render('error', { message: 'Error al obtener las solicitudes', error });
+    }
+});
+
+//Panel de técnicos
+app.get('/panelTecnicos', authPage(["Tecnico", "Admin"]), async (req, res) => {
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
         return res.render('login', {
@@ -107,19 +203,27 @@ app.get('/panelTecnicos',authPage(["Tecnico","Admin"]), async (req, res) => {
             alertMessage: "Debes iniciar sesión antes de llenar el formulario.",
             alertIcon: "warning",
             showConfirmButton: true,
-            timer: 3000,  
+            timer: 3000,
             ruta: 'login'
         });
     }
-    const usuario = req.session.idUsuario;
-    const asignaciones = await query(`SELECT s.FolioSolicitud,s.Equipo,s.Descripcion,S.Fecha, v.ModeloEquipo,v.NoSerieEquipo,v.MarcaEquipo, u.Nombre FROM solicitudes AS s JOIN tecnicos AS t ON s.TecnicoAsignado = t.IdTecnico JOIN vales AS v ON s.FolioSolicitud = v.FolioSolicitud JOIN usuarios AS u ON s.IdUsuario = u.IdUsuario WHERE t.IdUsuario = ${usuario}`);
-    console.log(asignaciones);
-    res.render('panelTecnicos',{
-        login: req.session.loggedin,
-        name: req.session.name,
-        asignaciones: asignaciones
-    });
+
+    try {
+        const usuario = req.session.idUsuario;
+        const asignaciones = await query(`SELECT DISTINCT s.FolioSolicitud,s.Fecha,s.Descripcion, v.Equipo,v.NoSerieEquipo,v.MarcaEquipo,v.ModeloEquipo, u.IdUsuario as IdUsuarioTecnico, us.IdUsuario as IdUsuarioSolicitante, us.Nombre as NombreSolicitante FROM solicitudes s JOIN vales v ON s.FolioSolicitud = v.FolioSolicitud JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud JOIN tecnicos t ON a.IdTecnico = t.IdTecnico JOIN usuarios u ON t.IdUsuario = u.IdUsuario JOIN usuarios us ON s.IdUsuario = us.IdUsuario WHERE u.IdUsuario = ${usuario} AND a.DIagnostico ='' AND a.Solucion =''`);
+        
+        res.render('panelTecnicos', {
+            login: req.session.loggedin,
+            name: req.session.name,
+            asignaciones: asignaciones // Pasando las asignaciones como variable local
+        });
+    } catch (error) {
+        console.error("Error al obtener las asignaciones:", error);
+        res.status(500).send('Error interno del servidor');
+    }
 });
+
+// Panel de usuarios
 app.get('/panelUsuario',authPage(["Usuario","Admin","Tecnico"]), async (req, res) => {
 
     if (!req.session.loggedin) {
@@ -148,6 +252,9 @@ app.get('/panelUsuario',authPage(["Usuario","Admin","Tecnico"]), async (req, res
         historial: historial,
     });
 });
+
+
+//Panel de administradores
 app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
     if (!req.session.loggedin) {
         // Si no ha iniciado sesión, redirigir al login con un mensaje de advertencia
@@ -171,8 +278,9 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
     const soliPendiente = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Proceso"')
     const soliCerradas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Cerrado"')
     const soliEspera = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Espera"')
-    const soliAsignada = await query('SELECT s.*, u.Correo, u.Nombre as UsuarioNombre, t.Nombre as TecnicoNombre FROM solicitudes s JOIN usuarios u ON s.IdUsuario = u.IdUsuario JOIN tecnicos t ON s.TecnicoAsignado = t.IdTecnico WHERE s.Estado = "Asignada"')
-    const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.folioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario ORDER BY v.idVale DESC;");
+    const soliAsignada = await query('SELECT solicitudes.*,u.Correo, u.Nombre as UsuarioNombre, tecnicos.Nombre, tecnicos.IdTecnico FROM solicitudes LEFT JOIN usuarios u ON solicitudes.IdUsuario = u.IdUsuario LEFT JOIN asignaciones ON solicitudes.IdAsignacion = asignaciones.IdAsignacion LEFT JOIN tecnicos ON asignaciones.IdTecnico = tecnicos.IdTecnico LEFT JOIN usuarios ON tecnicos.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Asignada"')
+    const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario, COALESCE(a.Diagnostico, 'No disponible') AS Diagnostico, COALESCE(a.Solucion, 'No disponible') AS Solucion FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario LEFT JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud ORDER BY v.idVale DESC;");
+    
     res.render('panelAdmin', {
             login: req.session.loggedin,
             name: req.session.name,
@@ -187,9 +295,12 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             cerrado: soliCerradas,
             vales:inforVales,
             tecnicos: tecnicos,
-            usuariosTecnicos: usuariosTecnicos
+            usuariosTecnicos: usuariosTecnicos,
+            
         });
         console.log(historialSoli);
+        console.log('jfnarjfnarfiarnfgnrafgnajkrnjarnjkfnkarjnfjanr');
+        console.log(tecnicos);
 });
 function query(sql) {
     return new Promise((resolve, reject) => {
@@ -202,6 +313,7 @@ function query(sql) {
         });
     });
 }
+
 
 
 // BUSQUEDA DE FOLIO PARA RELLENO AUTOMATICO DE INFO EN DICTAMENES
@@ -227,6 +339,71 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
             }
         }
     });
+});
+
+//estadisticas
+app.post('/generarEstadisticas', (req, res, next) => {
+    const { tipo, desdeFecha, hastaFecha } = req.body;
+    req.session.estadisticas = { tipo, desdeFecha, hastaFecha };
+    res.redirect('/estadisticas');
+});
+
+//reportes
+app.post('/generarReportes', (req, res, next) => {
+    const { tipo, desdeFecha, hastaFecha, titulo, nombre, oficio, exp, area } = req.body;
+    req.session.estadisticas = { tipo, desdeFecha, hastaFecha, titulo, nombre, oficio, exp, area };
+    res.redirect('/reportes');
+});
+
+// Define la ruta de la plantilla
+const plantillaPath = path.join(__dirname, 'views', 'plantillaReportes.ejs');
+
+// Ruta para generar el PDF
+app.post('/generarPDF', async (req, res, next) => {
+    try {
+        // Obtén los datos de la sesión
+        const { tipo, desdeFecha, hastaFecha, titulo, nombre, oficio, exp, area } = req.session.estadisticas;
+
+        // Realizar la consulta SQL para obtener los datos de la base de datos
+        const fecha = desdeFecha;
+        const fechaFinal = hastaFecha;
+        const queryParaReportes = await query(`SELECT * FROM ${tipo} WHERE Fecha BETWEEN '${fecha}' AND '${fechaFinal}'`);
+
+        // Renderiza la plantilla con los datos de la sesión y los datos de la base de datos
+        const htmlContent = await ejs.renderFile(plantillaPath, {
+            tipo,
+            desdeFecha,
+            hastaFecha,
+            titulo,
+            nombre,
+            oficio,
+            exp,
+            area,
+            objetos: queryParaReportes
+        });
+
+        // Crea una instancia de Puppeteer
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+
+        // Establece el tamaño de la página y carga el contenido HTML
+        await page.setViewport({ width: 1200, height: 800 });
+        await page.setContent(htmlContent);
+
+        // Genera el PDF
+        const pdf = await page.pdf({ format: 'A4', landscape: true });
+
+        // Cierra el navegador de Puppeteer
+        await browser.close();
+
+        // Envía el PDF como respuesta
+        res.contentType('application/pdf');
+        res.send(pdf);
+    } catch (error) {
+        // Maneja cualquier error que ocurra
+        console.error('Error al generar el PDF:', error);
+        res.status(500).send('Error al generar el PDF');
+    }
 });
 
 //10 Hacer registro
@@ -317,7 +494,7 @@ app.post('/solicitud', async(req, res) => {
         equipo += (equipo ? ':' : '') + otroInput;
     }
     console.log(otroInput);
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:usuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion,IdAsignacion:0}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -378,7 +555,7 @@ app.post('/solicitudAdmin',authPage('Admin'), async(req, res) => {
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion}, async(error, results)=> {
+    connection.query('INSERT INTO solicitudes SET ?', {IdUsuario:idUsuario,Fecha:fecha,Hora:hora,Telefono:telefono, IdEdificio:edificio, UbicacionFisica:ubicacion, Equipo:equipo, Descripcion: descripcion,IdAsignacion:0}, async(error, results)=> {
         if(error){
             console.log(error);
         }else{
@@ -492,6 +669,7 @@ app.post('/auth', async (req,res)=> {
         });
     }
 });
+
 //VALES
 app.post('/vales', async(req, res) => {
     const usuario = req.session.name;
@@ -513,92 +691,82 @@ app.post('/vales', async(req, res) => {
     if (otroInput) {
         equipo += (equipo ? ':' : '') + otroInput;
     }
-    const cambioEstado = 'Asignada';
-    await query(`UPDATE solicitudes SET Estado = ${cambioEstado} WHERE FolioSolicitud = ${folioSolicitud}`);
-    const { foli, equipos, serie, marcaE, modeloE, caracteristicas, estatus, revision } = req.body;
+    
     const fechaHoraActual = new Date().toLocaleString();
     const folioSeleccionado = folioSolicitud;
     const templatePath = path.join(__dirname, 'views', 'generarVale.ejs');
-    fs.readFile(templatePath, 'utf8', async (err, data) => {
-        if (err) {
-            console.error('Error al leer la plantilla HTML:', err);
-            return res.status(500).send('Error interno del servidor');
-        }
-    const htmlContent = ejs.render(data, {
-            folio: folioSeleccionado,
-            equipos,
-            serie,
-            marca,
-            modelo,
-            caracteristicas,
-            estatus,
-            revision,
-            fechaHoraActual
-        });
-                // Crear una instancia de Puppeteer
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        
-        const pdfPath = path.join(__dirname, 'docs', `ValeST24-${folioSeleccionado}.pdf`);
-        await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
-        await page.pdf({ path: pdfPath, format: 'A4' });
-        await browser.close();
-        app.get('/:filename', (req, res) => {
-            const { filename } = req.params;
-            const filePath = path.join(__dirname,'docs',filename);
-            res.download(filePath, (err) => {
-                if (err) {
-                    console.error('Error al descargar el archivo PDF:', err);
-                    return res.status(500).send('Error interno del servidor');
+    
+    // Renderizar la plantilla HTML
+    const htmlContent = await ejs.renderFile(templatePath, {
+        folio: folioSeleccionado,
+        equipos: req.body.equipos,
+        serie: req.body.serie,
+        marca: req.body.marca,
+        modelo: req.body.modelo,
+        caracteristicas: req.body.caracteristicas,
+        estatus: req.body.estatus,
+        revision: req.body.revision,
+        fechaHoraActual: fechaHoraActual
+    });
+
+    // Crear una instancia de Puppeteer y generar el PDF
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const pdfPath = path.join(__dirname, 'docs', `ValeST24-${folioSeleccionado}.pdf`);
+
+    await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+    await page.pdf({ path: pdfPath, format: 'A4' });
+    await browser.close();
+
+    // Enviar respuesta al cliente
+
+    res.render('alerta', {
+        alert: true,
+        alertTitle: 'Éxito',
+        alertMessage: 'PDF generado y guardado correctamente',
+        alertIcon: 'success',
+        showConfirmButton: false,
+        timer: 1500,
+        ruta: 'panelAdmin'
+    });   
+
+    // Actualizar el estado de la solicitud en la base de datos
+    const cambioEstado = "Asignada";
+    connection.query('UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ? ', [cambioEstado, folioSolicitud], async(error, results)=> {
+        if (error) {
+            console.log(error);
+        } else {
+            // Insertar registros en la base de datos
+            connection.query('INSERT INTO asignaciones SET ?', { IdSolicitud: folioSolicitud, IdTecnico: idTecnico,DIagnostico:"", Solucion:"", Mensaje:"" }, async(error, results)=> {
+                if (error) {
+                    console.log(error);
                 } else {
-                    console.log('Archivo PDF descargado correctamente');
-                    res.render('vales', {
-                        folioSolicitudes: [{ folioSeleccionado }],
-                        alert: {
-                            alertTitle: 'Éxito',
-                            alertMessage: 'PDF generado y descargado correctamente',
-                            alertIcon: 'success',
-                            showConfirmButton: true,
-                            timer: 5000,
-                            ruta: 'panelAdmin'
+                    const IdAsignacion = results.insertId;
+                    await query(`UPDATE solicitudes SET IdAsignacion = ${IdAsignacion} WHERE FolioSolicitud = ${folioSolicitud}`);
+                    connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            enviarMail(3,correoUsuarioFolio);
+                            enviarMail(5,correoTecnico);
                         }
                     });
                 }
             });
-        })
-    })
-    const asignado = ` 
-    UPDATE solicitudes SET TecnicoAsignado = ${idTecnico} WHERE FolioSolicitud = ${folioSolicitud};
-    `;//Actualizar el tecnico asignado a una solicitud
-    const asignadoQ = await query(asignado);
-    console.log(caracteris);
-    connection.query('INSERT INTO vales SET ?', {FolioSolicitud:folioSolicitud,Fecha:fecha,Equipo:equipo, NoSerieEquipo:noSerie, MarcaEquipo:marca, ModeloEquipo:modelo,Caracteristicas: caracteris ,Estado: estado,NombreUsuario:usuario}, async(error, results)=> {
-        if(error){
-            console.log(error);
-        }else{
-            enviarMail(3,correoUsuarioFolio);
-            enviarMail(5,correoTecnico);
-                res.render('alerta',{ //pasar parametros para el mensaje AlertSweet
-                    alert: true,
-                    alertTitle: "Vale",
-                    alertMessage: "¡Vale y PDF creado corractamente!",
-                    alertIcon: "success",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    ruta: 'panelAdmin'
-                })         
         }
-    })
-    // Función para obtener la fecha y hora actual en formato MySQL
-    function obtenerFechaHoraActual() {
-        const fecha = new Date();
-        const año = fecha.getFullYear();
-        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-        const dia = String(fecha.getDate()).padStart(2, '0');
+    });
 
-        return `${año}-${mes}-${dia}`;
-    }
 });
+
+// Función para obtener la fecha y hora actual en formato MySQL
+function obtenerFechaHoraActual() {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+
+    return `${año}-${mes}-${dia}`;
+}
 
 // DICTAMENES
 app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
@@ -611,22 +779,23 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
     const marcaEquipo = req.body.marcaEquipo;
     const modeloEquipo = req.body.modeloEquipo;
     const noSerieEquipo = req.body.noSerieEquipo;
-    const estadoDictamen = req.body.estadoDictamen;
+    const estado = req.body.estado;
     const tipoDictamen = req.body.tipoDictamen;
     const caracDictamen = req.body.caracDictamen;
     const observacionesDictamen = req.body.observacionesDictamen;
     const descripcionDictamen = req.body.descripcionDictamen;
-
+    const dirigidoA = req.body.dirigidoA;
+    console.log(dirigidoA);
     connection.query('INSERT INTO dictamenes SET ?', {
         Encargado: usuario,
-        FechaDictamen: fecha,
+        Fecha: fecha,
         FolioSolicitud: folioSolicitudDictamen,
         idVale: vale,
         Equipo: equipoDictamen,
         MarcaEquipo: marcaEquipo,
         ModeloEquipo: modeloEquipo,
         NoSerieEquipo: noSerieEquipo,
-        EstadoDictamen: estadoDictamen,
+        Estado: estado,
         DictamenFinal: tipoDictamen,
         caracDictamen: caracDictamen,
         Observaciones: observacionesDictamen,
@@ -649,18 +818,21 @@ app.post('/guardar-datos-y-generar-pdf', async (req, res) => {
                 dictamenes: [{
                     idDictamen,
                     FolioSolicitud: folioSolicitudDictamen,
-                    FechaDictamen: fecha,
+                    Fecha: fecha,
                     Equipo: equipoDictamen,
                     MarcaEquipo: marcaEquipo,
                     ModeloEquipo: modeloEquipo,
                     NoSerieEquipo: noSerieEquipo,
-                    EstadoDictamen: estadoDictamen,
+                    Estado: estado,
                     DictamenFinal: tipoDictamen,
                     caracDictamen: caracDictamen,
                     Observaciones: observacionesDictamen,
-                    Descripcion: descripcionDictamen
+                    Descripcion: descripcionDictamen,
+                    dirigidoA: dirigidoA
                 }],
                 fecha: fecha
+
+
             });
 
             await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
@@ -798,9 +970,108 @@ app.get('/descargarPDFdictamen', (req, res) => {
     });
 });
 
+//Actualizar el estado de las asignaciones
+app.post('/actualizarEstadoSolicitud', async (req, res) => {
+    const folioSolicitud = req.body.folioSolicitud;
+    const nuevoEstado = req.body.nuevoEstado;
+
+    // Actualiza el estado de la solicitud en la base de datos
+    connection.query('UPDATE solicitudes SET Estado = ? WHERE FolioSolicitud = ?', [nuevoEstado, folioSolicitud], (error, results) => {
+        if (error) {
+            console.error('Error al actualizar el estado de la solicitud:', error);
+            res.status(500).send('Error interno del servidor');
+        } else {
+            // Si se actualizó correctamente, muestra un mensaje de éxito con SweetAlert2
+            res.status(200).send('Estado actualizado correctamente');
+        }
+    });
+});
+
+// Creación de diagnósticos técnicos y soluciones aplicadas
+app.post('/crearDiagnostico', async (req, res) => {
+    const folioSeleccionado = req.body.folios; // Obtener el folio seleccionado del cuerpo de la solicitud
+    const diagnosticoT = req.body.diagnosticoT;
+    const solucion = req.body.solucion;
+
+    // Consulta para obtener el IdTecnico de la tabla asignaciones
+    connection.query('SELECT IdTecnico FROM asignaciones WHERE IdSolicitud = ?', [folioSeleccionado], (error, results) => {
+        if (error) {
+            console.error('Error al obtener el IdTecnico:', error);
+            // Mostrar un mensaje de error utilizando SweetAlert2
+            res.render('panelTecnicos', {
+                alert: {
+                    alertTitle: 'Error',
+                    alertMessage: 'Error interno del servidor',
+                    alertIcon: 'error',
+                    showConfirmButton: true,
+                    timer: null,
+                    ruta: 'panelTecnicos' // Redirige a la misma página
+                }
+            });
+        } else {
+            const idTecnico = results[0].IdTecnico; // Se obtiene el IdTecnico de los resultados de la consulta
+            console.log('IdTecnico obtenido:', idTecnico);
+
+            // Inserción del diagnóstico y solución en la tabla asignaciones
+            connection.query('UPDATE asignaciones SET Diagnostico = ?, Solucion = ? WHERE IdSolicitud = ?',
+                [diagnosticoT, solucion, folioSeleccionado], (error, results) => {
+                    if (error) {
+                        console.error('Error al actualizar la tabla de asignaciones:', error);
+                        // Mostrar un mensaje de error utilizando SweetAlert2
+                        res.render('panelTecnicos', {
+                            alert: {
+                                alertTitle: 'Error',
+                                alertMessage: 'Error al actualizar la tabla de asignaciones',
+                                alertIcon: 'error',
+                                showConfirmButton: false,
+                                timer: 1500,
+                                ruta: 'panelTecnicos' // Redirige a la misma página
+                            }
+                        });
+                    } else {
+                        console.log('Diagnóstico y solución actualizados correctamente');
+
+                        // Consulta para obtener las asignaciones actualizadas
+                        connection.query('SELECT * FROM asignaciones WHERE IdTecnico = ?', [idTecnico], (error, asignaciones) => {
+                            if (error) {
+                                console.error('Error al obtener las asignaciones:', error);
+                                // Mostrar un mensaje de error utilizando SweetAlert2
+                                res.render('panelTecnicos', {
+                                    alert: {
+                                        alertTitle: 'Error',
+                                        alertMessage: 'Error al obtener las asignaciones',
+                                        alertIcon: 'error',
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        ruta: 'panelTecnicos' // Redirige a la misma página
+                                    }
+                                });
+                            } else {
+                                console.log('Asignaciones obtenidas correctamente');
+                                // Mostrar un mensaje de éxito utilizando SweetAlert2
+                                res.render('panelTecnicos', {
+                                    alert: {
+                                        alertTitle: 'Éxito',
+                                        alertMessage: 'Diagnóstico y solución actualizados correctamente',
+                                        alertIcon: 'success',
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        ruta: 'panelTecnicos' // Redirige a la misma página
+                                    },
+                                    asignaciones: asignaciones // Pasar las asignaciones al archivo EJS
+                                });
+                            }
+                        });
+                    }
+                });
+        }
+    });
+
+});
 
 //12 Auth page
-app.get('/', (req, res)=>{
+app.get('/',(req, res)=>{
+
     if(req.session.loggedin){
         res.render('login',{
             login: true,
