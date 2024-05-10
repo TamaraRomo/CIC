@@ -358,6 +358,180 @@
         </body>
     </div>
 <!-- FIN DE DASHBOARD----------------------------------------------------------------------------------------------------- -->
+<!-----ESTATUSSSSSSSS--------------------------------------------------------------------------------------------->
+<div id="Estatus" class="contenido-individual">
+<!-- Contenido de historial -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="resources/css/solicitud_estatus.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<title>Statistics Example</title>
+</head>
+<body>
+<div class="container" style="max-width: 100%;">
+    <h2 id="estadoSolicitudes">Estado de solicitudes</h2>
+    <!-- Agrega campos de entrada de fecha -->
+    <input type="date" id="fechaInicio">
+    <input type="date" id="fechaFin">
+    <button type="button" class="btn btn-outline-dark" onclick="#">Filtrar</button>
+    <div class="guardarCambios">
+        <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
+    </div>
+    <div class="table-responsive">
+        <table  class="table" id="estatusTabla">
+            <tr class="tableEstatus">
+                <th colspan="5" class="tablaTitulos">Abierto</th>
+                <th colspan="5" class="tablaTitulos">Asignadas</th>
+                <th colspan="5" class="tablaTitulos">En Proceso</th>
+                <th colspan="5" class="tablaTitulos">En Espera</th>
+                <th colspan="5" class="tablaTitulos">Cerrado</th>
+            </tr>
+        <tbody>
+            <tr class="table-secondary">
+                <td>Folio</td>
+                <td>Nombre</td>
+                <td>Equipo</td>
+                <td>Fecha</td>
+                <td id="bordeD">Estatus</td>
+                <td >Folio</td>
+                <td>Nombre</td>
+                <td>Fecha</td>
+                <td>Tecnico</td>
+                <td id="bordeDer">Estatus</td>
+                <td >Folio</td>
+                <td>Nombre</td>
+                <td>Equipo</td>
+                <td>Fecha</td>
+                <td id="bordeDer">Estatus</td>
+                <td >Folio</td>
+                <td>Nombre</td>
+                <td>Equipo</td>
+                <td>Fecha</td>
+                <td id="bordeDer">Estatus</td>
+                <td>Folio</td>
+                <td>Nombre</td>
+                <td>Equipo</td>
+                <td>Fecha</td>
+                <td>Estatus</td>
+            </tr>
+            <tr class="table-light">
+                <% for (let i = 0; i < Math.max(abierto.length, pendiente.length, cerrado.length); i++) { %>
+                    <tr>
+                        <!-- Abierto -->
+                        <% if (i < abierto.length) { %>
+                            <td class="bg-danger"><%= abierto[i].FolioSolicitud %></td>
+                            <td class="bg-danger"><%= abierto[i].Nombre %></td>
+                            <td class="bg-danger" id="equipoEstado<%= i %>"><%= abierto[i].Equipo %></td>
+                            <td class="bg-danger fechaEstado" id="fechaEstado<%= i %>"><%= abierto[i].Fecha %></td>
+                            <td class="seleccion bg-danger" id="bordeDerecho<%= i %>" >
+                                <select class="form-select cambiarEstado" data-folio="<%= abierto[i].FolioSolicitud %>">
+                                    <option value="Abierto" selected>Abierto</option>
+                                    <option value="Proceso">En Proceso</option>
+                                    <option value="Espera">En Espera</option>
+                                    <option value="Cerrado">Cerrado</option>
+                                </select>
+                            </td>
+                        <% } else { %>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id="bordeDerechoVacio"></td>
+                        <% } %>
+                        <!----ASIGNADAS-->
+                        <% if (i < asignada.length) { %>
+                            <td class="bg-warning"><%= asignada[i].FolioSolicitud %></td>
+                            <td class="bg-warning"><%= asignada[i].UsuarioNombre %></td>
+                            <td class="bg-warning fechaEstado" id="fechaEstado<%= i %>"><%= asignada[i].Fecha %></td>
+                            <td class="bg-warning" id="equipoEstado<%= i %>"><%= asignada[i].Nombre %></td>
+                            <td class="seleccion bg-warning" id="ladoDerecho<%= i %>" >
+                                <select class="form-select cambiarEstado" data-folio="<%= asignada[i].FolioSolicitud %>">
+                                    <option value="Asignada" selected>Asignada</option>
+                                    <option value="Proceso">En Proceso</option>
+                                    <option value="Espera">En Espera</option>
+                                    <option value="Cerrado">Cerrado</option>
+                                </select>
+                            </td>
+                        <% } else { %>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id="ladoDerechoVacio"></td>
+                        <% } %>
+                        <!-- Pendiente -->
+                        <% if (i < pendiente.length) { %>
+                            <td class="bg-info"><%= pendiente[i].FolioSolicitud %></td>
+                            <td class="bg-info"><%= pendiente[i].Nombre %></td>
+                            <td class="bg-info"><%= pendiente[i].Equipo %></td>
+                            <td class="bg-info fechaEstado" id="fechaEstado<%= i %>"><%= pendiente[i].Fecha %></td>
+                            <td class="seleccion bg-info" id="pendienteDerecha<%= i %>">
+                                <select class="form-select cambiarEstado" data-folio="<%= pendiente[i].FolioSolicitud %>">
+                                    <option value="Proceso" selected>En Proceso</option>
+                                    <option value="Abierto">Abierto</option>
+                                    <option value="Espera">En Espera</option>
+                                    <option value="Cerrado">Cerrado</option>
+                                </select>
+                            </td>
+                        <% } else { %>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td id="pendienteVacioDerecha"></td>
+
+                        <% } %>
+                        <!-- En espera -->
+                        <% if (i < espera.length) { %>
+                            <td class="bg-primary"><%= espera[i].FolioSolicitud %></td>
+                            <td class="bg-primary"><%= espera[i].Nombre %></td>
+                            <td class="bg-primary"><%= espera[i].Equipo %></td>
+                            <td class="bg-primary fechaEstado" id="fechaEstado<%= i %>"><%= espera[i].Fecha %></td>
+                            <td class="seleccion bg-primary" id="esperarDerecha<%= i %>">
+                                <select class="form-select cambiarEstado" data-folio="<%= espera[i].FolioSolicitud %>">
+                                    <option value="Proceso">En Proceso</option>
+                                    <option value="Abierto">Abierto</option>
+                                    <option value="Espera" selected>En Espera</option>
+                                    <option value="Cerrado">Cerrado</option>
+                                </select>
+                            </td>
+                        <% } else { %>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td id="esperaVacioDerecha"></td>
+
+                        <% } %>
+                        <!-- Cerrado -->
+                        <% if (i < cerrado.length) { %>
+                            <td class="bg-success"><%= cerrado[i].FolioSolicitud %></td>
+                            <td class="bg-success"><%= cerrado[i].Nombre %></td>
+                            <td class="bg-success"><%= cerrado[i].Equipo %></td>
+                            <td class="bg-success fechaEstado" id="fechaEstado<%= i %>"><%= cerrado[i].Fecha %></td>
+                            <td class="seleccion bg-success" id="ladoDerecho<%= i %>" >
+                                <select class="form-select cambiarEstado" data-folio="<%= cerrado[i].FolioSolicitud %>">
+                                    <option value="Asignada" selected>Asignada</option>
+                                    <option value="Proceso">En Proceso</option>
+                                    <option value="Espera">En Espera</option>
+                                    <option value="Cerrado">Cerrado</option>
+                                </select>
+                            </td>
+                        <% } else { %>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                        <% } %>
+                    </tr>
+                <% } %>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+<script src="resources/scripts/estatus.js"></script>
+</body>
+<!-----SOLICITUD DE SOPORTE TÉCNICO--------------------------------------------------------------------------------------------->
+</div>
     <div id="solicitud-de-reportes" class="contenido-individual">
         <!-- Contenido de la solicitud de reportes -->
         <head>
@@ -1100,7 +1274,6 @@
                             <th>Vale-PDF</th>
                             <th>Dicta-PDF</th>
                             <th>Diagnóstico Técnico</th>
-                            <th>Solución Aplicada</th>
                     </thead>
 
                     <% vales.forEach((variables) => { %>
@@ -1113,171 +1286,70 @@
                             <td><%= variables.IdDictamen %></td>
                             <td><a href="/descargarPDFvale?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Vale"></a></td>
                             <td><a href="/descargarPDFdictamen?folioSolicitud=<%= variables.FolioSolicitud %>"><img src="resources/images/downloads.png" alt="Descargar Dictamen"></a></td>
-                            <td><%= variables.Diagnostico %></td>
-                            <td><%= variables.Solucion %></td>
-
+                            <td>
+                                <% if (variables.Diagnostico) { %>
+                                    <a href="#" class="btn btn-diagnostico" data-toggle="modal" data-target="#exampleModalLong3" data-diagnostico="<%= variables.Diagnostico %>" data-solucion="<%= variables.Solucion %>">
+                                        <img src="resources/images/ver.png" alt="Ojo">
+                                    </a>
+                                <% } %>
+                            </td>
                         </tr>
                     <% }); %>
                 </table>
             </div>
-        </div>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalLong3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle2" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle3">Técnicos</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Diagnóstico</th>
+                                            <th scope="col">Solución aplicada</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="diagnosticosSoluciones">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
     <script src="resources/scripts/semaforoVales.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.btn-diagnostico').click(function() {
+                var diagnostico = $(this).data('diagnostico');
+                var solucion = $(this).data('solucion');
+
+                // Limpiar tabla
+                $('#diagnosticosSoluciones').empty();
+
+                // Agregar diagnóstico y solución a la tabla
+                var row = $('<tr>');
+                row.append('<td>' + diagnostico + '</td>');
+                row.append('<td>' + solucion + '</td>');
+                $('#diagnosticosSoluciones').append(row);
+            });
+        });
+    </script>
 </body>
 </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
-<!-----ESTATUSSSSSSSS--------------------------------------------------------------------------------------------->
-    <div id="Estatus" class="contenido-individual">
-        <!-- Contenido de historial -->
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="resources/css/solicitud_estatus.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <title>Statistics Example</title>
-    </head>
-    <body>
-        <div class="container" style="max-width: 100%;">
-            <h2 id="estadoSolicitudes">Estado de solicitudes</h2>
-            <div class="guardarCambios">
-                <button type="button" class="btn btn-outline-dark" id="guardarCambios">Guardar cambios</button>
-            </div>
-            <div class="table-responsive">
-                <table  class="table" id="estatusTabla">
-                    <tr class="tableEstatus">
-                        <th colspan="5" class="tablaTitulos">Abierto</th>
-                        <th colspan="4" class="tablaTitulos">Asignadas</th>
-                        <th colspan="4" class="tablaTitulos">En Proceso</th>
-                        <th colspan="4" class="tablaTitulos">En Espera</th>
-                        <th colspan="3" class="tablaTitulos">Cerrado</th>
-                    </tr>
-                <tbody>
-                    <tr class="table-secondary">
-                        <td>Folio</td>
-                        <td>Nombre</td>
-                        <td>Equipo</td>
-                        <td>Fecha</td>
-                        <td id="bordeD">Estatus</td>
-                        <td >Folio</td>
-                        <td>Nombre</td>
-                        <td>Tecnico</td>
-                        <td id="bordeDer">Estatus</td>
-                        <td >Folio</td>
-                        <td>Nombre</td>
-                        <td>Equipo</td>
-                        <td id="bordeDer">Estatus</td>
-                        <td >Folio</td>
-                        <td>Nombre</td>
-                        <td>Equipo</td>
-                        <td id="bordeDer">Estatus</td>
-                        <td>Folio</td>
-                        <td>Nombre</td>
-                        <td>Equipo</td>
-                    </tr>
-                    <tr class="table-light">
-                        <% for (let i = 0; i < Math.max(abierto.length, pendiente.length, cerrado.length); i++) { %>
-                            <tr>
-                                <!-- Abierto -->
-                                <% if (i < abierto.length) { %>
-                                    <td class="bg-danger"><%= abierto[i].FolioSolicitud %></td>
-                                    <td class="bg-danger"><%= abierto[i].Nombre %></td>
-                                    <td class="bg-danger" id="equipoEstado<%= i %>"><%= abierto[i].Equipo %></td>
-                                    <td class="bg-danger" id="fechaEstado<%= i %>"><%= abierto[i].Fecha %></td>
-                                    <td class="seleccion bg-danger" id="bordeDerecho<%= i %>" >
-                                        <select class="form-select cambiarEstado" data-folio="<%= abierto[i].FolioSolicitud %>">
-                                            <option value="Abierto" selected>Abierto</option>
-                                            <option value="Proceso">En Proceso</option>
-                                            <option value="Espera">En Espera</option>
-                                            <option value="Cerrado">Cerrado</option>
-                                        </select>
-                                    </td>
-                                <% } else { %>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td id="bordeDerechoVacio"></td>
-                                <% } %>
-                                <!----ASIGNADAS-->
-                                <% if (i < asignada.length) { %>
-                                    <td class="bg-warning"><%= asignada[i].FolioSolicitud %></td>
-                                    <td class="bg-warning"><%= asignada[i].UsuarioNombre %></td>
-                                    <td class="bg-warning" id="equipoEstado<%= i %>"><%= asignada[i].Nombre %></td>
-                                    <td class="seleccion bg-warning" id="ladoDerecho<%= i %>" >
-                                        <select class="form-select cambiarEstado" data-folio="<%= asignada[i].FolioSolicitud %>">
-                                            <option value="Asignada" selected>Asignada</option>
-                                            <option value="Proceso">En Proceso</option>
-                                            <option value="Espera">En Espera</option>
-                                            <option value="Cerrado">Cerrado</option>
-                                        </select>
-                                    </td>
-                                <% } else { %>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td id="ladoDerechoVacio"></td>
-                                <% } %>
-                                <!-- Pendiente -->
-                                <% if (i < pendiente.length) { %>
-                                    <td class="bg-info"><%= pendiente[i].FolioSolicitud %></td>
-                                    <td class="bg-info"><%= pendiente[i].Nombre %></td>
-                                    <td class="bg-info"><%= pendiente[i].Equipo %></td>
-                                    <td class="seleccion bg-info" id="pendienteDerecha<%= i %>">
-                                        <select class="form-select cambiarEstado" data-folio="<%= pendiente[i].FolioSolicitud %>">
-                                            <option value="Proceso" selected>En Proceso</option>
-                                            <option value="Abierto">Abierto</option>
-                                            <option value="Espera">En Espera</option>
-                                            <option value="Cerrado">Cerrado</option>
-                                        </select>
-                                    </td>
-                                <% } else { %>
-                                    <td ></td>
-                                    <td ></td>
-                                    <td ></td>
-                                    <td id="pendienteVacioDerecha"></td>
 
-                                <% } %>
-                                <!-- En espera -->
-                                <% if (i < espera.length) { %>
-                                    <td class="bg-primary"><%= espera[i].FolioSolicitud %></td>
-                                    <td class="bg-primary"><%= espera[i].Nombre %></td>
-                                    <td class="bg-primary"><%= espera[i].Equipo %></td>
-                                    <td class="seleccion bg-primary" id="esperarDerecha<%= i %>">
-                                        <select class="form-select cambiarEstado" data-folio="<%= espera[i].FolioSolicitud %>">
-                                            <option value="Proceso">En Proceso</option>
-                                            <option value="Abierto">Abierto</option>
-                                            <option value="Espera" selected>En Espera</option>
-                                            <option value="Cerrado">Cerrado</option>
-                                        </select>
-                                    </td>
-                                <% } else { %>
-                                    <td ></td>
-                                    <td ></td>
-                                    <td ></td>
-                                    <td id="esperaVacioDerecha"></td>
-
-                                <% } %>
-                                <!-- Cerrado -->
-                                <% if (i < cerrado.length) { %>
-                                    <td class="bg-success"><%= cerrado[i].FolioSolicitud %></td>
-                                    <td class="bg-success"><%= cerrado[i].Nombre %></td>
-                                    <td class="bg-success"><%= cerrado[i].Equipo %></td>
-                                <% } else { %>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-
-                                <% } %>
-                            </tr>
-                        <% } %>
-                    </tr>
-                </tbody>
-            </table>
-            </div>
-        </div>
-        <script src="resources/scripts/estatus.js"></script>
-        </body>
-    </div>
     <!-- Agrega aquí más secciones de contenido según sea necesario -->
 <!-- Sección de estadisticas -->
 

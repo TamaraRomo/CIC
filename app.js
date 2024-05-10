@@ -316,9 +316,7 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             asignaTecnico:  asignacionesTecnicos
             
         });
-        console.log(historialSoli);
-        console.log('jfnarjfnarfiarnfgnrafgnajkrnjarnjkfnkarjnfjanr');
-        console.log(tecnicos);
+
 });
 function query(sql) {
     return new Promise((resolve, reject) => {
