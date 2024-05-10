@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión</title>
     <link rel="stylesheet" href="resources/css/style_login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+
 </head>
 <body>
 <p></p>
@@ -23,6 +25,7 @@
         <input type="password" id="password" name="password" placeholder="Contraseña" class="camposLogin" required>
         <button type="submit" value="Submit" id="inicioSesion">Iniciar Sesión</button>
     </form>
+    <button type="button" class="btn btn-small" data-bs-toggle="modal" data-bs-target="#exampleModal">Cambiar contraseña</button>
     <p></p>
     <div class="explicacion">
         <p>
@@ -46,7 +49,30 @@
         <p>Panel de advertencia de privacidad de usuario.</p>
     </div>  -->
 </div>
-
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">¿Desea cambiar su contraseña?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="/forgot-password">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Correo registrado:</label>
+              <input type="text" class="form-control" id="email" name="email">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Enviar correo</button>
+              </div>
+          </form>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- Obtenido de sweetAlert2  -->
 <!--Tenemos que llamar la estructura para usar el mensaje AlertSweet en EJS llamando los parametros establecidos en APPJS-->
 <% if(typeof alert != "undefined"){ %>

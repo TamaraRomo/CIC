@@ -8,6 +8,8 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const {authPage,authSub} = require('./middleware');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const bodyParser = require('body-parser');
 
 //seteamos urlencoded para capturar los datos del formulario
 app.use(express.urlencoded({ extended: false }));
@@ -36,13 +38,13 @@ app.use(session({
 }));
 
 // //Invocar a rate-limit para proteger contra ataques de muchas solicitudes al mismo tiempo
-//  const limiter = rateLimit({
-//  windowMs: 15 * 60 * 1000, // 15 minutes
-//  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-// standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-// legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-// });
-// app.use(limiter);
+  const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+ standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+ legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+ });
+ app.use(limiter);
 
 //8.- Invocar conexion a DB
 const connection = require('./database/db');
@@ -356,7 +358,6 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
         } else {
             if (results.length > 0) {
                 // Si se encontraron resultados, devuelve la información como JSON al cliente
-                console.log(results);
                 req.session.correoDictamen = results[0].Correo;
                 req.session.idValeDictamen = results[0].idVale;
                 res.json(results[0]); // Suponiendo que solo necesitas el primer resultado
@@ -367,6 +368,100 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
         }
     });
 });
+
+
+//------------------CAMBIAR EL LINK AL SUBIR AL SERVIDOR--------------------------------
+//-----------------------------------------------------------------------------------------------------
+app.post('/forgot-password', async (req, res) => {
+    const  email  = req.body.email;
+    const emailVerified = await query(`SELECT * FROM usuarios WHERE Correo =  '${email}'`);
+    const idUsuario = emailVerified[0].IdUsuario;
+    // Check if the email exists in your user database
+     if (emailVerified)  {
+       // Generate a reset token
+       const token = crypto.randomBytes(20).toString('hex');
+       const tokenExpira = new Date(); // Obtiene la fecha y hora actual
+        tokenExpira.setHours(tokenExpira.getHours() + 1); // Suma una hora a la fecha y hora actual
+        const fechaHoraExpiracion = `${tokenExpira.getFullYear()}-${String(tokenExpira.getMonth() + 1).padStart(2, '0')}-${String(tokenExpira.getDate()).padStart(2, '0')} ${String(tokenExpira.getHours()).padStart(2, '0')}:${String(tokenExpira.getMinutes()).padStart(2, '0')}:${String(tokenExpira.getSeconds()).padStart(2, '0')}`;
+
+       // Store the token with the user's email in a database or in-memory store
+       const almacenarToken = await query(`INSERT INTO reset_password (IdUsuario, Token, FechaExpiracion) VALUES (${idUsuario},"${token}","${fechaHoraExpiracion}")`);
+       // Send the reset token to the user's email
+       const transporter = nodemailer.createTransport({
+         service: 'gmail',
+         auth: {
+           user: process.env.SMTP_USER,
+           pass: process.env.SMTP_PASS
+         },
+       });
+       const mailOptions = {
+         from: '"CIC Assistance 🤖" <cic.assistance2024@gmail.com>',
+         to: email,
+         subject: 'Crear nueva contraseña',
+         text: `Haz click en el siguiente enlace para poder crear una nueva contraseña: http://localhost:3000/reset-password/${token}`,
+       };
+       transporter.sendMail(mailOptions, (error, info) => {
+         if (error) {
+           console.log(error);
+           res.status(500).send('Error enviando el email');
+         } else {
+           res.status(200).send('Te enviamos las instrucciones a tu correo para cambiar la contraseña de tu cuenta');
+         }
+       });
+     } else {
+       res.status(404).send('Email no encontrado');
+     }
+    });
+
+
+app.get('/cambiarContraseña', (req, res) => {
+    res.render('cambiarContraseña');
+});
+
+
+//HACER QUE EL FORM HABRA EN UN ARICHIVO EJS PARA PASAR PARAMS
+// Route to handle the reset token
+app.get('/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    // Check if the token exists and is still valid
+    const validarToken = await query(`SELECT * FROM reset_password WHERE Token = "${token}" AND FechaExpiracion > NOW()`)
+    if (validarToken) {
+      // Render a form for the user to enter a new password
+      res.render('cambiarContraseña', { token: token });
+    } else {
+      res.status(404).send('Invalid or expired token');
+    }
+  }); 
+
+  app.post('/reset-password', async (req, res) => {
+    const { token, password } = req.body;
+    let hashPass = await bcryptjs.hash(password, 8);
+    // Find the user with the given token and update their password
+    const usuario = await query(`SELECT IdUsuario FROM reset_password WHERE Token = "${token}"`);
+    if (usuario) {
+      const actualizarPass = await query(`UPDATE usuarios SET Contrasena = "${hashPass}" WHERE IdUsuario = ${usuario[0].IdUsuario}`);
+      if(actualizarPass){
+        await query(`DELETE FROM reset_password WHERE Token =  "${token}"`);
+        // Remove the reset token after the password is updated
+        res.send(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="5;url=/">
+            <title>Contraseña Actualizada</title>
+        </head>
+        <body>
+            <h1>Contraseña Actualizada con Éxito</h1>
+            <p>Serás redirigido a la pantalla de inicio en 5 segundos...</p>
+        </body>
+        </html>
+    `);
+      }
+    } else {
+      res.status(404).send('Token invalido o expirado');
+    }
+  });
 
 //estadisticas
 app.post('/generarEstadisticas', (req, res, next) => {

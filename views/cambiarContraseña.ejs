@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar contraseña</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+<body>
+    <div class="text-center mt-5">
+        <i class="bi bi-file-earmark-lock h1"></i>
+    </div>
+    <div >
+        <div class="card w-50 mb-3 mt-5" style="margin: auto;">
+            <h5 class="card-header text-bg-dark ">Cambiar contraseña</h5>
+            <div class="card-body">
+                <div id="contraseñaError" style="width: 80%;"></div> 
+                <form method="POST" action="/reset-password" onsubmit="return validarContraseñas();">
+                    <input type="hidden" name="token" value="<%= token %>">
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Repita su contraseña</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+                    </div>
+                    <button type="submit" class="btn btn-dark" onclick="validarContraseñas()">Cambiar contraseña</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validarContraseñas() {
+            const password = document.getElementById('password').value; // Obtener el valor del campo contraseña
+            const confirmPassword = document.getElementById('confirmPassword').value; // Obtener el valor del campo confirmación de contraseña
+            const contraseñaError = document.getElementById('contraseñaError');
+        
+            if (password !== confirmPassword) {
+                contraseñaError.textContent = 'Las contraseñas no coinciden.';
+                contraseñaError.classList.add('alert', 'alert-warning', 'sm');
+                contraseñaError.setAttribute('role', 'alert');
+                return false;
+            } else if (password.length < 8) {
+                contraseñaError.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+                contraseñaError.classList.add('alert', 'alert-warning', 'sm');
+                contraseñaError.setAttribute('role', 'alert');
+                return false;
+            } else if (!/[0-9]/.test(password)) {
+                contraseñaError.textContent = 'La contraseña debe contener al menos un número.';
+                contraseñaError.classList.add('alert', 'alert-warning', 'sm');
+                contraseñaError.setAttribute('role', 'alert');
+                return false;
+            } else if (!/[!@#$%^&*]/.test(password)) {
+                contraseñaError.textContent = 'La contraseña debe contener al menos un signo.';
+                contraseñaError.classList.add('alert', 'alert-warning', 'sm');
+                contraseñaError.setAttribute('role', 'alert');
+                return false;
+            } else {
+                contraseñaError.textContent = '';
+                contraseñaError.classList.remove('alert', 'alert-warning');
+                contraseñaError.removeAttribute('role');
+                return true;
+            }
+        }
+        </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script><
+</body>
+</html>
