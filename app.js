@@ -35,14 +35,14 @@ app.use(session({
     saveUninitialized:true
 }));
 
-//Invocar a rate-limit para proteger contra ataques de muchas solicitudes al mismo tiempo
- const limiter = rateLimit({
- windowMs: 15 * 60 * 1000, // 15 minutes
- max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-});
-app.use(limiter);
+// //Invocar a rate-limit para proteger contra ataques de muchas solicitudes al mismo tiempo
+//  const limiter = rateLimit({
+//  windowMs: 15 * 60 * 1000, // 15 minutes
+//  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+// standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+// legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+// });
+// app.use(limiter);
 
 //8.- Invocar conexion a DB
 const connection = require('./database/db');
@@ -268,6 +268,9 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             ruta: 'login'
         });
     }
+    const fechaHaceUnaSemana = obtenerFechaHaceUnaSemana();
+ 
+    const conteoEstados = await query(`SELECT Estado AS estado, COUNT(*) AS total FROM solicitudes GROUP BY Estado`);
     const tecnicos = await query('SELECT * FROM tecnicos');
     const edificios = await query('SELECT * FROM edificios');
     const folios = await query('SELECT solicitudes.FolioSolicitud, solicitudes.IdUsuario, usuarios.Correo FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE NOT EXISTS ( SELECT 1 FROM vales WHERE vales.FolioSolicitud = solicitudes.FolioSolicitud )');
@@ -277,10 +280,16 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
     const soloAbiertas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Abierto"')
     const soliPendiente = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Proceso"')
     const soliCerradas = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Cerrado"')
+    const resultadoConsulta = await query('SELECT COUNT(*) AS totalSolicitudes FROM solicitudes WHERE Estado = "Asignada"');    
+    const resultadoSolicitudes = await query('SELECT COUNT(*) AS totalSolicitudes FROM solicitudes'); 
+    const resultadoSemanal = await query(`SELECT COUNT(*) AS totalSolicitudes FROM solicitudes WHERE Fecha > '${fechaHaceUnaSemana}'`);
+    const resultadoVales = await query('SELECT COUNT(*) AS totalSolicitudes FROM vales');       
     const soliEspera = await query('SELECT solicitudes.*, usuarios.Correo,usuarios.Nombre FROM solicitudes JOIN usuarios ON solicitudes.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado =  "Espera"')
     const soliAsignada = await query('SELECT solicitudes.*,u.Correo, u.Nombre as UsuarioNombre, tecnicos.Nombre, tecnicos.IdTecnico FROM solicitudes LEFT JOIN usuarios u ON solicitudes.IdUsuario = u.IdUsuario LEFT JOIN asignaciones ON solicitudes.IdAsignacion = asignaciones.IdAsignacion LEFT JOIN tecnicos ON asignaciones.IdTecnico = tecnicos.IdTecnico LEFT JOIN usuarios ON tecnicos.IdUsuario = usuarios.IdUsuario WHERE solicitudes.Estado = "Asignada"')
     const inforVales = await query("SELECT v.*, COALESCE(d.idDictamen, 'No existe') AS IdDictamen, u.Nombre AS NombreUsuario, COALESCE(a.Diagnostico, 'No disponible') AS Diagnostico, COALESCE(a.Solucion, 'No disponible') AS Solucion FROM vales v LEFT JOIN dictamenes d ON v.idVale = d.idVale LEFT JOIN solicitudes s ON v.folioSolicitud = s.FolioSolicitud LEFT JOIN usuarios u ON s.IdUsuario = u.IdUsuario LEFT JOIN asignaciones a ON s.FolioSolicitud = a.IdSolicitud ORDER BY v.idVale DESC;");
-    
+    const resultadoDictamenes = await query('SELECT COUNT(*)  AS totalDictamenes FROM dictamenes;')
+    const asignacionesTecnicos = await query('SELECT t.IdTecnico,t.Nombre AS NombreTecnico,t.Correo AS CorreoTecnico,COUNT(a.IdAsignacion) AS CantidadAsignaciones FROM tecnicos t INNER JOIN asignaciones a ON t.IdTecnico = a.IdTecnico GROUP BY t.IdTecnico, t.Nombre;')
+
     res.render('panelAdmin', {
             login: req.session.loggedin,
             name: req.session.name,
@@ -296,6 +305,13 @@ app.get('/panelAdmin',authPage('Admin'), async (req, res) => {
             vales:inforVales,
             tecnicos: tecnicos,
             usuariosTecnicos: usuariosTecnicos,
+            cantidadAsignadas : resultadoConsulta,
+            cantidadSolicitudes : resultadoSolicitudes,
+            cantidadVales :  resultadoVales,
+            cantidadSemanal: resultadoSemanal,
+            conteo: conteoEstados,
+            cantidadDictamenes: resultadoDictamenes,
+            asignaTecnico:  asignacionesTecnicos
             
         });
         console.log(historialSoli);
@@ -313,7 +329,18 @@ function query(sql) {
         });
     });
 }
+function obtenerFechaHaceUnaSemana() {
+    const fechaActual = new Date(obtenerFechaActual());
+    const fechaHaceUnaSemana = new Date(fechaActual);
+    fechaHaceUnaSemana.setDate(fechaActual.getDate() - 6);
 
+    const añoSemanaPasada = fechaHaceUnaSemana.getFullYear();
+    const mesSemanaPasada = String(fechaHaceUnaSemana.getMonth() + 1).padStart(2, '0');
+    const diaSemanaPasada = String(fechaHaceUnaSemana.getDate()).padStart(2, '0');
+    const fechaFormateadaSemanaPasada = `${añoSemanaPasada}-${mesSemanaPasada}-${diaSemanaPasada}`;
+
+    return fechaFormateadaSemanaPasada;
+}
 
 
 // BUSQUEDA DE FOLIO PARA RELLENO AUTOMATICO DE INFO EN DICTAMENES
@@ -468,14 +495,16 @@ app.post('/registerT',authPage('Admin'),async(req, res) => { ///SEPARAR EN OTRA 
             });
         }
     });
-    function obtenerFechaActual() {
-        const fecha = new Date();
-        const año = fecha.getFullYear();
-        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-        const dia = String(fecha.getDate()).padStart(2, '0');
-        return `${año}-${mes}-${dia}`;
-    }
+    
 })
+
+function obtenerFechaActual() {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${año}-${mes}-${dia}`;
+}
 
 //10 Hacer solicitud de soporte
 app.post('/solicitud', async(req, res) => {
