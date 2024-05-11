@@ -16,6 +16,7 @@ COPY database ./database
 
 COPY public /app/public
 
+COPY docs /app/docs
 
 # Copia los archivos de las vistas
 COPY views ./views
