@@ -17,9 +17,6 @@ COPY database ./database
 # Copia el archivo de configuración de variables de entorno
 COPY env/.env .
 
-# Copia los módulos Node.js
-COPY node_modules ./node_modules
-
 
 # Copia los archivos de las vistas
 COPY views ./views
