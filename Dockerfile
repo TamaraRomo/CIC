@@ -14,8 +14,7 @@ RUN npm install
 # Copia los archivos de la base de datos
 COPY database ./database
 
-# Copia el archivo de configuración de variables de entorno
-COPY env/.env .
+COPY public /app/public
 
 
 # Copia los archivos de las vistas
