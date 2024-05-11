@@ -16,5 +16,7 @@ COPY . .
 # Expone el puerto 3000 (o cualquier puerto que tu aplicación Node.js utilice)
 EXPOSE 3000
 
+USER node
+
 # Especifica el comando a ejecutar cuando se inicie el contenedor
 CMD ["node", "app.js"]
