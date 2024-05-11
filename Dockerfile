@@ -20,8 +20,6 @@ COPY env/.env .
 # Copia los módulos Node.js
 COPY node_modules ./node_modules
 
-# Copia los archivos de los módulos de la aplicación
-COPY modules ./modules
 
 # Copia los archivos de las vistas
 COPY views ./views
