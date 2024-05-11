@@ -385,7 +385,7 @@ app.post('/forgot-password', async (req, res) => {
         const fechaHoraExpiracion = `${tokenExpira.getFullYear()}-${String(tokenExpira.getMonth() + 1).padStart(2, '0')}-${String(tokenExpira.getDate()).padStart(2, '0')} ${String(tokenExpira.getHours()).padStart(2, '0')}:${String(tokenExpira.getMinutes()).padStart(2, '0')}:${String(tokenExpira.getSeconds()).padStart(2, '0')}`;
 
        // Store the token with the user's email in a database or in-memory store
-       const almacenarToken = await query(`INSERT INTO reset_password (IdUsuario, Token, FechaExpiracion) VALUES (${idUsuario},"${token}","${fechaHoraExpiracion}")`);
+       await query(`INSERT INTO reset_password (IdUsuario, Token, FechaExpiracion) VALUES (${idUsuario},"${token}","${fechaHoraExpiracion}")`);
        // Send the reset token to the user's email
        const transporter = nodemailer.createTransport({
          service: 'gmail',

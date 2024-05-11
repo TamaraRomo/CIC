@@ -1,7 +1,7 @@
 function validar() {
     var p1 = document.getElementById("password").value;
     var p2 = document.getElementById("password2").value;
-    var correo = document.getElementById("correo").value;
+    const correo = document.getElementById("correo").value;
     // Verificar longitud mínima de 8 caracteres
     if (p1.length < 8) {
         alert("La contraseña debe tener al menos 8 caracteres");
@@ -27,8 +27,8 @@ function validar() {
         return false;
     }
      // Verificar si el correo tiene el dominio "@uacam.mx"
-     var dominio = "@uacam.mx";
-     var dominioValido = correo.endsWith(dominio);
+     const dominio = "@uacam.mx";
+     const dominioValido = correo.endsWith(dominio);
      if (!dominioValido) {
          alert("El correo electrónico debe ser de la Universidad Autónoma de Campeche (uacam.mx)");
          return false;
