@@ -372,8 +372,9 @@ app.get('/obtener-informacion-folio/:folioSolicitud',authPage('Admin'), (req, re
 //-----------------------------------------------------------------------------------------------------
 app.post('/forgot-password', async (req, res) => {
     const  email  = req.body.email;
-    const emailVerified = await query(`SELECT * FROM usuarios WHERE Correo =  '${email}'`);
-    const idUsuario = emailVerified[0].IdUsuario;
+    const emailVerified = await connection.promise().query('SELECT * FROM usuarios WHERE Correo = ?', [email]);
+    //const emailVerified = await query(`SELECT * FROM usuarios WHERE Correo =  '${email}'`);
+    const idUsuario = emailVerified[0][0].IdUsuario;
     // Check if the email exists in your user database
      if (emailVerified)  {
        // Generate a reset token
