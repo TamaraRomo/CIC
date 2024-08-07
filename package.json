@@ -1,16 +1,23 @@
 {
   "dependencies": {
+    "ajax": "^0.0.4",
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "chart.js": "^4.4.2",
     "dotenv": "^16.4.1",
     "ejs": "^3.1.9",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
     "express-session": "^1.18.0",
     "fs": "^0.0.1-security",
+    "helmet": "^7.1.0",
     "mysql": "^2.18.1",
+    "mysql2": "^3.9.7",
     "nodemailer": "^6.9.11",
+    "nodemailer-express-handlebars": "^6.1.2",
     "nodemon": "^3.0.3",
     "path": "^0.12.7",
     "pupeteer": "^0.0.1",
-    "puppeteer": "^22.3.0"
+    "puppeteer": "^22.5.0"
   }
 }

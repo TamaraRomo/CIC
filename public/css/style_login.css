@@ -41,9 +41,9 @@ body {
 .explicacion{
     font-size: 12px;
     background-color: #f2f2f2;
-    margin-top: 2em;
     text-align: center;
     width: 80%;
+    margin-bottom: 10px;
 }
 .camposLogin, #inicioSesion {
     width: calc(100% - 40px);

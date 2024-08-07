@@ -1,0 +1,59 @@
+body, h1, h2, h3, h4, p{
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.contenedorDetalles{
+    color: white;
+    padding: 10px;
+    background-color: #1E2943;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+button{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover{
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+table, th, td{
+    text-align: center;
+    border-spacing: 0px;
+    border: 1px solid black;
+}
+
+th, td{
+    padding: 5px;
+}
+
+.contenedorInfo{
+    display: inline-block;
+    margin: 40px;
+}
+
+.deliniador{
+    background-color: black;
+    padding: 2px;
+}
+
+.aviso{
+    font-size: 16px;
+}
+
+.imprimirReporte{
+    padding: 20px;
+}
+
+thead{
+    color: white;
+    background-color: #1E2943;
+}

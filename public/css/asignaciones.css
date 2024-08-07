@@ -1,5 +1,5 @@
 *{
-    font-family: 'Roboto';
+    font-family: 'Roboto', sans-serif;
 }
 /*Formulario Creación de Dictámenes*/
 .historialSolicitudes {
@@ -69,7 +69,7 @@
     margin-top: 1.5em;
     margin-bottom: 1.5em;
     color: #0D1642;
-    font-family: 'Roboto';
+    font-family: 'Roboto', sans-serif;
     font-weight: bold;
 }
 #tituloHistorialSoli{
@@ -77,7 +77,7 @@
     margin-top: 1.5em;
     margin-bottom: 1.5em;
     color: #0D1642;
-    font-family: 'Roboto';
+    font-family: 'Roboto', sans-serif;
     font-weight: bold;
 }
 

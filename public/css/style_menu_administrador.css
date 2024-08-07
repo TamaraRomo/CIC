@@ -20,13 +20,19 @@ body {
 .titulo-sitio {
     margin: 0;
     font-size: 18px; /* Ajusta el tamaño del texto según sea necesario */
+    cursor: pointer;
 }
 
+.required::after{
+    content: ' *';
+    color: red;    
+    font-size: 0.85em;
+}
 
 .menu {
     display: flex;
     justify-content: center;
-    background-color: #333;
+    background-color: #1E2943;
     padding: 1px 0;
 }
 
@@ -39,8 +45,15 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.opcion-menu:hover {
-    background-color: #555;
+.opcion-menu-usuario{
+    padding: 5px 10px;
+    margin: 0 5px;
+    margin-left: 50px;
+}
+
+.opcion-menu:hover, .opcion-menu.seleccionada {
+    background-color: #FBA834;
+    color: #000;
 }
 
 .contenido {
@@ -55,7 +68,7 @@ body {
 }
 
 .pie-pagina {
-    background-color: #333;
+    background-color: #1E2943;
     color: #fff;
     text-align: center;
     padding: 1px 0; /* Reducir el relleno del pie de página */
@@ -63,34 +76,61 @@ body {
     bottom: 0;
     width: 100%;
     margin-top: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.enlaces-sociales img {
+    width: 20px;
+    height: 20px;
+}
+
+.pie-pagina p {
+    margin: 0; /* Eliminar el margen por defecto */
+}
+
+.contenedorMostrarSesion {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; /* Alinea el contenido a la derecha */
+    align-items: flex-start; /* Alinea el contenido arriba */
+
 }
 
 .mostrarSesion {
     position: relative;
     display: inline-block; 
-    width: 98%;
+    text-align: right;
 }
 
 #sesion {
+    display: inline-block;
+    padding: 2px 7px 2px 7px;
+    background-color: #FBA834;
+    border-radius: 10px;
     cursor: pointer;
     margin: 0;
     text-align: right;
 }
 
+#sesion:hover{
+    color: white;
+}
+
 #logoutMenu {
     display: none;
     position: absolute;
-    top: 20px;
+    top: 33px;
     right: 0;
     background-color: #f9f9f9;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 10px;
     border-radius: 5px;
-    text-align: right;
 }
 
-.mostrarSesion:hover #logoutMenu {
-    display: block;
+.mostrarSesion #logoutMenu {
+    display: none;
 }
 
 #logoutMenu a {
@@ -112,3 +152,17 @@ body {
         margin: 5px; /* Ajusta el margen de los elementos del menú en dispositivos móviles */
     }
 }
+
+
+#TablaHistorialSolicitudes, #TablaHistorialVales{
+    width: 100%!important;
+}
+
+thead{
+    background-color: #1E2943;
+}
+
+th{
+    color: white!important;
+}
+
